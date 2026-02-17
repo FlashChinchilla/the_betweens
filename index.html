@@ -1,11 +1,1406 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <a href="./game/index.html">Click Here</a>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>The Ring Between Two Yangons - Director's Cut</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&family=Noto+Sans+Myanmar:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        :root {
+            --bg-real: #fdf6e3;
+            --bg-parallel: #0f172a;
+        }
+
+        body {
+            font-family: 'Lato', 'Noto Sans Myanmar', sans-serif;
+            overflow: hidden;
+            background-color: #050505;
+            color: #e2e8f0;
+            touch-action: manipulation;
+        }
+
+        /* --- VISUAL FX ENGINE V5 --- */
+        .world-real { filter: sepia(0.15) saturate(1.1) brightness(1.05); transition: filter 3s ease-in-out; }
+        .world-parallel { filter: hue-rotate(210deg) saturate(0.4) contrast(1.4) brightness(0.7) drop-shadow(0 0 20px rgba(0,100,255,0.1)); transition: filter 3s ease-in-out; }
+        .world-collapse { animation: glitch-anim 0.1s infinite; filter: contrast(1.5) grayscale(1); }
+        .world-dream { filter: blur(1px) brightness(1.2) saturate(1.5); transition: filter 3s ease; }
+        .world-flash { animation: flash-anim 0.5s ease-out; }
+
+        @keyframes panZoom {
+            0% { transform: scale(1.0) translate(0, 0); }
+            50% { transform: scale(1.05) translate(-1%, 1%); }
+            100% { transform: scale(1.0) translate(0, 0); }
+        }
+        .camera-move { animation: panZoom 60s infinite ease-in-out alternate; }
+        .static-cam { animation: none !important; transform: scale(1.0) translate(0, 0) !important; transition: transform 0.5s ease-out; }
+        #camera-rig { filter: brightness(1.1); }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-3px, 3px) }
+            40% { transform: translate(-3px, -3px) }
+            60% { transform: translate(3px, 3px) }
+            80% { transform: translate(3px, -3px) }
+            100% { transform: translate(0) }
+        }
+
+        @keyframes flash-anim {
+            0% { background-color: white; opacity: 1; }
+            100% { background-color: transparent; opacity: 0; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes bounce-pin {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .fade-in { animation: fadeIn 1s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* UI Elements */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 3px;
+            position: absolute; inset: 0; pointer-events: none; z-index: 50; opacity: 0.3;
+        }
+
+        .dialogue-box {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.7);
+        }
+
+        .choice-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, rgba(51, 65, 85, 0.85) 0%, rgba(30, 41, 59, 0.95) 100%);
+            border-left: 3px solid #94a3b8;
+        }
+        .choice-btn:active, .choice-btn:hover {
+            transform: translateX(8px);
+            background: linear-gradient(90deg, rgba(71, 85, 105, 0.95) 0%, rgba(51, 65, 85, 1) 100%);
+            border-left-color: #facc15;
+            box-shadow: -5px 0 15px rgba(234, 179, 8, 0.2);
+        }
+
+        .cursor::after { content: '▋'; animation: blink 1s infinite; color: #facc15; margin-left: 2px;}
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #eab308; border-radius: 4px; }
+
+        /* --- MAP STYLES --- */
+        .map-pin { transition: all 0.2s ease; }
+        .map-pin:hover { transform: scale(1.1); z-index: 100; }
+        .pin-bounce { animation: bounce-pin 2s infinite ease-in-out; }
+        .locked-location { filter: grayscale(1); cursor: not-allowed; }
+        
+        /* Updated Google Map Style Background */
+        .google-map-bg {
+            background-color: #a5d6e0; /* Deeper River Blue */
+        }
+
+        /* Geography Shapes */
+        .geo-shape {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        /* Road Styling - Curved & Professional */
+        .road-border {
+            stroke: #d1d5db; /* Soft Grey Border */
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+        }
+        .road-line {
+            stroke: #ffffff; /* White Road Surface */
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .notification-toast {
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .notification-show { transform: translateX(0%); }
+        
+        /* Map Container & Cursor */
+        #map-container {
+            cursor: grab;
+            overflow: hidden;
+            background-color: #a5d6e0; /* Match water color for infinite feel */
+        }
+        #map-container:active {
+            cursor: grabbing;
+        }
+        
+        /* Zoom Transform */
+        #map-world {
+            transform-origin: center center;
+            will-change: transform;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    </head>
+    <body class="text-gray-100 h-screen w-screen relative select-none bg-black">
+
+        <div id="game-container" class="relative w-full h-full overflow-hidden">
+
+            <!-- Background System -->
+            <div id="background-wrapper"
+                class="absolute inset-0 overflow-hidden bg-black">
+                <div id="camera-rig"
+                    class="absolute inset-0 w-full h-full camera-move">
+                    <div id="bg-layer-1"
+                        class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out opacity-0 z-0"></div>
+                    <div id="bg-layer-2"
+                        class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out opacity-0 z-0"></div>
+                </div>
+                <div id="mood-layer"
+                    class="absolute inset-0 bg-black/20 mix-blend-overlay transition-colors duration-1000 z-10"></div>
+            </div>
+
+            <!-- Overlays -->
+            <div class="scanlines"></div>
+            <div class="vignette"></div>
+            <div id="rain-layer"
+                class="absolute inset-0 pointer-events-none hidden bg-[url('https://i.gifer.com/7scx.gif')] opacity-20 bg-cover mix-blend-screen z-30"></div>
+            <div id="flash-layer"
+                class="absolute inset-0 bg-white opacity-0 pointer-events-none z-50"></div>
+
+            <!-- Character -->
+            <div id="character-layer"
+                class="absolute inset-0 flex items-end justify-center pointer-events-none z-20 pb-0 transition-transform duration-700 translate-y-10 opacity-0">
+            </div>
+            
+            <!-- Map Modal Overlay -->
+            <div id="map-modal" class="hidden absolute inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
+                <div class="relative w-full max-w-6xl h-[85vh] bg-[#f8f9fa] rounded-xl overflow-hidden shadow-2xl group font-roboto text-gray-800 border-4 border-white/50 flex flex-col">
+                    
+                    <!-- Search Bar Facade -->
+                    <div class="absolute top-4 left-4 right-16 md:right-auto md:w-80 bg-white h-12 rounded-lg shadow-md flex items-center px-4 gap-3 z-50">
+                        <i data-lucide="menu" class="text-gray-500 w-5 h-5"></i>
+                        <span class="text-sm md:text-base text-gray-700 font-medium">Yangon, Myanmar</span>
+                        <i data-lucide="search" class="text-blue-500 w-5 h-5 ml-auto"></i>
+                    </div>
+
+                    <!-- Map Controls (Functional Zoom) -->
+                    <div class="absolute bottom-6 right-4 flex flex-col gap-2 z-50">
+                         <div class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform" onclick="game.resetZoom()" title="Reset View"><i data-lucide="compass" class="w-6 h-6"></i></div>
+                         <div class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform" onclick="game.zoomMap(0.25)"><i data-lucide="plus" class="w-6 h-6"></i></div>
+                         <div class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform" onclick="game.zoomMap(-0.25)"><i data-lucide="minus" class="w-6 h-6"></i></div>
+                    </div>
+
+                    <!-- Map Container (Viewport) -->
+                    <div id="map-container" class="w-full h-full relative">
+                        <!-- Map World (Transform Target) -->
+                        <div id="map-world" class="absolute inset-0 w-full h-full">
+                            <!-- Water Background -->
+                            <div class="absolute inset-0 google-map-bg opacity-100"></div>
+                            
+                            <!-- Geography Layer (Land & Parks SVG) -->
+                            <div id="geo-layer" class="absolute inset-0 w-full h-full pointer-events-none z-0">
+                                <!-- Injected via JS -->
+                            </div>
+
+                            <!-- Roads Layer (SVG) -->
+                            <svg id="road-layer" class="absolute inset-0 w-full h-full pointer-events-none z-5" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Roads injected via JS -->
+                            </svg>
+
+                            <!-- Pins Container -->
+                            <div id="map-pins" class="absolute inset-0 z-10">
+                                <!-- Pins injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Close Button -->
+                    <button onclick="game.toggleMap()" class="absolute top-4 right-4 bg-white hover:bg-gray-100 text-gray-600 p-2 rounded-full shadow-md z-50 transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- UI Layer -->
+            <div id="ui-layer"
+                class="absolute inset-0 z-50 flex flex-col justify-between p-3 md:p-8 hidden">
+
+                <!-- Top HUD -->
+                <div class="flex justify-between items-start w-full">
+                    <!-- Left: Location -->
+                    <div class="flex flex-col gap-2 max-w-[50%]">
+                        <div id="location-tag"
+                            class="bg-gray-900/90 text-yellow-400 px-3 py-2 border-l-4 border-yellow-500 font-cinzel tracking-widest text-[10px] md:text-sm uppercase backdrop-blur-md shadow-lg flex items-center gap-2 md:gap-3 rounded-r-md">
+                            <i data-lucide="map-pin"
+                                class="w-3 h-3 md:w-4 md:h-4 flex-shrink-0"></i>
+                            <div class="overflow-hidden">
+                                <span id="location-text"
+                                    class="block font-bold truncate">YANGON</span>
+                                <span id="time-text"
+                                    class="text-[9px] md:text-[10px] text-gray-300 font-sans tracking-normal block truncate">DAY
+                                    1 - 08:00 AM</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="game.audio.toggle()"
+                                class="bg-gray-800/70 p-2 rounded-full hover:bg-white/20 transition pointer-events-auto border border-white/10">
+                                <i id="audio-icon" data-lucide="volume-2"
+                                    class="w-3 h-3 md:w-4 md:h-4 text-yellow-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Menu -->
+                    <div
+                        class="flex flex-col items-end gap-2 md:gap-3 pointer-events-auto relative">
+                        
+                        <!-- Notification Area -->
+                        <div id="unlock-notification" class="absolute top-12 right-0 notification-toast bg-white border-l-4 border-green-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60]">
+                            <div class="bg-green-100 p-1.5 rounded-full text-green-600">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] uppercase text-gray-500 font-bold tracking-wider">New Location</div>
+                                <div id="unlock-text" class="text-sm font-bold text-gray-800 leading-tight">Home</div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button onclick="game.toggleMap()"
+                                class="bg-cyan-900/80 hover:bg-cyan-700 border border-cyan-500 text-cyan-100 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+                                title="Open Map">
+                                <i data-lucide="map"
+                                    class="w-3 h-3 md:w-4 md:h-4"></i> MAP
+                            </button>
+                            <button onclick="game.toggleFullscreen()"
+                                id="fs-btn"
+                                class="bg-blue-600/90 hover:bg-blue-500 border border-blue-400 text-white px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all shadow-[0_0_10px_rgba(37,99,235,0.5)]"
+                                title="Playable Full Screen">
+                                <i data-lucide="maximize"
+                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+                            </button>
+                            <button onclick="game.takeScreenshot()"
+                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all"
+                                title="Screenshot">
+                                <i data-lucide="camera"
+                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+                            </button>
+                            <button onclick="game.toggleImmersive()"
+                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all"
+                                title="Hide UI & View Art">
+                                <i data-lucide="eye"
+                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+                            </button>
+                            <button onclick="game.toggleAuto()" id="auto-btn"
+                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-[10px] md:text-xs font-bold rounded backdrop-blur transition-all flex items-center gap-1">
+                                <i data-lucide="play-circle"
+                                    class="w-3 h-3 md:w-4 md:h-4"></i> AUTO
+                            </button>
+                            <button onclick="game.toggleLang()"
+                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-[10px] md:text-xs font-bold rounded backdrop-blur transition-all min-w-[60px] md:w-24">
+                                <span id="lang-btn">မြန်မာ</span>
+                            </button>
+                            <button onclick="game.saveGameManual()"
+                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all">
+                                <i data-lucide="save"
+                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interaction Area -->
+                <div
+                    class="mt-auto w-full max-w-5xl mx-auto space-y-3 md:space-y-4">
+                    <div id="choices-container"
+                        class="flex flex-col gap-2 items-center mb-2 transition-all duration-500 min-h-[40px] max-h-[35vh] overflow-y-auto pr-1 custom-scroll pointer-events-auto">
+                    </div>
+                    <div id="dialogue-box"
+                        class="dialogue-box rounded-xl p-5 md:p-8 relative min-h-[160px] md:min-h-[200px] cursor-pointer group transition-all duration-300 hover:border-white/30 pointer-events-auto"
+                        onclick="game.next()">
+                        <div
+                            class="absolute -top-3 md:-top-4 left-4 md:left-10 z-10">
+                            <div id="speaker-box"
+                                class="bg-slate-800 px-4 md:px-6 py-1 md:py-1.5 text-xs md:text-sm font-bold tracking-widest text-white uppercase transform skew-x-[-12deg] shadow-[0_5px_15px_rgba(0,0,0,0.5)] border-l-4 border-yellow-500 hidden">
+                                <span id="speaker-name"
+                                    class="transform skew-x-[12deg] inline-block font-noto">NAME</span>
+                            </div>
+                        </div>
+                        <p id="dialogue-text"
+                            class="text-base md:text-xl leading-relaxed md:leading-9 text-gray-100 font-medium tracking-wide font-noto cursor relative z-0 mt-2 md:mt-0 drop-shadow-sm">
+                        </p>
+                        <div
+                            class="absolute bottom-3 right-3 md:bottom-4 md:right-4 text-yellow-400 opacity-0 transition-opacity duration-300"
+                            id="next-indicator">
+                            <div
+                                class="animate-bounce flex flex-col items-center">
+                                <span
+                                    class="text-[8px] md:text-[10px] uppercase tracking-widest opacity-70 mb-1">Next</span>
+                                <i data-lucide="chevron-down"
+                                    class="w-4 h-4 md:w-5 md:h-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="start-screen"
+                class="absolute inset-0 z-[80] flex flex-col items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1596556554483-2079c6131496?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center">
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black"></div>
+
+                <div
+                    class="relative z-10 text-center space-y-4 md:space-y-6 animate-fadeIn max-w-4xl w-full">
+                    <div
+                        class="text-yellow-500 tracking-[0.3em] md:tracking-[0.5em] text-[10px] md:text-xs uppercase font-bold border-b border-yellow-500/30 pb-4 inline-block mb-2 md:mb-4">
+                        Director's Cut • Extended Edition
+                    </div>
+                    <h1
+                        class="text-4xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-800 title-font drop-shadow-2xl leading-tight px-2">
+                        THE RING BETWEEN<br>TWO YANGONS
+                    </h1>
+                    <h2
+                        class="text-xl md:text-4xl text-gray-200 font-noto font-bold mt-2 drop-shadow-md">
+                        ရန်ကုန်နှစ်မြို့ကြားက လက်စွပ်
+                    </h2>
+                    <p
+                        class="text-gray-400 text-xs md:text-base max-w-xl mx-auto leading-relaxed pt-4 md:pt-6 font-noto border-l-2 border-yellow-600/50 pl-4 md:pl-6 text-left italic hidden md:block">
+                        "There is a Yangon of Gold, and a Yangon of Echoes. One is built on faith, the other on regret. Be careful which one you wake up in."
+                    </p>
+
+                    <div
+                        class="pt-8 md:pt-12 flex flex-col md:flex-row gap-3 md:gap-4 justify-center w-full max-w-xs md:max-w-none mx-auto">
+                        <button onclick="game.init()"
+                            class="group relative px-6 md:px-10 py-3 md:py-4 bg-yellow-600/10 border border-yellow-500/50 text-yellow-100 uppercase tracking-widest text-xs md:text-sm hover:bg-yellow-600 hover:text-black transition-all duration-500 backdrop-blur-md shadow-[0_0_30px_rgba(234,179,8,0.1)] overflow-hidden rounded-sm w-full md:w-auto">
+                            <span
+                                class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-80 group-hover:h-80 opacity-10"></span>
+                            <span
+                                class="relative flex items-center justify-center gap-3 font-bold">
+                                NEW GAME / ဂိမ်းအသစ်
+                            </span>
+                        </button>
+                        <button onclick="game.loadGame()" id="load-btn"
+                            class="hidden group relative px-6 md:px-10 py-3 md:py-4 bg-gray-800/50 border border-gray-500/50 text-gray-300 uppercase tracking-widest text-xs md:text-sm hover:bg-gray-700 hover:text-white transition-all duration-500 backdrop-blur-md overflow-hidden rounded-sm w-full md:w-auto">
+                            <span
+                                class="relative flex items-center justify-center gap-3 font-bold">
+                                CONTINUE / ဆက်လက်
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+    // --- LOCATION DATABASE ---
+    // Updated coordinates to reflect real Yangon geography relative to the new SVG
+    const LOCATIONS = [
+        // North/West
+        { id: 'imc', type: 'school', terrain: 'land', name: { en: "Info Myanmar College", mm: "Info Myanmar College" }, x: 30, y: 35, scene: 'school_imc' },
+
+        { id: 'naung_gyi', type: 'home', terrain: 'land', name: { en: "Naung Gyi's House", mm: "နောင်ကြီး အိမ်" }, x: 95, y: 30, scene: 'home_naunggyi' },
+        
+        { id: 'home', type: 'home', terrain: 'land', name: { en: "Tayza's House", mm: "တေဇ အိမ်" }, x: 80, y: 20, scene: 'intro-tayza' },
+        
+        // Central
+        { id: 'shwedagon', type: 'shwedagon_pagoda', terrain: 'land', name: { en: "Shwedagon Pagoda", mm: "ရွှေတိဂုံဘုရား" }, x: 40, y: 55, scene: 'place_shwedagon' },
+
+        { id: 'kantawgyi', type: 'park', terrain: 'water', name: { en: "Kandawgyi Lake", mm: "ကန်တော်ကြီး" }, x: 60, y: 62, scene: 'place_kantawgyi' },
+
+        { id: 'inyalake', type: 'park', terrain: 'water', name: { en: "Inya Lake", mm: "အင်းယားကန်" }, x: 50, y: 35, scene: 'place_inya' },
+
+        { id: 'mmplaza', type: 'mmplaza', terrain: 'land', name: { en: "Myanmar Plaza", mm: "မြန်မာပလာဇာ" }, x: 55, y: 25, scene: 'place_mmplaza' },
+        
+        // Central/West
+        { id: 'junction_city', type: 'mall', terrain: 'land', name: { en: "Junction City", mm: "Junction City" }, x: 43, y: 70, scene: 'mall_jc' },
+        
+        // West/River Side
+        { id: 'hmone_gyi', type: 'tea_shop', terrain: 'land', name: { en: "Hmone Gyi Tea Shop", mm: "မှုန်ကြီးလက်ဖက်ရည်ဆိုင်" }, x: 20, y: 20, scene: 'tea_hmonegyi' },
+        
+        // Downtown
+        { id: 'sule', type: 'sule_pagoda', terrain: 'land', name: { en: "Sule Pagoda", mm: "ဆူးလေဘုရား" }, x: 60, y: 80, scene: 'place_sule' },
+        { id: 'downtown', type: 'city', terrain: 'land', name: { en: "Downtown", mm: "မြို့လယ်ခေါင်" }, x: 50, y: 88, scene: 'place_downtown' },
+        
+        // East (Tamwe/Thingangyun area) - Safe from river now
+        { id: 'alwan_cafe', type: 'cafe_shop', terrain: 'land', name: { en: "A Lwan Café", mm: "အလွမ်းကဖေး" }, x: 70, y: 50, scene: 'cafe_alwan' },
+    ];
+
+    const ROADS = [
+        ['home', 'naung_gyi'],
+        ['naung_gyi', 'imc'],
+        ['imc', 'shwedagon'],
+        ['shwedagon', 'kantawgyi'],
+        ['shwedagon', 'junction_city'],
+        ['junction_city', 'downtown'],
+        ['downtown', 'sule'],
+        ['downtown', 'alwan_cafe'],
+        ['sule', 'hmone_gyi'],
+        ['home', 'shwedagon'],
+        ['naung_gyi', 'shwedagon'] 
+    ];
+
+    // --- ASSETS DATABASE ---
+    const ASSETS = {
+        bg: {
+            downtown: "../images/places/downtown.png",
+            sule: "../images/places/sule.png",
+            shwedagon: "../images/places/shwedagon.png",
+            kantawgyi: "../images/places/kantawg.png",
+            home_tayza: "../images/places/home_tayza.png",
+            alarm: "../images/items/alarm.png",
+            sleep_tayza: "../images/person/sleep-tayza.png",
+            wakeup_tayza: "../images/person/wakeup-tayza.png",
+            oldfan: "../images/items/oldfan.png",
+            missedcall: "../images/items/missedcall.png",
+            stair: "../images/places/stair.png",
+            kitchen: "../images/places/kitchen.png",
+            livingroom: "../images/places/livingroom.png"
+        },
+        audio: {
+            morning_chant: "../audios/morning_bird.mp3",
+            alarm: "../audios/alarm.mp3",
+            yawn: "../audios/yawn.mp3",
+            oldfan: "../audios/oldfan.mp3",
+            stair: "../audios/footstep.mp3",
+            kitchen: "../audios/kitchen.mp3",
+        },
+        icons: {
+            home: "../images/places/icon-house.png",
+            shwedagon_pagoda: "../images/places/icon-shwedagon-pagoda.png",
+            sule_pagoda: "../images/places/icon-sule-pagoda.png",
+            tea_shop: "../images/places/icon-tea-shop.png",
+            cafe_shop: "../images/places/icon-cafe.png",
+            school: "../images/places/icon-info.png",
+            mall: "../images/places/icon-mall.png",
+            park: "../images/places/icon-kantawg.png",
+            city: "../images/places/icon-downtown.png",
+            player: "../images/places/icon-current.png", 
+            tree: "../images/places/icon-tree.png",
+            inyalake: "../images/places/icon-inyalake.png",
+            mmplaza: "../images/places/icon-mmplaza.png",
+        }
+    };
+
+    // --- GAME ENGINE ---
+    class GameEngine {
+        constructor() {
+            this.state = {
+                stats: { sanity: 100, trust: 0, life: 50, knowledge: 0 },
+                flags: {}, 
+                day: 1,
+                sceneId: 'start',
+                lang: 'mm'
+            };
+            this.typingSpeed = 20;
+            this.isTyping = false;
+            this.typingTimer = null; 
+            this.autoPlayTimer = null; 
+            this.autoPlay = false; 
+            this.sceneData = null;
+            this.dialogueIndex = 0;
+            this.audio = new AudioController();
+            
+            this.activeLayer = 1; 
+            this.currentBgKey = null; 
+            this.immersiveMode = false;
+            this.mapOpen = false;
+            
+            // --- MAP STATE ---
+            this.mapZoom = 1; 
+            this.panX = 0;
+            this.panY = 0;
+            this.isDragging = false;
+            this.startX = 0;
+            this.startY = 0;
+
+            if(localStorage.getItem('ringGameSave_V5')) {
+                document.getElementById('load-btn').classList.remove('hidden');
+            }
+        }
+
+        init() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('ui-layer').classList.remove('hidden');
+            document.getElementById('ui-layer').classList.add('flex');
+            lucide.createIcons();
+            this.loadScene('yangon_intro');
+            this.setupMapInteractions();
+        }
+        
+        // --- MAP SYSTEM ENHANCED (Drag & Zoom) ---
+        setupMapInteractions() {
+            const container = document.getElementById('map-container');
+            
+            // Mouse Events
+            container.addEventListener('mousedown', (e) => this.startDrag(e));
+            document.addEventListener('mousemove', (e) => this.drag(e));
+            document.addEventListener('mouseup', () => this.endDrag());
+            
+            // Touch Events
+            container.addEventListener('touchstart', (e) => this.startDrag(e.touches[0]));
+            document.addEventListener('touchmove', (e) => this.drag(e.touches[0]));
+            document.addEventListener('touchend', () => this.endDrag());
+        }
+
+        startDrag(e) {
+            if (!this.mapOpen) return;
+            this.isDragging = true;
+            this.startX = e.clientX - this.panX;
+            this.startY = e.clientY - this.panY;
+            document.getElementById('map-container').style.cursor = 'grabbing';
+        }
+
+        drag(e) {
+            if (!this.isDragging || !this.mapOpen) return;
+            e.preventDefault ? e.preventDefault() : null; // Prevent mobile scroll
+            this.panX = e.clientX - this.startX;
+            this.panY = e.clientY - this.startY;
+            this.updateMapTransform();
+        }
+
+        endDrag() {
+            this.isDragging = false;
+            const container = document.getElementById('map-container');
+            if(container) container.style.cursor = 'grab';
+        }
+
+        toggleMap() {
+            const modal = document.getElementById('map-modal');
+            if (this.mapOpen) {
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            } else {
+                this.renderMap();
+                // Reset view on open
+                this.mapZoom = 1;
+                this.panX = 0;
+                this.panY = 0;
+                this.updateMapTransform();
+                
+                modal.classList.remove('hidden');
+                void modal.offsetWidth; 
+                modal.classList.remove('opacity-0');
+            }
+            this.mapOpen = !this.mapOpen;
+        }
+
+        zoomMap(delta) {
+            // Increased zoom range: 0.25x to 6x
+            this.mapZoom = Math.max(0.25, Math.min(6, this.mapZoom + delta));
+            this.updateMapTransform();
+        }
+
+        resetZoom() {
+            this.mapZoom = 1;
+            this.panX = 0;
+            this.panY = 0;
+            this.updateMapTransform();
+        }
+
+        updateMapTransform() {
+            const world = document.getElementById('map-world');
+            if (world) {
+                world.style.transform = `translate(${this.panX}px, ${this.panY}px) scale(${this.mapZoom})`;
+            }
+        }
+
+        renderMap() {
+            const container = document.getElementById('map-pins');
+            const geoContainer = document.getElementById('geo-layer');
+            const roadLayer = document.getElementById('road-layer');
+            
+            container.innerHTML = '';
+            geoContainer.innerHTML = '';
+            roadLayer.innerHTML = '';
+
+            const currentLoc = LOCATIONS.find(l => l.scene === this.state.sceneId);
+
+            geoContainer.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <filter id="land-glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="1" result="blur"/>
+                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Main Yangon Landmass -->
+                    <path d="M -10 0 L 110 0 L 110 60 Q 90 55 80 70 L 70 85 L 60 92 L 50 95 L 40 92 L 30 85 L 20 70 Q 10 55 -10 60 Z" fill="#F0F2F5" stroke="#E5E7EB" stroke-width="0.5" filter="url(#land-glow)"/>
+                    
+                    <!-- Dala Side (South West) -->
+                    <path d="M -10 100 L 45 100 L 35 110 L -10 110 Z" fill="#E8EAED" />
+                    
+                    <!-- Thanlyin Side (South East) -->
+                    <path d="M 65 100 L 110 100 L 110 110 L 75 110 Z" fill="#E8EAED" />
+                    
+                    <!-- Inya Lake (North Center) -->
+                    <path d="M 40 25 Q 45 20 50 25 T 60 30 Q 55 40 45 35 T 40 25 Z" fill="#A5D6E0" stroke="#8AC0D0" stroke-width="0.5" />
+                    
+                    <!-- Kandawgyi Lake (East of Shwedagon) -->
+                    <path d="M 52 55 Q 58 52 62 55 T 65 62 Q 60 65 55 62 T 52 55 Z" fill="#A5D6E0" stroke="#8AC0D0" stroke-width="0.5" />
+                    
+                </svg>
+            `;
+
+            // 1. Draw Road Borders
+            ROADS.forEach(([startId, endId]) => {
+                const start = LOCATIONS.find(l => l.id === startId);
+                const end = LOCATIONS.find(l => l.id === endId);
+                if (start && end) {
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    const midX = (start.x + end.x) / 2;
+                    const midY = (start.y + end.y) / 2;
+                    const offset = 5; // Reduced offset for tighter curves
+                    const cpX = midX + (start.y > end.y ? offset : -offset); 
+                    const cpY = midY + (start.x < end.x ? offset : -offset);
+
+                    const d = `M ${start.x} ${start.y} Q ${cpX} ${cpY} ${end.x} ${end.y}`;
+                    path.setAttribute("d", d);
+                    path.setAttribute("class", "road-border");
+                    roadLayer.appendChild(path);
+                }
+            });
+
+            // 2. Draw Road Inner Lines
+            ROADS.forEach(([startId, endId]) => {
+                const start = LOCATIONS.find(l => l.id === startId);
+                const end = LOCATIONS.find(l => l.id === endId);
+                if (start && end) {
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    const midX = (start.x + end.x) / 2;
+                    const midY = (start.y + end.y) / 2;
+                    const offset = 5; 
+                    const cpX = midX + (start.y > end.y ? offset : -offset); 
+                    const cpY = midY + (start.x < end.x ? offset : -offset);
+
+                    const d = `M ${start.x} ${start.y} Q ${cpX} ${cpY} ${end.x} ${end.y}`;
+                    path.setAttribute("d", d);
+                    path.setAttribute("class", "road-line");
+                    roadLayer.appendChild(path);
+                }
+            });
+
+            // 3. Render Pins & Trees
+            LOCATIONS.forEach(loc => {
+                const isUnlocked = this.state.flags[`${loc.id}_unlocked`];
+                const isCurrent = currentLoc && currentLoc.id === loc.id;
+                
+                const pin = document.createElement('div');
+                pin.className = `absolute flex flex-col items-center group ${isUnlocked ? 'z-20 cursor-pointer' : 'z-10 cursor-not-allowed'}`;
+                pin.style.left = `${loc.x}%`;
+                pin.style.top = `${loc.y}%`;
+                pin.style.transform = "translate(-50%, -100%)";
+
+                const iconUrl = ASSETS.icons[loc.type] || ASSETS.icons.city;
+
+                // Add random trees for land locations
+                if (loc.terrain === 'land') {
+                     // Add 1-2 trees nearby
+                     for(let i=0; i<5; i++) {
+                         const tree = document.createElement('img');
+                         tree.src = ASSETS.icons.tree;
+                         tree.className = 'absolute w-4 h-4 z-0 opacity-90';
+                         const tx = (Math.random() * 8) - 4; // -4 to +4
+                         const ty = (Math.random() * 6); // 0 to 6
+                         tree.style.left = `${loc.x + tx}%`;
+                         tree.style.top = `${loc.y + ty}%`;
+                         container.appendChild(tree);
+                     }
+                }
+
+                // Player Icon HTML
+                const playerHtml = isCurrent ? `
+                    <div class="absolute -top-12 z-50 animate-bounce">
+                        <img src="${ASSETS.icons.player}" class="w-10 h-10 rounded-full border-2 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)] bg-white">
+                        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-yellow-400"></div>
+                    </div>
+                ` : '';
+
+                if (isUnlocked) {
+                    pin.onclick = (e) => { e.stopPropagation(); this.travelTo(loc); };
+                    pin.innerHTML = `
+                        ${playerHtml}
+                        <div class="relative pin-bounce">
+                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-6 h-2 bg-black/30 rounded-full blur-[2px]"></div>
+                            <img src="${iconUrl}" class="w-10 h-10 object-contain drop-shadow-lg" alt="${loc.name.en}">
+                        </div>
+                        <div class="mt-1 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 font-bold rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-200 z-50 relative">
+                            ${loc.name[this.state.lang] || loc.name.en}
+                        </div>
+                    `;
+                } else {
+                    pin.innerHTML = `
+                        <div class="relative grayscale opacity-80">
+                            <img src="${iconUrl}" class="w-10 h-10 object-contain opacity-60" alt="${loc.name.en}">
+                            <div class="absolute -top-1 -right-1 bg-red-600/90 rounded-full p-0.5 border border-white shadow-sm z-10">
+                                <i data-lucide="lock" class="w-3 h-3 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="mt-1 bg-gray-200 text-gray-500 text-[10px] md:text-xs px-2 py-1 font-bold rounded shadow-sm whitespace-nowrap border border-gray-300 z-50 relative">
+                            ${loc.name[this.state.lang] || loc.name.en}
+                        </div>
+                    `;
+                }
+                
+                container.appendChild(pin);
+            });
+            
+            this.updateMapTransform();
+            lucide.createIcons();
+        }
+
+        travelTo(loc) {
+            if(this.isDragging) return; // Prevent click when dragging
+            this.toggleMap();
+            if (SCENES[loc.scene]) {
+                this.loadScene(loc.scene);
+            } else {
+                alert(`Development Mode: Scene for ${loc.name.en} is not yet implemented.`);
+            }
+        }
+
+        // --- NEW: NOTIFICATION SYSTEM ---
+        showUnlockNotification(locId) {
+            const loc = LOCATIONS.find(l => l.id === locId);
+            if (!loc) return;
+            
+            const notif = document.getElementById('unlock-notification');
+            const text = document.getElementById('unlock-text');
+            
+            text.innerText = loc.name[this.state.lang] || loc.name.en;
+            notif.classList.add('notification-show');
+            setTimeout(() => {
+                notif.classList.remove('notification-show');
+            }, 4000);
+        }
+
+        // --- EXISTING SYSTEMS ---
+        toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+        
+        toggleImmersive() {
+            this.immersiveMode = !this.immersiveMode;
+            const ui = document.getElementById('ui-layer');
+            const cam = document.getElementById('camera-rig');
+            
+            if (this.immersiveMode) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(err => console.log(err));
+                }
+                ui.classList.add('hidden');
+                cam.classList.add('static-cam');
+                
+                const exitHandler = (e) => {
+                    e.stopPropagation();
+                    this.toggleImmersive();
+                    document.removeEventListener('click', exitHandler, true);
+                };
+                setTimeout(() => {
+                    document.addEventListener('click', exitHandler, true);
+                }, 50);
+                
+            } else {
+                if (document.exitFullscreen && document.fullscreenElement) {
+                    document.exitFullscreen().catch(err => console.log(err));
+                }
+                ui.classList.remove('hidden');
+                cam.classList.remove('static-cam');
+            }
+        }
+
+        takeScreenshot() {
+            const ui = document.getElementById('ui-layer');
+            const cam = document.getElementById('camera-rig');
+            const container = document.getElementById('game-container');
+
+            ui.classList.add('hidden');
+            cam.classList.add('static-cam');
+
+            setTimeout(() => {
+                html2canvas(container, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: null
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `yangon_scene_${Date.now()}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+
+                    ui.classList.remove('hidden');
+                    if (!this.immersiveMode) {
+                        cam.classList.remove('static-cam');
+                    }
+                }).catch(err => {
+                    console.error("Screenshot failed:", err);
+                    alert("Couldn't take screenshot due to browser security restrictions.");
+                    ui.classList.remove('hidden');
+                    if (!this.immersiveMode) cam.classList.remove('static-cam');
+                });
+            }, 100);
+        }
+
+        saveGameManual() {
+            localStorage.setItem('ringGameSave_V5', JSON.stringify(this.state));
+            const btn = document.querySelector('button[onclick="game.saveGameManual()"]');
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="check" class="text-green-400 w-3 h-3 md:w-4 md:h-4"></i>';
+                lucide.createIcons();
+                setTimeout(() => { btn.innerHTML = originalHTML; lucide.createIcons(); }, 1000);
+            }
+        }
+
+        loadGame() {
+            const save = localStorage.getItem('ringGameSave_V5');
+            if (save) {
+                this.state = JSON.parse(save);
+                document.getElementById('start-screen').classList.add('hidden');
+                document.getElementById('ui-layer').classList.remove('hidden');
+                document.getElementById('ui-layer').classList.add('flex');
+                this.loadScene(this.state.sceneId);
+            }
+        }
+
+        toggleLang() {
+            this.state.lang = this.state.lang === 'mm' ? 'en' : 'mm';
+            document.getElementById('lang-btn').innerText = this.state.lang === 'mm' ? "မြန်မာ" : "ENGLISH";
+            if (!this.isTyping && this.sceneData) this.renderStep(true);
+        }
+        
+        toggleAuto() {
+            this.autoPlay = !this.autoPlay;
+            const btn = document.getElementById('auto-btn');
+            if (this.autoPlay) {
+                btn.innerHTML = '<i data-lucide="pause-circle" class="w-3 h-3 md:w-4 md:h-4"></i> AUTO';
+                btn.classList.remove('bg-gray-700/80', 'text-gray-200');
+                btn.classList.add('bg-yellow-600/80', 'text-white', 'border-yellow-500');
+                if (!this.isTyping && !this.isLastStep()) {
+                     this.next();
+                }
+            } else {
+                btn.innerHTML = '<i data-lucide="play-circle" class="w-3 h-3 md:w-4 md:h-4"></i> AUTO';
+                btn.classList.add('bg-gray-700/80', 'text-gray-200');
+                btn.classList.remove('bg-yellow-600/80', 'text-white', 'border-yellow-500');
+                if (this.autoPlayTimer) clearTimeout(this.autoPlayTimer);
+            }
+            lucide.createIcons();
+        }
+
+        changeBackground(bgKey, darken) {
+            const url = ASSETS.bg[bgKey];
+            if (!url) return;
+            if (this.currentBgKey === bgKey) return;
+
+            if (!this.activeLayer) this.activeLayer = 1;
+            const nextLayerIdx = this.activeLayer === 1 ? 2 : 1;
+            const currentEl = document.getElementById(`bg-layer-${this.activeLayer}`);
+            const nextEl = document.getElementById(`bg-layer-${nextLayerIdx}`);
+            const targetOpacity = darken ? '0.3' : '0.6';
+
+            nextEl.style.backgroundImage = `url('${url}')`;
+            nextEl.style.opacity = targetOpacity;
+            currentEl.style.opacity = '0';
+
+            this.activeLayer = nextLayerIdx;
+            this.currentBgKey = bgKey; 
+        }
+
+        handleAudio(audioData) {
+            if (!audioData) return;
+            const id = typeof audioData === 'string' ? audioData : audioData.id;
+            const loop = typeof audioData === 'string' ? true : (audioData.loop !== undefined ? audioData.loop : true);
+            this.audio.play(id, loop);
+        }
+
+        loadScene(id) {
+            console.log("Loading Scene:", id);
+            this.state.sceneId = id;
+            this.sceneData = SCENES[id];
+            this.dialogueIndex = 0;
+
+            this.changeBackground(this.sceneData.bg, this.sceneData.darken);
+            this.handleAudio(this.sceneData.audio);
+
+            const body = document.body;
+            body.className = "text-white h-screen w-screen relative select-none bg-black transition-colors duration-1000";
+            if (this.sceneData.world) body.classList.add(`world-${this.sceneData.world}`);
+
+            if (this.sceneData.location) {
+                document.getElementById('location-text').innerText = this.sceneData.location.en; 
+                document.getElementById('time-text').innerText = `DAY ${this.state.day} - ${this.sceneData.time || 'UNKNOWN'}`;
+            }
+
+            this.renderStep();
+            this.saveGameManual();
+        }
+
+        renderStep(instant = false) {
+            if (this.typingTimer) clearTimeout(this.typingTimer);
+            if (this.autoPlayTimer) clearTimeout(this.autoPlayTimer);
+
+            const step = this.sceneData.steps[this.dialogueIndex];
+            if (!step) return;
+
+            // --- UNLOCK CHECK (UPDATED: Triggers Notification) ---
+            if (step.unlock) {
+                const locationsToUnlock = Array.isArray(step.unlock) ? step.unlock : [step.unlock];
+                locationsToUnlock.forEach(locId => {
+                    if (!this.state.flags[`${locId}_unlocked`]) {
+                        this.state.flags[`${locId}_unlocked`] = true;
+                        // Trigger visual notification separately
+                        this.showUnlockNotification(locId);
+                    }
+                });
+            }
+
+            if (step.bg) {
+                this.changeBackground(step.bg, this.sceneData.darken);
+            }
+
+            if (step.audio) {
+                this.handleAudio(step.audio);
+            }
+
+            const speakerBox = document.getElementById('speaker-box');
+            const speakerName = document.getElementById('speaker-name');
+            const spk = step.speaker ? (step.speaker[this.state.lang] || step.speaker.en) : null;
+            
+            if (spk) {
+                speakerBox.classList.remove('hidden');
+                speakerName.innerText = spk;
+                speakerBox.className = `bg-gray-800 px-4 md:px-6 py-1 md:py-1.5 text-xs md:text-sm font-bold tracking-widest text-white uppercase transform skew-x-[-12deg] shadow-lg border-l-4 ${step.speaker.color || 'bg-slate-700 border-gray-400'}`;
+            } else {
+                speakerBox.classList.add('hidden');
+            }
+
+            const charLayer = document.getElementById('character-layer');
+            if (step.char) {
+                charLayer.innerHTML = this.getCharHTML(step.char);
+                charLayer.classList.remove('opacity-0', 'translate-y-10');
+            } else if (step.clearChar) {
+                charLayer.classList.add('opacity-0', 'translate-y-10');
+            }
+
+            const textBox = document.getElementById('dialogue-text');
+            const text = step.text[this.state.lang] || step.text.en;
+            const choicesDiv = document.getElementById('choices-container');
+            const nextInd = document.getElementById('next-indicator');
+
+            choicesDiv.innerHTML = '';
+            nextInd.style.opacity = '0';
+
+            if (instant) {
+                textBox.innerText = text;
+                this.isTyping = false;
+                textBox.classList.remove('cursor');
+                if (this.isLastStep()) {
+                    this.renderChoices();
+                    if(this.autoPlayTimer) clearTimeout(this.autoPlayTimer); 
+                } else {
+                    nextInd.style.opacity = '1';
+                    if (this.autoPlay) {
+                        const delay = 1500 + (text.length * 50);
+                        this.autoPlayTimer = setTimeout(() => this.next(), delay);
+                    }
+                }
+                return;
+            }
+
+            textBox.innerText = '';
+            textBox.classList.add('cursor');
+            this.isTyping = true;
+            let i = 0;
+
+            const tick = () => {
+                if (!this.isTyping) return; 
+
+                if (i < text.length) {
+                    textBox.innerText += text.charAt(i);
+                    i++;
+                    this.typingTimer = setTimeout(tick, this.typingSpeed);
+                } else {
+                    this.isTyping = false;
+                    textBox.classList.remove('cursor');
+                    if (this.isLastStep()) {
+                        this.renderChoices();
+                        if(this.autoPlayTimer) clearTimeout(this.autoPlayTimer); 
+                    } else {
+                        nextInd.style.opacity = '1';
+                        if (this.autoPlay) {
+                            const delay = 1500 + (text.length * 50);
+                            this.autoPlayTimer = setTimeout(() => this.next(), delay);
+                        }
+                    }
+                }
+            };
+            tick();
+        }
+
+        isLastStep() {
+            return this.dialogueIndex === this.sceneData.steps.length - 1 && this.sceneData.choices;
+        }
+
+        renderChoices() {
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+
+            this.sceneData.choices.forEach(c => {
+                if (c.req && !c.req(this.state)) return; 
+
+                const btn = document.createElement('button');
+                btn.className = "choice-btn w-full max-w-3xl p-3 md:p-4 text-left text-gray-200 rounded-r-lg mb-2 relative overflow-hidden group";
+                
+                const txt = c.text[this.state.lang] || c.text.en;
+                
+                btn.innerHTML = `
+                    <div class="relative z-10 flex justify-between items-center">
+                        <span class="font-noto font-bold text-xs md:text-sm lg:text-base">${txt}</span>
+                        ${c.type === 'danger' ? '<i data-lucide="alert-triangle" class="text-red-500 w-3 h-3 md:w-4 md:h-4"></i>' : '<i data-lucide="arrow-right" class="opacity-0 group-hover:opacity-100 transition-opacity w-3 h-3 md:w-4 md:h-4 text-yellow-500"></i>'}
+                    </div>
+                `;
+
+                if (c.type === 'danger') btn.style.borderLeftColor = '#ef4444';
+
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.makeChoice(c);
+                };
+                container.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        next() {
+            if (this.isTyping) {
+                this.renderStep(true);
+                return;
+            }
+            if (document.getElementById('choices-container').children.length > 0) return;
+
+            if (this.dialogueIndex < this.sceneData.steps.length - 1) {
+                this.dialogueIndex++;
+                this.renderStep();
+            } else if (this.sceneData.nextScene) {
+                this.loadScene(this.sceneData.nextScene);
+            }
+        }
+
+        makeChoice(choice) {
+            // --- UNLOCK CHECK FOR CHOICES ---
+            if (choice.unlock) {
+                const locationsToUnlock = Array.isArray(choice.unlock) ? choice.unlock : [choice.unlock];
+                locationsToUnlock.forEach(locId => {
+                    if (!this.state.flags[`${locId}_unlocked`]) {
+                         this.state.flags[`${locId}_unlocked`] = true;
+                         this.showUnlockNotification(locId);
+                    }
+                });
+            }
+
+            if (choice.effect) {
+                for (const [k, v] of Object.entries(choice.effect)) {
+                    this.state.stats[k] = Math.max(0, Math.min(100, this.state.stats[k] + v));
+                }
+            }
+            if (choice.flag) this.state.flags[choice.flag] = true;
+            if (choice.next) this.loadScene(choice.next);
+        }
+
+        flashEffect() {
+            const flash = document.getElementById('flash-layer');
+            flash.style.animation = 'none';
+            flash.offsetHeight; 
+            flash.style.animation = 'flash-anim 0.5s ease-out';
+        }
+
+        getCharHTML(type) {
+            const maps = {
+                naychi: `<div class="relative w-full h-full flex justify-center items-end animate-[float_4s_ease-in-out_infinite]"><div class="w-64 h-[600px] bg-gradient-to-t from-blue-500/20 to-transparent blur-xl"></div><div class="absolute bottom-0 w-48 h-[500px] border-2 border-blue-400/30 rounded-t-full bg-black/50 backdrop-blur-sm"></div></div>`,
+                faceless: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-72 h-[700px] bg-black blur-md"></div><div class="absolute top-40 w-32 h-40 bg-gray-900 rounded-full animate-pulse"></div></div>`,
+                monk: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-64 h-[600px] bg-gradient-to-t from-orange-800/80 to-transparent"></div></div>`
+            };
+            return maps[type] || '';
+        }
+    }
+
+    class AudioController {
+        constructor() { this.active = true; this.current = null; } 
+        toggle() {
+            this.active = !this.active;
+            const icon = document.getElementById('audio-icon');
+            if (this.active) {
+                icon.setAttribute('data-lucide', 'volume-2');
+                icon.classList.add('text-yellow-400'); 
+                if(this.current && this.bgMusic) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
+            } else {
+                icon.setAttribute('data-lucide', 'volume-x');
+                icon.classList.remove('text-yellow-400');
+                if(this.bgMusic) this.bgMusic.pause();
+            }
+            lucide.createIcons();
+        }
+        play(id, loop = true) {
+            if (!this.bgMusic) {
+                this.bgMusic = new Audio();
+            }
+            
+            this.bgMusic.loop = loop;
+            
+            if (this.current !== id) {
+                 this.bgMusic.src = ASSETS.audio[id];
+                 this.current = id;
+                 if (this.active) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
+            } else {
+                 if (this.active && this.bgMusic.paused) {
+                     this.bgMusic.currentTime = 0;
+                     this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
+                 }
+            }
+        }
+    }
+
+    const SPEAKERS = {
+        unknown: { en: "???", mm: "???", color: "bg-brown-900 border-brown-500" },
+        tayza: { en: "Tayza", mm: "တေဇ", color: "bg-blue-900 border-blue-500" },
+        nay: { en: "Nay Chi", mm: "နေခြည်", color: "bg-purple-900 border-purple-500" },
+        mom: { en: "Mother", mm: "အမေ", color: "bg-orange-800 border-orange-500" },
+        dad: { en: "Father", mm: "အဖေ", color: "bg-orange-900 border-orange-500" },
+        bro: { en: "Ko Thiha", mm: "ကိုသီဟ", color: "bg-green-900 border-green-500" },
+        kyaw: { en: "Kyaw Gyi", mm: "ကျော်ကြီး", color: "bg-teal-800 border-teal-500" },
+        nurse: { en: "Nurse", mm: "သူနာပြု", color: "bg-pink-900 border-pink-500" },
+        guard: { en: "The Guardian", mm: "အစောင့်", color: "bg-red-900 border-red-500" },
+        driver: { en: "YBS Driver", mm: "ကားဆရာ", color: "bg-gray-800 border-gray-500" },
+        monk: { en: "Sayadaw", mm: "ဆရာတော်", color: "bg-orange-900 border-yellow-500" },
+        librarian: { en: "Librarian", mm: "စာကြည့်တိုက်မှူး", color: "bg-indigo-900 border-indigo-500" }
+    };
+
+    const SCENES = {
+        'yangon_intro': {
+            bg: 'downtown',
+            world: 'real',
+            audio: 'morning_chant',
+            location: { en: 'Yangon - CityView', mm: 'ရန်ကုန် - မြို့အလှ' },
+            time: '07:00 AM',
+            steps: [
+            {
+                bg: 'downtown',
+                text: {
+                    en: "Morning light spills over Yangon Downtown, brushing colonial buildings and narrow streets with gold. Shops awaken, tea scents drift, and buses begin their slow dance along waking roads. The city hums with quiet stories beneath the sun.",
+                    mm: "မနက်ခင်းနေရောင်က ရန်ကုန်မြို့လယ်ပေါ်ကို တဖြည်းဖြည်း လင်းလာပြီး ဟောင်းနွမ်းနေသောကိုလိုနီအဆောက်အဦးတွေ၊ လမ်းကျဉ်းကျဉ်းလေးတွေကို ရောင်စုံအလင်းနဲ့ လင်းစေပါတယ်။ ဆိုင်တွေ တဖြည်းဖြည်းဖွင့်လာကြပြီး လက်ဖက်ရည်နံ့လေးတွေလည်း လေထဲမှာ ပျံ့နှံ့လာပါပြီ။ ဘတ်စ်ကားတွေကလည်း လမ်းမပေါ်မှာ တဖြည်းဖြည်း စတင်လှုပ်ရှားလာပြီး မြို့တော်ထဲ နေရောင်အောက်မှာ လူတိုင်းကိုယ်ပိုင်ဇာတ်လမ်းတွေနဲ့ တိတ်တဆိတ် စတင်လာပါပြီ။"
+                }
+            },
+            {
+                bg: 'sule',
+                text: {
+                    en: "At the heart of the city, Sule Pagoda stands serene amid flowing traffic. Monks walk with calm steps, office workers hurry by. Its golden spire catches sunlight, quietly witnessing the passing day.",
+                    mm: "မြို့ရဲ့အလယ်ဗဟိုမှာ ဆူးလေဘုရားက လမ်းလှည့်ကားတွေကြားမှာပဲ တိတ်ဆိတ်အေးချမ်းစွာ တည်ရှိနေပြီး နေရောင်အောက်မှာ ရွှေရောင်တောက်ပလင်းလက်နေပါတယ်။ သံဃာတော်တွေက တည်ငြိမ်တဲ့ ခြေလှမ်းတွေနဲ့ လမ်းလျှောက်နေကြပြီး ရုံးသွားဝန်ထမ်းတွေကလည်း အလုပ်အတွက် အမြန်လှုပ်ရှားနေကြပါပြီ။ မြို့ရဲ့အသံလှိုင်းတွေကြားမှာပင် ဘုရားက တိတ်တဆိတ် နေ့သစ်တစ်နေ့ကို စောင့်ကြည့်နေသလို ဖြစ်နေပါတယ်။"
+                }
+            },
+            {
+                bg: 'shwedagon',
+                text: {
+                    en: "On the hill, Shwedagon Pagoda glimmers under the sun. Incense drifts, prayers float, and the city below seems to pause, held in a gentle, timeless moment.",
+                    mm: "တောင်ပေါ်မှာ ရွှေတိဂုံဘုရားက နေရောင်အောက်မှာ တောက်ပလင်းလက်နေပြီး ရွှေရောင်တံတိုင်းတွေက မျက်စိထဲ ထင်ဟပ်စေပါတယ်။ အမွှေးနံ့သင်းသင်းလေးတွေ လေထဲမှာ ပျံ့နှံ့နေပြီး ဆုတောင်းသံတွေကလည်း တိတ်တဆိတ် လေပြေအေးနဲ့အတူ ပေါ်လွင်နေပါတယ်။ အောက်ဘက်မြို့တော်ကတော့ ခဏတာ ငြိမ်သက်သလို ဖြစ်နေပြီး အချိန်တစ်ခဏ ရပ်တန့်သွားသလို အေးချမ်းမှုတစ်ခုနဲ့ ဖုံးလွှမ်းနေပါတယ်။"
+                }
+            },
+            {
+                bg: 'kantawgyi',
+                text: {
+                    en: "By Kandawgyi Lake, water mirrors clouds and rooftops. The Karaweik floats gently, footsteps fade along the wooden path, and a soft breeze carries distant city sounds. Peace lingers quietly beneath the open sky.",
+                    mm: "ကန်တော်ကြီးကန်ဘေးမှာ ရေပြင်က မိုးတိမ်တွေနဲ့ အဆောက်အဦးတွေကို ပြန်လည်ထင်ဟပ်စေပြီး လေပြေအေးလေးနဲ့အတူ တိတ်ဆိတ်စွာ လှုပ်ရှားနေပါတယ်။ ကရဝိက်ရေယာဉ်က ရေပြင်ပေါ်မှာ ငြိမ်သက်စွာ လွင့်မျောနေပြီး သစ်သားလမ်းလေးပေါ်မှာ လမ်းလျှောက်သံတွေ၊ မြို့ရဲ့အသံဝေးဝေးလေးတွေ လေပြေအေးနဲ့အတူ ကြားနေရပြီး အေးချမ်းမှုတစ်ခုကတော့ မိုးကောင်းကင်အောက်မှာ တိတ်တဆိတ် ဆက်လက်ရှိနေပါတယ်။"
+                }
+            }
+            
+                        
+        ],
+        choices: [
+            { text: { en: "Continue", mm: "ရှေ့ဆက်မည်" }, next: 'alarm' },
+        ]
+        },
+
+        'alarm': {
+            bg: 'home_tayza',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:01 AM',
+            steps: [
+            {
+                bg: 'home_tayza',
+                audio: 'morning_chant',
+                text: {
+                    en: "...",
+                    mm: "..."
+                }
+            },
+            {
+                bg: 'alarm',
+                audio: { id: 'alarm', loop: true },
+                text: {
+                    en: "*The alarm is ringing*",
+                    mm: "*နှိုးစက်အသံမြည်သည်*"
+                }
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Close the Alarm", mm: "နှိုးစက်ပိတ်မည်" }, next: 'intro-tayza' },
+        ]
+        },
+
+        'intro-tayza': {
+            bg: 'sleep_tayza',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:01 AM',
+            steps: [
+            {
+                bg: 'sleep_tayza',
+                audio: { id: 'yawn', loop: false },
+                unlock: ['home'],
+                text: {
+                    en: "Wahhhhh...",
+                    mm: "၀ါးးးးးးးး"
+                }
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Sleep for a while", mm: "ခဏလောက် ပြန်အိပ်လိုက်မယ်" }, next: 'alarm' },
+            { text: { en: "Wake up", mm: "အိပ်ရာထမည်" }, next: 'wakeup-tayza' },
+        ]
+        },
+
+        'wakeup-tayza': {
+            bg: 'wakeup_tayza',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:05 AM',
+            steps: [
+            {
+                bg: 'wakeup_tayza',
+                audio: { id: 'oldfan', loop: true },
+                speaker: SPEAKERS.unknown, text: {en: "Another morning.", mm: "နောက်ထပ် မနက်ခင်းတစ်ခု..."}
+            },
+            {
+                bg: 'oldfan',
+                speaker: SPEAKERS.unknown, text: {en: "The fan spins lazily overhead, counting seconds I don't have.", mm: "ပန်ကာက ခေါင်းပေါ်မှာဖြေးညှင်းစွာ လည်ပတ်ရင်း ကျွန်တော့်ကတော့ ကုန်ဆုံးသွားတဲ့ အချိန်တွေကို ရေတွက်နေမိတယ်။"}
+            },
+            {
+                speaker: SPEAKERS.unknown, text: {en: "The sun is already burning through the curtains. I hate the heat.", mm: "နေရောင်က လိုက်ကာတွေကို ဖောက်ပြီး ပူလောင်နေပြီ။ ဒီအပူဒဏ်ကို ကျွန်တော်မုန်းတယ်။"},
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Check the phone", mm: "ဖုန်းကြည့်မယ်" }, next: 'missedcall' },
+        ]
+        },
+
+        'missedcall': {
+            bg: 'missedcall',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:05 AM',
+            steps: [
+            {
+                bg: 'missedcall',
+                speaker: SPEAKERS.unknown, text: {en: "I check my phone. 14 missed calls from 'Mom'. She is in the kitchen downstairs. This is how our house works.", mm: "ဖုန်းကို စစ်ကြည့်လိုက်တယ်။ အမေဆီက Missed Call ၁၄ ခု။ အမေက အိမ်အောက်ထပ် မီးဖိုချောင်မှာ ရှိနေတာကိုတောင် ဖုန်းဆက်နေတုန်းပဲ။"},
+            },
+            {
+                speaker: SPEAKERS.unknown, text: {en: "The pressure starts before I even leave the bed.", mm: "အိပ်ရာမထခင်ကတည်းက ဖိအားတွေက စတင်နေပြီ။"},
+            },
+            {
+                speaker: SPEAKERS.tayza, text: {en: "My name is Tayza, I am 21 years old and an IT student at Info Myanmar University in Yangon, currently preparing for my upcoming final exam while trying my best to make my family proud.", mm: "ကျွန်တော့်နာမည် 'တေဇ' ပါ၊ အသက်ကတော့ ၂၁ နှစ်ပြည့်ပြီး လက်ရှိမှာတော့ ရန်ကုန်မြို့ရှိ Info Myanmar University မှ IT ကျောင်းသားတစ်ယောက်ဖြစ်ကာ လာမည့် နောက်ဆုံးစာမေးပွဲအတွက် ကြိုးစားလေ့လာရင်း မိသားစုကို ဂုဏ်ယူစေချင်နေသူတစ်ယောက်ဖြစ်ပါတယ်။"},
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Rush downstairs", mm: "အောက်ထပ်ကို အမြန်ဆင်းမယ်" }, next: 'kitchen' },
+            { text: { en: "Stay in bed for 5 more minutes.", mm: "၅ မိနစ်လောက် ဆက်လှဲနေမယ်" }, next: 'alarm' },
+        ]
+        },
+
+        'kitchen': {
+            bg: 'stair',
+            world: 'real',
+            location: { en: 'Home - Kitchen', mm: 'အိမ် - မီးဖိုချောင်' },
+            time: '07:15 AM',
+            steps: [
+            {
+                bg: 'stair',
+                audio: 'stair',
+                text: {en: "*foot steps*", mm: "*ခြေသံ*"},
+            },
+            {
+                bg: 'livingroom',
+                audio: 'kitchen',
+                speaker: SPEAKERS.unknown, text: {en: "Mom, I'm awake.", mm: "အမေ..သားနိုးပါပြီ။"},
+            },
+            {
+                bg: 'livingroom',
+                speaker: SPEAKERS.unknown, text: {en: "Tayza! Why are you late? Do you want to be late for school?", mm: "တေဇ.. သားငယ်လေး.. ဘာလို့ နောက်ကျနေတာလဲ။ ကျောင်းနောက်ကျချင်နေတာလား။"},
+            },
+            {
+                speaker: SPEAKERS.tayza, text: {en: "I was studying late last night, Mom.", mm: "ညက စာကြည့်တာ နောက်ကျသွားလို့ပါ အမေ။"},
+            },
+            {
+
+                bg: 'kitchen',
+                speaker: SPEAKERS.tayza, text: {en: "So… this is my mother, Daw Mya Thandar. She’s 55, works at an office, and somehow still finds the energy to take care of all of us. She doesn’t say much about her worries… but I know she prays for me every single day. Even when I act like I don’t notice.", mm: "ဒါကတော့ ကျွန်တော့်အမေ ဒေါ်မြသန္တာပါ။ အသက် ၅၅ နှစ်ရှိပြီး ရုံးမှာ အလုပ်လုပ်တယ်။ အလုပ်ပင်ပန်းပေမယ့် မိသားစုကို ဂရုစိုက်ဖို့ အမြဲ အင်အားရှိနေသလိုပဲ။ သူမက စိုးရိမ်မှုတွေကို မပြောတတ်ဘူး… ဒါပေမယ့် နေ့တိုင်း ကျွန်တော်အတွက် ဆုတောင်းပေးနေတာကို ကျွန်တော် သိပါတယ်။ မသိသလိုလုပ်နေပေမယ့်လည်း…"},
+            },
+            {
+                speaker: SPEAKERS.mom, text: {en: "After taking care of your skin, face, and teeth, have breakfast, Tayza. You're ready to eat.", mm: "သား..တေဇ ..မျက်နှာသစ်သွားတိုက်ပြီး မနက်စာ လာစားတော့.. စားလို့ရပြီ။"},
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Sit at table", mm: "ခုံမှာထိုင်မယ်" }, next: 'kitchen' },
+            { text: { en: "Go outside", mm: "အပြင်ထွက်မယ်" }, next: 'alarm' },
+        ]
+        },
+
+
+    };
+
+    // --- BOOTSTRAP ---
+    const game = new GameEngine();
+    
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+</script>
+    </body>
 </html>
