@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>The Ring Between Two Yangons - Director's Cut</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&family=Noto+Sans+Myanmar:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+        :root {
+            --bg-real: #fdf6e3;
+            --bg-parallel: #0f172a;
+        }
+
+        body {
+            font-family: 'Lato', 'Noto Sans Myanmar', sans-serif;
+            overflow: hidden;
+            background-color: #050505;
+            color: #e2e8f0;
+        }
+
+        /* --- VISUAL FX ENGINE V5 --- */
+        .world-real { filter: sepia(0.15) saturate(1.1) contrast(1.05); transition: filter 3s ease-in-out; }
+        .world-parallel { filter: hue-rotate(210deg) saturate(0.4) contrast(1.4) brightness(0.7) drop-shadow(0 0 20px rgba(0,100,255,0.1)); transition: filter 3s ease-in-out; }
+        .world-collapse { animation: glitch-anim 0.1s infinite; filter: contrast(1.5) grayscale(1); }
+        .world-dream { filter: blur(1px) brightness(1.2) saturate(1.5); transition: filter 3s ease; }
+        .world-flash { animation: flash-anim 0.5s ease-out; }
+
+        @keyframes panZoom {
+            0% { transform: scale(1.0) translate(0, 0); }
+            50% { transform: scale(1.1) translate(-1%, 1%); }
+            100% { transform: scale(1.0) translate(0, 0); }
+        }
+        .camera-move { animation: panZoom 60s infinite ease-in-out alternate; }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-3px, 3px) }
+            40% { transform: translate(-3px, -3px) }
+            60% { transform: translate(3px, 3px) }
+            80% { transform: translate(3px, -3px) }
+            100% { transform: translate(0) }
+        }
+
+        @keyframes flash-anim {
+            0% { background-color: white; opacity: 1; }
+            100% { background-color: transparent; opacity: 0; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .fade-in { animation: fadeIn 1s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* UI Elements */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 3px;
+            position: absolute; inset: 0; pointer-events: none; z-index: 50; opacity: 0.3;
+        }
+        
+        .vignette {
+            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.95) 100%);
+            position: absolute; inset: 0; pointer-events: none; z-index: 40;
+        }
+
+        .dialogue-box {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(0, 0, 0, 1) 100%);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 -20px 60px rgba(0,0,0,0.9);
+        }
+
+        .choice-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border-left: 3px solid #64748b;
+        }
+        .choice-btn:hover {
+            transform: translateX(8px);
+            background: linear-gradient(90deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 1) 100%);
+            border-left-color: #eab308;
+            box-shadow: -5px 0 15px rgba(234, 179, 8, 0.1);
+        }
+
+        /* Typewriter Cursor */
+        .cursor::after { content: '▋'; animation: blink 1s infinite; color: #eab308; margin-left: 2px;}
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Inventory Item Styles */
+        .inv-item { transition: transform 0.2s; }
+        .inv-item:hover { transform: scale(1.05); border-color: #eab308; }
+        
+        /* Custom Scroll */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #eab308; border-radius: 4px; }
+
+        /* Phone UI */
+        .phone-screen {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            font-family: 'Lato', sans-serif;
+        }
+    </style>
+    </head>
+    <body class="text-white h-screen w-screen relative select-none bg-black">
+
+        <div id="game-container" class="relative w-full h-full overflow-hidden">
+
+            <!-- Background System -->
+            <div id="background-wrapper"
+                class="absolute inset-0 overflow-hidden bg-black">
+                <div id="background-layer"
+                    class="w-full h-full bg-cover bg-center transition-all duration-1000 camera-move opacity-60"></div>
+                <!-- Dynamic Overlay for Mood -->
+                <div id="mood-layer"
+                    class="absolute inset-0 bg-black/30 mix-blend-overlay transition-colors duration-1000"></div>
+            </div>
+
+            <!-- Atmospheric Overlays -->
+            <div class="scanlines"></div>
+            <div class="vignette"></div>
+            <div id="rain-layer"
+                class="absolute inset-0 pointer-events-none hidden bg-[url('https://i.gifer.com/7scx.gif')] opacity-20 bg-cover mix-blend-screen z-30"></div>
+            <div id="flash-layer"
+                class="absolute inset-0 bg-white opacity-0 pointer-events-none z-50"></div>
+
+            <!-- Character Layer -->
+            <div id="character-layer"
+                class="absolute inset-0 flex items-end justify-center pointer-events-none z-20 pb-0 transition-transform duration-700 translate-y-10 opacity-0">
+                <!-- Sprites injected via JS -->
+            </div>
+
+            <!-- UI Layer -->
+            <div id="ui-layer"
+                class="absolute inset-0 z-50 flex flex-col justify-between p-4 md:p-8 hidden">
+
+                <!-- Top HUD -->
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-2">
+                        <!-- Location Tag -->
+                        <div id="location-tag"
+                            class="bg-black/80 text-yellow-500 px-4 py-2 border-l-4 border-yellow-600 font-cinzel tracking-widest text-xs md:text-sm uppercase backdrop-blur-md shadow-lg flex items-center gap-3">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            <div>
+                                <span id="location-text"
+                                    class="block font-bold">YANGON</span>
+                                <span id="time-text"
+                                    class="text-[10px] text-gray-400 font-sans tracking-normal">DAY
+                                    1 - 08:00 AM</span>
+                            </div>
+                        </div>
+
+                        <!-- Audio Status -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="game.audio.toggle()"
+                                class="bg-black/50 p-2 rounded-full hover:bg-white/10 transition">
+                                <i id="audio-icon" data-lucide="volume-2"
+                                    class="w-3 h-3 text-gray-400"></i>
+                            </button>
+                            <div id="music-tag"
+                                class="text-[10px] text-gray-500 font-mono opacity-0 transition-opacity duration-1000">
+                                Now Playing: <span id="music-name"
+                                    class="text-yellow-600">Silence</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats & Menu -->
+                    <div class="flex flex-col items-end gap-3">
+                        <div class="flex gap-2">
+                            <button onclick="game.toggleLang()"
+                                class="bg-gray-800/80 hover:bg-gray-700 border border-gray-600 text-gray-300 px-3 py-1 text-xs font-bold rounded backdrop-blur transition-all w-24">
+                                <span id="lang-btn">မြန်မာ</span>
+                            </button>
+                            <button onclick="game.showPhone()"
+                                class="bg-gray-800/80 hover:bg-gray-700 border border-gray-600 text-gray-300 px-3 py-1 text-xs font-bold rounded backdrop-blur transition-all">
+                                <i data-lucide="smartphone" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="game.showInventory()"
+                                class="bg-gray-800/80 hover:bg-gray-700 border border-gray-600 text-gray-300 px-3 py-1 text-xs font-bold rounded backdrop-blur transition-all">
+                                <i data-lucide="backpack" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="game.saveGameManual()"
+                                class="bg-gray-800/80 hover:bg-gray-700 border border-gray-600 text-gray-300 px-3 py-1 text-xs font-bold rounded backdrop-blur transition-all">
+                                <i data-lucide="save" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        <!-- Compact Stats -->
+                        <div
+                            class="bg-black/60 p-3 rounded-lg border border-gray-800/50 backdrop-blur-md w-48 space-y-2">
+                            <div
+                                class="flex justify-between text-[10px] text-gray-400 uppercase tracking-wider">
+                                <span>Sanity (စိတ်ခွန်အား)</span>
+                                <span id="val-sanity">100%</span>
+                            </div>
+                            <div
+                                class="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
+                                <div id="bar-sanity"
+                                    class="h-full bg-blue-500 transition-all duration-500"
+                                    style="width: 100%"></div>
+                            </div>
+
+                            <div
+                                class="flex justify-between text-[10px] text-gray-400 uppercase tracking-wider mt-1">
+                                <span>Reality Anchor</span>
+                                <span id="val-life">Unknown</span>
+                            </div>
+                            <div
+                                class="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
+                                <div id="bar-life"
+                                    class="h-full bg-purple-500 transition-all duration-500"
+                                    style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interaction Area -->
+                <div class="mt-auto w-full max-w-5xl mx-auto space-y-4">
+
+                    <!-- Dynamic Choices -->
+                    <div id="choices-container"
+                        class="flex flex-col gap-2 items-center mb-4 transition-all duration-500 min-h-[50px] max-h-[40vh] overflow-y-auto pr-2 custom-scroll">
+                        <!-- Buttons injected here -->
+                    </div>
+
+                    <!-- Dialogue Box -->
+                    <div id="dialogue-box"
+                        class="dialogue-box rounded-xl p-6 md:p-8 relative min-h-[200px] cursor-pointer group transition-all duration-300 hover:border-white/20"
+                        onclick="game.next()">
+
+                        <!-- Speaker Tag -->
+                        <div class="absolute -top-4 left-6 md:left-10 z-10">
+                            <div id="speaker-box"
+                                class="bg-gray-900 px-6 py-1.5 text-sm font-bold tracking-widest text-white uppercase transform skew-x-[-12deg] shadow-[0_5px_15px_rgba(0,0,0,0.5)] border-l-4 border-yellow-500 hidden">
+                                <span id="speaker-name"
+                                    class="transform skew-x-[12deg] inline-block font-noto">NAME</span>
+                            </div>
+                        </div>
+
+                        <!-- Text -->
+                        <p id="dialogue-text"
+                            class="text-lg md:text-xl md:leading-9 text-gray-200 font-medium tracking-wide font-noto cursor relative z-0">
+                            <!-- Typewriter text -->
+                        </p>
+
+                        <!-- Indicator -->
+                        <div
+                            class="absolute bottom-4 right-4 text-yellow-500 opacity-0 transition-opacity duration-300"
+                            id="next-indicator">
+                            <div
+                                class="animate-bounce flex flex-col items-center">
+                                <span
+                                    class="text-[10px] uppercase tracking-widest opacity-50 mb-1">Next</span>
+                                <i data-lucide="chevron-down"
+                                    class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Overlay -->
+            <div id="inventory-overlay"
+                class="absolute inset-0 z-[70] bg-black/95 hidden flex-col items-center justify-center p-8 backdrop-blur-xl">
+                <div
+                    class="bg-[#1a1a1a] w-full max-w-2xl h-[70vh] border border-gray-700 p-8 rounded shadow-2xl relative">
+                    <button
+                        onclick="document.getElementById('inventory-overlay').classList.add('hidden')"
+                        class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                    <h2
+                        class="text-2xl font-cinzel text-yellow-500 mb-6 border-b border-gray-700 pb-2 flex items-center gap-2">
+                        <i data-lucide="backpack"></i> INVENTORY (ပစ္စည်းများ)
+                    </h2>
+                    <div id="inventory-grid" class="grid grid-cols-3 gap-4">
+                        <!-- Items go here -->
+                    </div>
+                    <div
+                        class="mt-8 text-sm text-gray-500 italic font-noto text-center"
+                        id="inv-desc">Hover over an item to inspect.</div>
+                </div>
+            </div>
+
+            <!-- Phone Overlay -->
+            <div id="phone-overlay"
+                class="absolute inset-0 z-[70] bg-black/80 hidden flex-col items-center justify-center p-4 backdrop-blur-md">
+                <div
+                    class="phone-screen w-[320px] h-[600px] rounded-[30px] border-8 border-gray-800 relative overflow-hidden shadow-2xl">
+                    <div
+                        class="absolute top-0 w-full h-8 bg-black/50 z-10 flex justify-between px-4 items-center text-[10px]">
+                        <span>MPT 4G</span>
+                        <span id="phone-clock">10:00 PM</span>
+                    </div>
+                    <div class="pt-12 px-4 h-full overflow-y-auto pb-10"
+                        id="phone-messages">
+                        <div class="bg-gray-800 p-3 rounded-lg mb-2 text-xs">
+                            <div class="font-bold text-blue-400">Mom</div>
+                            <div class="text-gray-300">Come home early. Don't go
+                                to the Pagoda late at night.</div>
+                        </div>
+                    </div>
+                    <button
+                        onclick="document.getElementById('phone-overlay').classList.add('hidden')"
+                        class="absolute bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/50 rounded-full"></button>
+                </div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="start-screen"
+                class="absolute inset-0 z-[80] flex flex-col items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1596556554483-2079c6131496?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center">
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black"></div>
+
+                <div
+                    class="relative z-10 text-center space-y-6 animate-fadeIn max-w-4xl">
+                    <div
+                        class="text-yellow-500 tracking-[0.5em] text-xs uppercase font-bold border-b border-yellow-500/30 pb-4 inline-block mb-4">
+                        Director's Cut • Extended Edition
+                    </div>
+                    <h1
+                        class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-800 title-font drop-shadow-2xl leading-tight">
+                        THE RING BETWEEN<br>TWO YANGONS
+                    </h1>
+                    <h2
+                        class="text-2xl md:text-4xl text-gray-200 font-noto font-bold mt-2 drop-shadow-md">
+                        ရန်ကုန်နှစ်မြို့ကြားက လက်စွပ်
+                    </h2>
+                    <p
+                        class="text-gray-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed pt-6 font-noto border-l-2 border-yellow-600/50 pl-6 text-left italic">
+                        "There is a Yangon of Gold, and a Yangon of Echoes. One is built on faith, the other on regret. Be careful which one you wake up in."
+                    </p>
+
+                    <div class="pt-12 flex gap-4 justify-center">
+                        <button onclick="game.init()"
+                            class="group relative px-10 py-4 bg-yellow-600/10 border border-yellow-500/50 text-yellow-100 uppercase tracking-widest text-sm hover:bg-yellow-600 hover:text-black transition-all duration-500 backdrop-blur-md shadow-[0_0_30px_rgba(234,179,8,0.1)] overflow-hidden rounded-sm">
+                            <span
+                                class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-80 group-hover:h-80 opacity-10"></span>
+                            <span
+                                class="relative flex items-center gap-3 font-bold">
+                                NEW GAME / ဂိမ်းအသစ်
+                            </span>
+                        </button>
+                        <button onclick="game.loadGame()" id="load-btn"
+                            class="hidden group relative px-10 py-4 bg-gray-800/50 border border-gray-500/50 text-gray-300 uppercase tracking-widest text-sm hover:bg-gray-700 hover:text-white transition-all duration-500 backdrop-blur-md overflow-hidden rounded-sm">
+                            <span
+                                class="relative flex items-center gap-3 font-bold">
+                                CONTINUE / ဆက်လက်
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+    // --- ASSETS DATABASE ---
+    const ASSETS = {
+        bg: {
+            intro_wide: "https://images.unsplash.com/photo-1596556554483-2079c6131496?q=80&w=2000&auto=format&fit=crop",
+            tea_shop: "https://images.unsplash.com/photo-1595306563690-36a537c35817?q=80&w=2000&auto=format&fit=crop", 
+            imu_campus: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2000&auto=format&fit=crop",
+            imu_class: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2000&auto=format&fit=crop",
+            imu_library: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=2000&auto=format&fit=crop",
+            bedroom_day: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=2000&auto=format&fit=crop",
+            bedroom_night: "https://images.unsplash.com/photo-1555529733-14637d7e35b0?q=80&w=2000&auto=format&fit=crop",
+            shwedagon_dusk: "https://images.unsplash.com/photo-1627638637508-b11296cb3485?q=80&w=2000&auto=format&fit=crop",
+            hospital_exterior: "https://images.unsplash.com/photo-1587351021759-3e566b9af923?q=80&w=2000&auto=format&fit=crop",
+            hospital_corridor: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop",
+            icu_room: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2000&auto=format&fit=crop",
+            ybs_bus: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=2000&auto=format&fit=crop",
+            traffic_jam: "https://images.unsplash.com/photo-1566231267425-467438461233?q=80&w=2000&auto=format&fit=crop",
+            monastery: "https://images.unsplash.com/photo-1567195433606-2cb639433236?q=80&w=2000&auto=format&fit=crop",
+            kitchen: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2000&auto=format&fit=crop",
+
+            echo_bedroom: "https://images.unsplash.com/photo-1483827599238-d890bf255f9a?q=80&w=2000&auto=format&fit=crop",
+            echo_hallway: "https://images.unsplash.com/photo-1519226612673-73c0234437ef?q=80&w=2000&auto=format&fit=crop",
+            echo_shwedagon: "https://images.unsplash.com/photo-1582092790924-f584e1b8c63f?q=80&w=2000&auto=format&fit=crop",
+            echo_streets: "https://images.unsplash.com/photo-1542259681-d3d63b9f3689?q=80&w=2000&auto=format&fit=crop",
+            echo_library: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop",
+            echo_void: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2000&auto=format&fit=crop",
+            black: ""
+        },
+        audio: {
+            intro: "https://pixabay.com/sound-effects/film-special-effects-slow-cinematic-clock-ticking-357979/",
+            creepy: "https://cdn.pixabay.com/download/audio/2022/10/25/audio_1452140409.mp3",
+            heartbeat: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_55a2976374.mp3",
+            rain: "https://cdn.pixabay.com/download/audio/2021/09/06/audio_097486e923.mp3",
+            school: "https://cdn.pixabay.com/download/audio/2022/03/09/audio_c8c8a73467.mp3",
+            traffic: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_1976f9c96c.mp3",
+            chant: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_227f305335.mp3"
+        }
+    };
+
+    // --- GAME ENGINE ---
+    class GameEngine {
+        constructor() {
+            this.state = {
+                stats: { sanity: 100, trust: 0, life: 50, knowledge: 0 },
+                flags: {},
+                inventory: [],
+                messages: [],
+                day: 1,
+                sceneId: 'start',
+                lang: 'mm'
+            };
+            this.typingSpeed = 20;
+            this.isTyping = false;
+            this.sceneData = null;
+            this.dialogueIndex = 0;
+            this.audio = new AudioController();
+            
+            if(localStorage.getItem('ringGameSave_V5')) {
+                document.getElementById('load-btn').classList.remove('hidden');
+            }
+        }
+
+        init() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('ui-layer').classList.remove('hidden');
+            document.getElementById('ui-layer').classList.add('flex');
+            lucide.createIcons();
+            this.loadScene('prologue_1_bed');
+            this.audio.play('intro');
+            this.addMessage("Mom", "Where are you? Come home early.");
+        }
+
+        saveGameManual() {
+            localStorage.setItem('ringGameSave_V5', JSON.stringify(this.state));
+            const btn = document.querySelector('button[onclick="game.saveGameManual()"]');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="check" class="text-green-400"></i>';
+            lucide.createIcons();
+            setTimeout(() => { btn.innerHTML = originalHTML; lucide.createIcons(); }, 1000);
+        }
+
+        loadGame() {
+            const save = localStorage.getItem('ringGameSave_V5');
+            if (save) {
+                this.state = JSON.parse(save);
+                document.getElementById('start-screen').classList.add('hidden');
+                document.getElementById('ui-layer').classList.remove('hidden');
+                document.getElementById('ui-layer').classList.add('flex');
+                this.loadScene(this.state.sceneId);
+            }
+        }
+
+        toggleLang() {
+            this.state.lang = this.state.lang === 'mm' ? 'en' : 'mm';
+            document.getElementById('lang-btn').innerText = this.state.lang === 'mm' ? "မြန်မာ" : "ENGLISH";
+            if (!this.isTyping && this.sceneData) this.renderStep(true);
+        }
+
+        updateStats() {
+            const s = this.state.stats;
+            document.getElementById('val-sanity').innerText = s.sanity + "%";
+            document.getElementById('bar-sanity').style.width = s.sanity + "%";
+            document.getElementById('bar-sanity').className = `h-full transition-all duration-500 ${s.sanity < 30 ? 'bg-red-600 animate-pulse' : 'bg-blue-500'}`;
+            
+            document.getElementById('val-life').innerText = this.state.flags.knowHerCondition ? s.life + "%" : "Unknown";
+            document.getElementById('bar-life').style.width = this.state.flags.knowHerCondition ? s.life + "%" : "0%";
+        }
+
+        addItem(id, nameEn, nameMm, icon, descEn, descMm) {
+            if (!this.state.inventory.find(i => i.id === id)) {
+                this.state.inventory.push({ id, nameEn, nameMm, icon, descEn, descMm });
+                this.flashEffect();
+            }
+        }
+
+        addMessage(sender, text) {
+            this.state.messages.push({sender, text});
+        }
+
+        showInventory() {
+            const ov = document.getElementById('inventory-overlay');
+            ov.classList.remove('hidden');
+            ov.classList.add('flex');
+            const grid = document.getElementById('inventory-grid');
+            grid.innerHTML = '';
+            
+            if (this.state.inventory.length === 0) {
+                grid.innerHTML = '<div class="col-span-3 text-center text-gray-500">Empty / ဘာမှမရှိပါ</div>';
+                return;
+            }
+
+            this.state.inventory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'inv-item border border-gray-600 bg-gray-800 p-4 rounded flex flex-col items-center gap-2 cursor-pointer relative group';
+                div.innerHTML = `
+                    <i data-lucide="${item.icon}" class="w-8 h-8 text-yellow-500"></i>
+                    <span class="text-xs text-center font-bold text-gray-300 group-hover:text-white">${this.state.lang === 'mm' ? item.nameMm : item.nameEn}</span>
+                `;
+                div.onclick = () => {
+                    document.getElementById('inv-desc').innerText = this.state.lang === 'mm' ? item.descMm : item.descEn;
+                };
+                grid.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        showPhone() {
+            const ov = document.getElementById('phone-overlay');
+            ov.classList.remove('hidden');
+            ov.classList.add('flex');
+            const list = document.getElementById('phone-messages');
+            list.innerHTML = '';
+            this.state.messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = 'bg-gray-800 p-3 rounded-lg mb-2 text-xs border-l-2 border-blue-500';
+                div.innerHTML = `<div class="font-bold text-blue-400 mb-1">${msg.sender}</div><div class="text-gray-300">${msg.text}</div>`;
+                list.appendChild(div);
+            });
+        }
+
+        loadScene(id) {
+            console.log("Loading Scene:", id);
+            this.state.sceneId = id;
+            this.sceneData = SCENES[id];
+            this.dialogueIndex = 0;
+
+            const bgLayer = document.getElementById('background-layer');
+            const url = ASSETS.bg[this.sceneData.bg] || ASSETS.bg.black;
+            bgLayer.style.opacity = '0';
+            setTimeout(() => {
+                bgLayer.style.backgroundImage = `url('${url}')`;
+                bgLayer.style.opacity = this.sceneData.darken ? '0.3' : '0.6';
+            }, 500);
+
+            if (this.sceneData.audio) this.audio.play(this.sceneData.audio);
+
+            const body = document.body;
+            body.className = "text-white h-screen w-screen relative select-none bg-black transition-colors duration-1000";
+            if (this.sceneData.world) body.classList.add(`world-${this.sceneData.world}`);
+
+            if (this.sceneData.location) {
+                document.getElementById('location-text').innerText = this.sceneData.location.en; 
+                document.getElementById('time-text').innerText = `DAY ${this.state.day} - ${this.sceneData.time || 'UNKNOWN'}`;
+            }
+
+            this.updateStats();
+            this.renderStep();
+            this.saveGameManual();
+        }
+
+        renderStep(instant = false) {
+            const step = this.sceneData.steps[this.dialogueIndex];
+            if (!step) return;
+
+            const speakerBox = document.getElementById('speaker-box');
+            const speakerName = document.getElementById('speaker-name');
+            const spk = step.speaker ? (step.speaker[this.state.lang] || step.speaker.en) : null;
+            
+            if (spk) {
+                speakerBox.classList.remove('hidden');
+                speakerName.innerText = spk;
+                speakerBox.className = `px-6 py-1.5 text-sm font-bold tracking-widest text-white uppercase transform skew-x-[-12deg] shadow-lg border-l-4 ${step.speaker.color || 'bg-gray-800 border-gray-500'}`;
+            } else {
+                speakerBox.classList.add('hidden');
+            }
+
+            const charLayer = document.getElementById('character-layer');
+            if (step.char) {
+                charLayer.innerHTML = this.getCharHTML(step.char);
+                charLayer.classList.remove('opacity-0', 'translate-y-10');
+            } else if (step.clearChar) {
+                charLayer.classList.add('opacity-0', 'translate-y-10');
+            }
+
+            const textBox = document.getElementById('dialogue-text');
+            const text = step.text[this.state.lang] || step.text.en;
+            const choicesDiv = document.getElementById('choices-container');
+            const nextInd = document.getElementById('next-indicator');
+
+            choicesDiv.innerHTML = '';
+            nextInd.style.opacity = '0';
+
+            if (instant) {
+                textBox.innerText = text;
+                this.isTyping = false;
+                textBox.classList.remove('cursor');
+                if (this.isLastStep()) this.renderChoices();
+                else nextInd.style.opacity = '1';
+                return;
+            }
+
+            textBox.innerText = '';
+            textBox.classList.add('cursor');
+            this.isTyping = true;
+            let i = 0;
+
+            const tick = () => {
+                if (i < text.length) {
+                    textBox.innerText += text.charAt(i);
+                    i++;
+                    setTimeout(tick, this.typingSpeed);
+                } else {
+                    this.isTyping = false;
+                    textBox.classList.remove('cursor');
+                    if (this.isLastStep()) this.renderChoices();
+                    else nextInd.style.opacity = '1';
+                }
+            };
+            tick();
+        }
+
+        isLastStep() {
+            return this.dialogueIndex === this.sceneData.steps.length - 1 && this.sceneData.choices;
+        }
+
+        renderChoices() {
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+
+            this.sceneData.choices.forEach(c => {
+                if (c.req && !c.req(this.state)) return; 
+
+                const btn = document.createElement('button');
+                btn.className = "choice-btn w-full max-w-3xl p-4 text-left text-gray-200 rounded-r-lg mb-2 relative overflow-hidden group";
+                
+                const txt = c.text[this.state.lang] || c.text.en;
+                
+                btn.innerHTML = `
+                    <div class="relative z-10 flex justify-between items-center">
+                        <span class="font-noto font-bold text-sm md:text-base">${txt}</span>
+                        ${c.type === 'danger' ? '<i data-lucide="alert-triangle" class="text-red-500 w-4 h-4"></i>' : '<i data-lucide="arrow-right" class="opacity-0 group-hover:opacity-100 transition-opacity w-4 h-4 text-yellow-500"></i>'}
+                    </div>
+                `;
+
+                if (c.type === 'danger') btn.style.borderLeftColor = '#ef4444';
+
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.makeChoice(c);
+                };
+                container.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        next() {
+            if (this.isTyping) {
+                this.renderStep(true);
+                return;
+            }
+            if (document.getElementById('choices-container').children.length > 0) return;
+
+            if (this.dialogueIndex < this.sceneData.steps.length - 1) {
+                this.dialogueIndex++;
+                this.renderStep();
+            } else if (this.sceneData.nextScene) {
+                this.loadScene(this.sceneData.nextScene);
+            }
+        }
+
+        makeChoice(choice) {
+            if (choice.effect) {
+                for (const [k, v] of Object.entries(choice.effect)) {
+                    this.state.stats[k] = Math.max(0, Math.min(100, this.state.stats[k] + v));
+                }
+            }
+            if (choice.flag) this.state.flags[choice.flag] = true;
+            if (choice.item) this.addItem(choice.item.id, choice.item.en, choice.item.mm, choice.item.icon, choice.item.descEn, choice.item.descMm);
+            if (choice.next) this.loadScene(choice.next);
+        }
+
+        flashEffect() {
+            const flash = document.getElementById('flash-layer');
+            flash.style.animation = 'none';
+            flash.offsetHeight; /* trigger reflow */
+            flash.style.animation = 'flash-anim 0.5s ease-out';
+        }
+
+        getCharHTML(type) {
+            const maps = {
+                naychi: `<div class="relative w-full h-full flex justify-center items-end animate-[float_4s_ease-in-out_infinite]"><div class="w-64 h-[600px] bg-gradient-to-t from-blue-500/20 to-transparent blur-xl"></div><div class="absolute bottom-0 w-48 h-[500px] border-2 border-blue-400/30 rounded-t-full bg-black/50 backdrop-blur-sm"></div></div>`,
+                faceless: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-72 h-[700px] bg-black blur-md"></div><div class="absolute top-40 w-32 h-40 bg-gray-900 rounded-full animate-pulse"></div></div>`,
+                monk: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-64 h-[600px] bg-gradient-to-t from-orange-800/80 to-transparent"></div></div>`
+            };
+            return maps[type] || '';
+        }
+    }
+
+    class AudioController {
+        constructor() { this.active = false; this.current = null; }
+        toggle() {
+            this.active = !this.active;
+            const icon = document.getElementById('audio-icon');
+            if (this.active) {
+                icon.setAttribute('data-lucide', 'volume-2');
+                icon.classList.add('text-yellow-500');
+                if(this.current) this.play(this.current);
+            } else {
+                icon.setAttribute('data-lucide', 'volume-x');
+                icon.classList.remove('text-yellow-500');
+            }
+            lucide.createIcons();
+        }
+        play(id) {
+            this.current = id;
+            if (!this.active) return;
+            console.log("Playing audio:", id);
+        }
+    }
+
+    const SPEAKERS = {
+        unknown: { en: "???", mm: "???", color: "bg-red-900 border-red-500" },
+        tayza: { en: "Tayza", mm: "တေဇ", color: "bg-blue-900 border-blue-500" },
+        nay: { en: "Nay Chi", mm: "နေခြည်", color: "bg-purple-900 border-purple-500" },
+        mom: { en: "Mother", mm: "အမေ", color: "bg-orange-800 border-orange-500" },
+        dad: { en: "Father", mm: "အဖေ", color: "bg-orange-900 border-orange-500" },
+        bro: { en: "Ko Thiha", mm: "ကိုသီဟ", color: "bg-green-900 border-green-500" },
+        kyaw: { en: "Kyaw Gyi", mm: "ကျော်ကြီး", color: "bg-teal-800 border-teal-500" },
+        nurse: { en: "Nurse", mm: "သူနာပြု", color: "bg-pink-900 border-pink-500" },
+        guard: { en: "The Guardian", mm: "အစောင့်", color: "bg-red-900 border-red-500" },
+        driver: { en: "YBS Driver", mm: "ကားဆရာ", color: "bg-gray-800 border-gray-500" },
+        monk: { en: "Sayadaw", mm: "ဆရာတော်", color: "bg-orange-900 border-yellow-500" },
+        librarian: { en: "Librarian", mm: "စာကြည့်တိုက်မှူး", color: "bg-indigo-900 border-indigo-500" }
+    };
+
+    const SCENES = {
+        // === CHAPTER 1: THE PRESSURE ===
+        'prologue_1_bed': {
+            bg: 'bedroom_day', world: 'real', location: {en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း'}, time: '07:00 AM',
+            steps: [
+                { speaker: SPEAKERS.unknown, text: {en: "Another morning. The fan spins lazily overhead, counting seconds I don't have.", mm: "နောက်ထပ် မနက်ခင်းတစ်ခု... ပန်ကာက ခေါင်းပေါ်မှာဖြေးညှင်းစွာ လည်ပတ်ရင်း ကျွန်တော့်ကတော့ ကုန်ဆုံးသွားတဲ့ အချိန်တွေကို ရေတွက်နေတယ်။"} },
+                { speaker: SPEAKERS.unknown, text: {en: "The sun is already burning through the curtains. I hate the heat.", mm: "နေရောင်က လိုက်ကာတွေကို ဖောက်ပြီး ပူလောင်နေပြီ။ ဒီအပူဒဏ်ကို ကျွန်တော်မုန်းတယ်။"} },
+                { speaker: SPEAKERS.tayza, text: {en: "I check my phone. 14 missed calls from 'Mom'. She is in the kitchen downstairs. This is how our house works.", mm: "ဖုန်းကို စစ်ကြည့်လိုက်တယ်။ အမေဆီက Missed Call ၁၄ ခု။ အမေက အိမ်အောက်ထပ် မီးဖိုချောင်မှာ ရှိနေတာကိုတောင် ဖုန်းဆက်နေတုန်းပဲ။"} },
+                { text: {en: "The pressure starts before I even leave the bed.", mm: "အိပ်ရာမထခင်ကတည်းက ဖိအားတွေက စတင်နေပြီ။"} }
+            ],
+            choices: [
+                { text: {en: "Get up immediately.", mm: "ချက်ချင်း ထလိုက်မယ်။"}, next: 'prologue_2_kitchen', effect: {sanity: 5} },
+                { text: {en: "Check Facebook first.", mm: "Facebook ခဏသုံးမယ်။"}, next: 'prologue_phone_check' },
+                { text: {en: "Stay in bed for 5 more minutes.", mm: "၅ မိနစ်လောက် ဆက်အိပ်မယ်။"}, next: 'prologue_lazy', effect: {sanity: -5} }
+            ]
+        },
+        'prologue_phone_check': {
+            bg: 'bedroom_day', world: 'real',
+            steps: [
+                { text: {en: "News feed: 'Exam Results Delayed', 'New Mall Opening', 'Unidentified Body Found in Yangon River'.", mm: "သတင်းများ - 'စာမေးပွဲရလဒ်များ ရက်ရွှေ့ဆိုင်း', 'ကုန်တိုက်သစ် ဖွင့်လှစ်', 'ရန်ကုန်မြစ်အတွင်း အလောင်းကောင်တွေ့ရှိ'။"} },
+                { text: {en: "Just noise. Nothing matters.", mm: "အသံတွေပဲ... ဘာမှ အရေးမကြီးဘူး။"} }
+            ],
+            choices: [{ text: {en: "Go downstairs.", mm: "အောက်ထပ်ဆင်းမယ်။"}, next: 'prologue_2_kitchen' }]
+        },
+        'prologue_lazy': {
+            bg: 'bedroom_day', world: 'real',
+            steps: [
+                { text: {en: "I close my eyes. Just five minutes. I dream of falling into blue water.", mm: "မျက်လုံးပြန်မှိတ်လိုက်တယ်။ ၅ မိနစ်လေးပါပဲ။ အပြာရောင် ရေပြင်ထဲ ပြုတ်ကျသွားသလို အိပ်မက်မက်တယ်။"} },
+                { speaker: SPEAKERS.mom, text: {en: "TAYZA! ARE YOU DEAD?!", mm: "တေဇ! နင်သေနေပြီလား!"} },
+                { text: {en: "Her shout wakes me up. Now I'm late and she's angry.", mm: "အမေ့အော်သံကြောင့် လန့်နိုးလာတယ်။ အခုတော့ နောက်ကျပြီ၊ အမေလည်း စိတ်ဆိုးနေပြီ။"} }
+            ],
+            choices: [{ text: {en: "Rush downstairs.", mm: "အောက်ထပ်ကို အမြန်ဆင်းမယ်။"}, next: 'prologue_2_kitchen' }]
+        },
+        'prologue_2_kitchen': {
+            bg: 'kitchen', world: 'real', location: {en: 'Dining Room', mm: 'ထမင်းစားခန်း'}, time: '07:30 AM',
+            steps: [
+                { speaker: SPEAKERS.mom, text: {en: "Tayza! Why are you late? Do you want to fail the exam?", mm: "တေဇ! ဘာလို့ နောက်ကျနေတာလဲ။ စာမေးပွဲကျချင်နေတာလား။"} },
+                { speaker: SPEAKERS.tayza, text: {en: "I was studying late last night, Mom.", mm: "ညက စာကြည့်တာ နောက်ကျသွားလို့ပါ အမေ။"} },
+                { text: {en: "She puts a bowl of Mohinga in front of me. It's hot. Comfort food served with a side of guilt.", mm: "မုန့်ဟင်းခါး တစ်ပွဲ လာချပေးတယ်။ ပူပူလောင်လောင်နဲ့... အပြစ်ရှိစိတ်တွေပါ ရောနယ်ထားသလိုပဲ။"} },
+                { speaker: SPEAKERS.bro, text: {en: "Look at him. Eyes like a panda. You sure you're studying?", mm: "ကြည့်ပါဦး... မျက်ကွင်းတွေက ပန်ဒါကျနေတာပဲ။ စာကြည့်တာ သေချာလို့လား၊ ဂိမ်းဆော့နေတာ မဟုတ်ဘူးလား။"} }
+            ],
+            choices: [
+                { text: {en: "Eat silently and leave.", mm: "တိတ်တိတ်လေး စားပြီး ထွက်သွားမယ်။"}, next: 'prologue_3_bus' },
+                { text: {en: "Defend yourself.", mm: "ပြန်ပြောမယ်။"}, next: 'prologue_2_argument', effect: {sanity: -10} },
+                { text: {en: "Ask Brother for advice.", mm: "အစ်ကို့ကို အကြံတောင်းမယ်။"}, next: 'prologue_2_advice', effect: {trust: 5} }
+            ]
+        },
+        'prologue_2_argument': {
+            bg: 'kitchen', world: 'real',
+            steps: [
+                { speaker: SPEAKERS.tayza, text: {en: "I'm top of my class, Ko Thiha. I don't need your sarcasm.", mm: "ကျွန်တော် အတန်းထဲမှာ ထိပ်ဆုံးပါ ကိုသီဟ။ အစ်ကို့ရဲ့ ခနဲ့တဲ့တဲ့ စကားတွေ မလိုဘူး။"} },
+                { speaker: SPEAKERS.dad, text: {en: "Enough! Eat. Go to school.", mm: "တော်ကြတော့! စား... ပြီးရင် ကျောင်းသွား။"} },
+                { text: {en: "The room goes silent. The clock ticks loudly.", mm: "တခန်းလုံး တိတ်သွားတယ်။ နာရီသံက ကျယ်လောင်နေတယ်။"} }
+            ],
+            choices: [{ text: {en: "Leave.", mm: "ထွက်သွားမယ်။"}, next: 'prologue_3_bus' }]
+        },
+        'prologue_2_advice': {
+            bg: 'kitchen', world: 'real',
+            steps: [
+                { speaker: SPEAKERS.tayza, text: {en: "How did you handle the pilot exams? The stress is killing me.", mm: "အကို လေယာဉ်မှူး စာမေးပွဲဖြေတုန်းက ဘယ်လို ဖြေရှင်းခဲ့လဲ။ ကျွန်တော်တော့ စာမေးပွဲကြောင့်စိတ်ဖိစီးလွန်းလို့ ရှောတော့မယ်။"} },
+                { speaker: SPEAKERS.bro, text: {en: "I focused on the destination, not the turbulence. Relax, little brother.", mm: "လေယာဥ်မောင်းရင် လေယာဉ်လှုပ်တာကို အာရုံမစိုက်ဘဲနဲ့ သွားရမယ့်ခရီးရဲ့ဆုံးကိုပဲ ကြည့်ရတယ်။ စိတ်လျှော့ဖို့ လိုတယ် ညီလေး။"} },
+                { text: {en: "He hands me an extra 10,000 MMK note.", mm: "သူ ကျွန်တော့်ကို မုန့်ဖိုး တစ်သောင်း ပိုပေးတယ်။"} }
+            ],
+            choices: [{ text: {en: "Thank him and leave.", mm: "ကျေးဇူးတင်ပြီး အပြင်သွားမယ်။"}, next: 'prologue_3_bus', item: {id: 'money', en: '10,000 MMK', mm: '၁၀၀၀၀ ကျပ်', icon: 'banknote', descEn: "Money from brother.", descMm: "အစ်ကိုပေးသော မုန့်ဖိုး။"} }]
+        },
+
+        // === CHAPTER 2: THE COMMUTE ===
+        'prologue_3_bus': {
+            bg: 'ybs_bus', world: 'real', audio: 'traffic', location: {en: 'YBS Bus Stop', mm: 'YBS မှတ်တိုင်'}, time: '08:15 AM',
+            steps: [
+                { text: {en: "The YBS bus is crowded. Bodies pressed against bodies. The heat is suffocating.", mm: "YBS ကားပေါ်မှာ လူတွေ ကြပ်သိပ်နေတာပဲ။ အပူချိန်ကလည်း အသက်ရှူရ ခက်စေတယ်။"} },
+                { text: {en: "I squeeze to the back. A monk is sitting there, looking calm amidst the chaos.", mm: "နောက်ဖက်ကို တိုးဝင်သွားလိုက်တယ်။ ဘုန်းကြီးတစ်ပါး ထိုင်နေတယ်၊ ဒီပရမ်းပတာတွေကြားမှာ သူကတော့ တည်ငြိမ်နေတယ်။"} },
+                { speaker: SPEAKERS.driver, text: {en: "Move inside! Move inside!", mm: "အတွင်းထဲ ဝင်ပေးပါ! အတွင်းထဲ ဝင်ပေးပါ!"} }
+            ],
+            choices: [
+                { text: {en: "Put on headphones and ignore everyone.", mm: "နားကြပ်တပ်ပြီး အားလုံးကို လျစ်လျူရှုမယ်။"}, next: 'prologue_3_music' },
+                { text: {en: "Offer seat to an elderly woman.", mm: "အဘွားအိုတစ်ယောက်ကို နေရာဖယ်ပေးမယ်။"}, next: 'prologue_3_karma', effect: {sanity: 5} },
+                { text: {en: "Talk to the Monk.", mm: "ဘုန်းကြီးကို လျှောက်ထားကြည့်မယ်။"}, next: 'prologue_3_monk_talk', effect: {knowledge: 10} }
+            ]
+        },
+        'prologue_3_monk_talk': {
+            bg: 'ybs_bus', world: 'real',
+            steps: [
+                { speaker: SPEAKERS.tayza, text: {en: "Reverend father, how do you stay calm in this heat?", mm: "ဆရာတော်... ဒီလောက် ပူလောင်နေတာကို ဘယ်လိုများ စိတ်ငြိမ်အောင် ထားပါသလဲဘုရား။"} },
+                { speaker: SPEAKERS.monk, text: {en: "The heat is outside. If you bring it inside, you burn. If you observe it, it passes.", mm: "အပူဆိုတာ အပြင်မှာ ရှိတာကွဲ့။ ကိုယ့်စိတ်ထဲ သွင်းယူလိုက်မှ ပူတာ။ အကဲခတ်ရုံပဲ ကြည့်နေရင် ပြီးသွားမှာပဲ။"} },
+                { speaker: SPEAKERS.monk, text: {en: "Take this. For protection.", mm: "ရော့... ဒါလေး ယူထား။ အန္တရာယ်ကင်းတာပေါ့။"} }
+            ],
+            choices: [{ text: {en: "Accept the Amulet.", mm: "လက်ဖွဲ့ကြိုးကို လက်ခံမယ်။"}, next: 'uni_arrival', item: {id: 'amulet', en: 'Red String Amulet', mm: 'လက်ဖွဲ့ကြိုးနီ', icon: 'shield', descEn: "Protection from spirits.", descMm: "ဘေးအန္တရာယ် ကာကွယ်ရန်။"} }]
+        },
+        'prologue_3_music': {
+            bg: 'traffic_jam', world: 'real',
+            steps: [
+                { text: {en: "I play loud rock music. It drowns out the city noise.", mm: "Rock သီချင်းကို အသံကုန်ဖွင့်လိုက်တယ်။ မြို့ပြရဲ့ ဆူညံသံတွေ ပျောက်သွားတယ်။"} },
+                { text: {en: "I watch the pagodas pass by the window. Gold mixed with dust.", mm: "ပြတင်းပေါက်ကနေ ဘုရားစေတီတွေ ဖြတ်သွားတာကို ငေးကြည့်နေမိတယ်။ ရွှေရောင်နဲ့ ဖုန်မှုန့်တွေ ရောနှောလို့။"} }
+            ],
+            choices: [{ text: {en: "Arrive at University.", mm: "တက္ကသိုလ် ရောက်ပြီ။"}, next: 'uni_arrival' }]
+        },
+        'prologue_3_karma': {
+            bg: 'ybs_bus', world: 'real',
+            steps: [
+                { text: {en: "The old woman smiles toothlessly.", mm: "အဘွားအိုက သွားမရှိတဲ့ ပါးစပ်နဲ့ ပြုံးပြတယ်။"} },
+                { text: {en: "'Bless you, son. May you find what you are looking for.'", mm: "'ကျန်းမာပါစေ ငါ့သားရယ်... ရှာဖွေနေတာတွေ တွေ့ပါစေကွယ်။'"} },
+                { text: {en: "Her words feel strangely specific.", mm: "သူ့စကားက တစ်မျိုးကြီးပဲ။ တိုက်ဆိုင်လိုက်တာ။"} }
+            ],
+            choices: [{ text: {en: "Arrive at University.", mm: "တက္ကသိုလ် ရောက်ပြီ။"}, next: 'uni_arrival' }]
+        },
+
+        // === CHAPTER 3: THE RUMOR ===
+        'uni_arrival': {
+            bg: 'imu_campus', world: 'real', audio: 'school', location: {en: 'IMU Campus', mm: 'IMU တက္ကသိုလ်ဝင်း'}, time: '09:00 AM',
+            steps: [
+                { text: {en: "Info Myanmar University. The AC blasts cold air as I enter the lobby.", mm: "IMU ရောက်ပြီ။ Lobby ထဲ ဝင်လိုက်တာနဲ့ အဲကွန်းလေအေးက ဆီးကြိုနေတယ်။"} },
+                { text: {en: "I head to the IT lab. Kyaw Gyi is already there.", mm: "IT Lab ခန်းကို သွားလိုက်တယ်။ ကျော်ကြီးက ရောက်နှင့်နေပြီ။"} },
+                { speaker: SPEAKERS.kyaw, text: {en: "Hey, genius. Ready for the coding test?", mm: "ဟေ့ကောင် ဂျီးနီးယပ်... coding စာမေးပွဲအတွက် အဆင်သင့်ဖြစ်ပြီလား။"} }
+            ],
+            choices: [
+                { text: {en: "I'm never ready.", mm: "ဘယ်တော့မှ အဆင်သင့်မဖြစ်ပါဘူးကွာ။"}, next: 'uni_gossip' },
+                { text: {en: "Easy. I studied all night.", mm: "အေးဆေးပါ... ညက တစ်ညလုံး ကြည့်ထားတယ်။"}, next: 'uni_gossip' }
+            ]
+        },
+        'uni_gossip': {
+            bg: 'imu_class', world: 'real',
+            steps: [
+                { speaker: SPEAKERS.kyaw, text: {en: "Forget the test. Did you hear about the Architecture student?", mm: "စာမေးပွဲထားလိုက်... ဗိသုကာဌာနက ကောင်မလေးအကြောင်း ကြားပြီးပြီလား။"} },
+                { speaker: SPEAKERS.tayza, text: {en: "No. What happened?", mm: "မကြားမိဘူး... ဘာဖြစ်လို့လဲ။"} },
+                { speaker: SPEAKERS.kyaw, text: {en: "She fainted in the studio last week. Hasn't woken up since.", mm: "ပြီးခဲ့တဲ့အပတ်က စတူဒီယိုခန်းထဲမှာ မေ့လဲသွားတာ။ အခုထိ ပြန်မနိုးလာတော့ဘူးတဲ့။"} },
+                { speaker: SPEAKERS.kyaw, text: {en: "People say she was screaming about 'The Blue City' before she fell.", mm: "မလဲခင်တုန်းက 'အပြာရောင် မြို့ကြီး' ဆိုပြီး အော်သွားသေးတယ်တဲ့။"} }
+            ],
+            choices: [
+                { text: {en: "That's creepy. What's her name?", mm: "ကြောက်စရာကြီးကွာ... နာမည်က ဘယ်သူတဲ့လဲ။"}, next: 'uni_name_drop', effect: {knowledge: 5} },
+                { text: {en: "Research 'The Blue City' in Library.", mm: "'အပြာရောင်မြို့ကြီး' အကြောင်း စာကြည့်တိုက်မှာ ရှာမယ်။"}, next: 'uni_library_search', effect: {knowledge: 20} },
+                { text: {en: "Just stress. Ignore it.", mm: "စိတ်ဖိစီးလို့ နေမှာပါ... လျစ်လျူရှုလိုက်မယ်။"}, next: 'uni_ignore_gossip' }
+            ]
+        },
+        'uni_library_search': {
+            bg: 'imu_library', world: 'real',
+            steps: [
+                { text: {en: "I skip the first class to go to the library. I search for urban legends.", mm: "ပထမအချိန်အတန်းလစ်ပြီး စာကြည့်တိုက် သွားလိုက်တယ်။ မြို့ပြဒဏ္ဍာရီတွေကို ရှာဖွေကြည့်တယ်။"} },
+                { text: {en: "I find an old blog post from 2012. 'The Echo Yangon'.", mm: "၂၀၁၂ ခုနှစ်က ဘလော့ဂ်ပို့စ်ဟောင်းတစ်ခု တွေ့တယ်။ 'ပဲ့တင်သံ ရန်ကုန်' တဲ့။"} },
+                { text: {en: "'It appears to those who are lost. Time does not flow there. Beware the Faceless.'", mm: "'လမ်းပျောက်နေသူတွေဆီမှာ ပေါ်လာတတ်တယ်။ အဲ့ဒီမှာ အချိန်တွေ မစီးဆင်းဘူး။ မျက်နှာမဲ့တွေကို သတိပြုပါ' တဲ့။"} }
+            ],
+            choices: [
+                { text: {en: "Print the article.", mm: "ဆောင်းပါးကို Print ထုတ်မယ်။"}, next: 'uni_name_drop', item: {id: 'lore', en: 'Echo Myth Printout', mm: 'ပဲ့တင်သံ ဒဏ္ဍာရီ စာရွက်', icon: 'file-text', descEn: "A blog post about a lost city.", descMm: "ပျောက်ဆုံးနေသော မြို့အကြောင်း ဆောင်းပါး။"} }
+            ]
+        },
+        'uni_name_drop': {
+            bg: 'imu_class', world: 'real',
+            steps: [
+                { speaker: SPEAKERS.kyaw, text: {en: "Nay Chi. Her name is Nay Chi. Pretty famous junior.", mm: "နေခြည်... သူ့နာမည်က နေခြည်တဲ့။ နာမည်ကြီး ဂျူနီယာလေးလေ။"} },
+                { text: {en: "Nay Chi. Sunlight. The name sticks in my mind.", mm: "နေခြည်...။ အဲ့ဒီနာမည်က စိတ်ထဲမှာ စွဲကျန်ရစ်နေတယ်။"} }
+            ],
+            choices: [
+                { text: {en: "I need fresh air. Going to Shwedagon.", mm: "လေရှူချင်တယ်။ ရွှေတိဂုံဘုရား သွားတော့မယ်။"}, next: 'chapter_2_shwedagon' }
+            ]
+        },
+        'uni_ignore_gossip': {
+            bg: 'imu_library', world: 'real',
+            steps: [
+                { text: {en: "I try to ignore him and focus on code. But the words 'Blue City' keep echoing.", mm: "သူပြောတာကို လျစ်လျူရှုပြီး code တွေပဲ အာရုံစိုက်လိုက်တယ်။ ဒါပေမယ့် 'အပြာရောင်မြို့ကြီး' ဆိုတဲ့ စကားလုံးက ပဲ့တင်ထပ်နေတယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Leave for Shwedagon.", mm: "ရွှေတိဂုံဘုရားသို့ ထွက်ခွာမည်။"}, next: 'chapter_2_shwedagon' }
+            ]
+        },
+
+        // === CHAPTER 4: THE ARTIFACT ===
+        'chapter_2_shwedagon': {
+            bg: 'shwedagon_dusk', world: 'real', audio: 'intro', location: {en: 'Shwedagon Pagoda', mm: 'ရွှေတိဂုံစေတီတော်'}, time: '06:00 PM',
+            steps: [
+                { text: {en: "The sun sets, painting the sky in violet and gold.", mm: "နေဝင်သွားပြီ။ ကောင်းကင်ကြီးက ခရမ်းရောင်နဲ့ ရွှေရောင် သန်းနေတယ်။"} },
+                { text: {en: "I walk to the Tuesday Corner.", mm: "အင်္ဂါထောင့်ကို လျှောက်သွားလိုက်တယ်။"} },
+                { text: {en: "As I pour the water, something glitters near the flower vase.", mm: "ရေသပ္ပါယ်နေတုန်း ပန်းအိုးနားမှာ တစ်ခုခု လက်ခနဲ ဖြစ်သွားတယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Inspect it.", mm: "သေချာ ကြည့်လိုက်မယ်။"}, next: 'chapter_2_pickup_choice' }
+            ]
+        },
+        'chapter_2_pickup_choice': {
+            bg: 'shwedagon_dusk', world: 'real',
+            steps: [
+                { text: {en: "It is a silver ring. The metal looks liquid.", mm: "ငွေလက်စွပ် တစ်ကွင်းပဲ။ သတ္တုသားက အရည်လိုပဲ။"} },
+                { text: {en: "No one else seems to notice it.", mm: "ဘယ်သူမှ သတိထားမိပုံ မရဘူး။"} }
+            ],
+            choices: [
+                { text: {en: "Take it.", mm: "ယူလိုက်မယ်။"}, next: 'chapter_2_taken', effect: {sanity: -5}, item: {id: 'ring', en: 'Mysterious Ring', mm: 'ထူးဆန်းသော လက်စွပ်', icon: 'circle', descEn: "Cold to the touch.", descMm: "အေးစက်နေသော လက်စွပ်။"} },
+                { text: {en: "Leave it.", mm: "ထားခဲ့မယ်။"}, next: 'chapter_2_forced', effect: {sanity: 5} }
+            ]
+        },
+        'chapter_2_taken': {
+            bg: 'shwedagon_dusk', world: 'real',
+            steps: [
+                { text: {en: "It burns cold in my hand. I slip it into my pocket and rush home.", mm: "လက်ထဲမှာ အေးစက်စက်နဲ့ ပူလောင်နေတယ်။ အိတ်ကပ်ထဲ ထည့်ပြီး အိမ်ပြန်ပြေးလိုက်တယ်။"} }
+            ],
+            choices: [{text: {en: "Go Home.", mm: "အိမ်ပြန်မည်။"}, next: 'chapter_3_nightmare'}]
+        },
+        'chapter_2_forced': {
+            bg: 'ybs_bus', world: 'real',
+            steps: [
+                { text: {en: "I leave the ring. I get on the bus.", mm: "လက်စွပ်ကို ထားခဲ့ပြီး ကားပေါ် တက်လိုက်တယ်။"} },
+                { text: {en: "I reach into my pocket to pay the fare... and my fingers touch cold metal.", mm: "ကားခရှင်းဖို့ အိတ်ကပ်ကို နှိုက်လိုက်တော့... လက်ချောင်းတွေက အေးစက်စက် သတ္တုကို သွားထိတယ်။"} },
+                { text: {en: "The ring. It followed me.", mm: "လက်စွပ်...။ သူ လိုက်လာတယ်။"} }
+            ],
+            choices: [{text: {en: "Panic but keep it.", mm: "လန့်သွားပေမယ့် သိမ်းထားလိုက်တယ်။"}, next: 'chapter_3_nightmare', item: {id: 'ring', en: 'Cursed Ring', mm: 'ကျိန်စာသင့် လက်စွပ်', icon: 'circle', descEn: "It follows you.", descMm: "သင့်နောက် လိုက်နေသော လက်စွပ်။"} }]
+        },
+
+        // === CHAPTER 5: THE CROSSING ===
+        'chapter_3_nightmare': {
+            bg: 'bedroom_night', world: 'real', location: {en: 'Bedroom', mm: 'အိပ်ခန်း'}, time: '11:00 PM',
+            steps: [
+                { text: {en: "My room is dark. The ring sits on my desk, glowing faintly blue.", mm: "အခန်းက မှောင်မည်းနေတယ်။ စားပွဲပေါ်က လက်စွပ်က အပြာရောင် အလင်းဖျော့ဖျော့ လင်းနေတယ်။"} },
+                { speaker: SPEAKERS.tayza, text: {en: "Why? Why me?", mm: "ဘာလို့လဲ... ဘာလို့ ငါ့ကျမှလဲ။"} },
+                { text: {en: "A voice in my head whispers: 'Put it on. She is waiting.'", mm: "ခေါင်းထဲမှာ အသံတစ်ခု ကြားနေရတယ်... 'ဝတ်လိုက်ပါ... သူမ စောင့်နေတယ်' တဲ့။"} }
+            ],
+            choices: [
+                { text: {en: "Put on the ring.", mm: "လက်စွပ်ကို ဝတ်ဆင်မည်။"}, next: 'chapter_3_echo_enter' }
+            ]
+        },
+        'chapter_3_echo_enter': {
+            bg: 'black', world: 'collapse', audio: 'creepy',
+            steps: [
+                { text: {en: "PAIN. Cold, sharp pain shoots up my arm.", mm: "နာကျင်မှု... အေးစက်ပြီး စူးရှတဲ့ နာကျင်မှုက လက်မောင်းထဲ စီးဝင်သွားတယ်။"} },
+                { text: {en: "The world twists. The silence becomes deafening.", mm: "ကမ္ဘာကြီး လိမ်ခေါက်သွားတယ်။ တိတ်ဆိတ်မှုက နားကွဲမတတ်ပဲ။"} }
+            ],
+            choices: [{text: {en: "Open your eyes.", mm: "မျက်လုံးဖွင့်လိုက်ပါ။"}, next: 'echo_bedroom_start'}]
+        },
+        'echo_bedroom_start': {
+            bg: 'echo_bedroom', world: 'parallel', location: {en: 'Echo Home', mm: 'ပဲ့တင်သံ အိမ်'},
+            steps: [
+                { text: {en: "I am in my room. But it's wrong. The colors are inverted.", mm: "အခန်းထဲမှာပါပဲ။ ဒါပေမယ့် မှားနေတယ်။ အရောင်တွေ ပြောင်းပြန်ဖြစ်နေတယ်။"} },
+                { text: {en: "Outside, the rain falls upwards.", mm: "အပြင်မှာ မိုးတွေက အပေါ်ကို ရွာနေတယ်။"} },
+                { text: {en: "I hear footsteps in the hallway.", mm: "စင်္ကြံလမ်းမှာ ခြေသံတွေ ကြားနေရတယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Check the hallway.", mm: "စင်္ကြံလမ်းကို ကြည့်မယ်။"}, next: 'echo_hallway_event', type: 'danger' },
+                { text: {en: "Climb out the window.", mm: "ပြတင်းပေါက်ကနေ ဆင်းမယ်။"}, next: 'echo_streets_start' }
+            ]
+        },
+        'echo_hallway_event': {
+            bg: 'echo_hallway', world: 'parallel',
+            steps: [
+                { text: {en: "My mother stands there. But she has no face.", mm: "အမေ ရပ်နေတယ်။ ဒါပေမယ့် သူ့မှာ မျက်နှာမရှိဘူး။"} },
+                { char: 'faceless', speaker: SPEAKERS.mom, text: {en: "Tayza... study... study... die...", mm: "တေဇ... စာလုပ်... စာလုပ်... သေလိုက်တော့..."} },
+                { text: {en: "She lunges at me!", mm: "သူ ကျွန်တော့်ဆီ ခုန်အုပ်လာတယ်!"} }
+            ],
+            choices: [
+                { text: {en: "Jump out the window!", mm: "ပြတင်းပေါက်ကနေ ခုန်ချမယ်!"}, next: 'echo_streets_start', effect: {sanity: -10} }
+            ]
+        },
+
+        // === CHAPTER 6: THE GIRL IN BLUE ===
+        'echo_streets_start': {
+            bg: 'echo_streets', world: 'parallel', audio: 'rain', location: {en: 'Echo Downtown', mm: 'ပဲ့တင်သံ မြို့လယ်'},
+            steps: [
+                { text: {en: "I land on the wet asphalt. The city is a neon nightmare.", mm: "စိုစွတ်နေတဲ့ ကတ္တရာလမ်းပေါ် ပြုတ်ကျသွားတယ်။ မြို့ကြီးက နီယွန်မီးတွေနဲ့ အိပ်မက်ဆိုးတစ်ခုလိုပဲ။"} },
+                { text: {en: "I run towards Sule. It's the only landmark I recognize.", mm: "ဆူးလေဖက်ကို ပြေးလိုက်တယ်။ အဲ့ဒါပဲ မှတ်မိတဲ့ နေရာမို့လို့။"} },
+                { text: {en: "Near the City Hall, I see a figure sitting on a bench.", mm: "မြို့တော်ခန်းမနားမှာ ခုံတန်းလျားပေါ် ထိုင်နေတဲ့ လူတစ်ယောက်ကို တွေ့တယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Approach carefully.", mm: "သတိထားပြီး ကပ်သွားမယ်။"}, next: 'meet_naychi' }
+            ]
+        },
+        'meet_naychi': {
+            bg: 'echo_streets', world: 'parallel',
+            steps: [
+                { text: {en: "It's a girl. She wears a white dress, now stained with blue mud.", mm: "ကောင်မလေး တစ်ယောက်ပဲ။ ဝတ်စုံဖြူလေးက အပြာရောင် ရွှံ့တွေ ပေကျံနေပြီ။"} },
+                { char: 'naychi', speaker: SPEAKERS.nay, text: {en: "You... you aren't one of the Faceless.", mm: "ရှင်... ရှင်က မျက်နှာမဲ့ကောင်တွေ မဟုတ်ဘူးပဲ။"} }
+            ],
+            choices: [
+                { text: {en: "I am Tayza. Who are you?", mm: "ကျွန်တော်က တေဇပါ။ ခင်ဗျားက ဘယ်သူလဲ။"}, next: 'naychi_talk_1' }
+            ]
+        },
+        'naychi_talk_1': {
+            bg: 'echo_streets', world: 'parallel',
+            steps: [
+                { speaker: SPEAKERS.nay, text: {en: "Nay Chi. I think I'm dead.", mm: "နေခြည်ပါ။ ကျွန်မ သေသွားပြီ ထင်တယ်။"} },
+                { speaker: SPEAKERS.tayza, text: {en: "You aren't dead. You're... stuck.", mm: "မသေပါဘူး။ ခင်ဗျား... ပိတ်မိနေတာ။"} },
+                { text: {en: "She sees the ring on my finger.", mm: "ကျွန်တော့်လက်က လက်စွပ်ကို သူမြင်သွားတယ်။"} },
+                { speaker: SPEAKERS.nay, text: {en: "That ring! It shines like the exit!", mm: "အဲ့ဒီလက်စွပ်! အဲ့ဒါက ထွက်ပေါက်လိုမျိုး လင်းနေတာပဲ!"} }
+            ],
+            choices: [
+                { text: {en: "Promise to help her.", mm: "ကူညီမယ်လို့ ကတိပေးမယ်။"}, next: 'promise_made', effect: {trust: 10} },
+                { text: {en: "Ask how to wake up.", mm: "ဘယ်လို ပြန်နိုးရမလဲ မေးမယ်။"}, next: 'wake_up_mechanic' }
+            ]
+        },
+        'promise_made': {
+            bg: 'echo_streets', world: 'parallel',
+            steps: [
+                { speaker: SPEAKERS.tayza, text: {en: "I will come back for you. I promise.", mm: "ကျွန်တော် ပြန်လာခဲ့မယ်။ ကတိပေးပါတယ်။"} },
+                { text: {en: "She touches my hand. The world dissolves into white.", mm: "သူမ ကျွန်တော့်လက်ကို လာထိတယ်။ ကမ္ဘာကြီးက အဖြူရောင်အဖြစ် ပျော်ဝင်သွားတယ်။"} }
+            ],
+            choices: [{text: {en: "Wake Up", mm: "နိုးထလော့"}, next: 'chapter_5_hospital_investigation'}]
+        },
+        'wake_up_mechanic': {
+            bg: 'echo_streets', world: 'parallel',
+            steps: [
+                { speaker: SPEAKERS.nay, text: {en: "I don't know! Just go! Before the Guardian comes!", mm: "ကျွန်မ မသိဘူး! သွားတော့! အစောင့်အရှောက်ကြီး မလာခင် သွားတော့!"} },
+                { text: {en: "Shadows lengthen. I close my eyes and wish for home.", mm: "အရိပ်တွေ ရှည်လာပြီ။ မျက်လုံးမှိတ်ပြီး အိမ်ပြန်ရောက်ဖို့ ဆုတောင်းလိုက်တယ်။"} }
+            ],
+            choices: [{text: {en: "Wake Up", mm: "နိုးထလော့"}, next: 'chapter_5_hospital_investigation'}]
+        },
+
+        // === CHAPTER 7: INVESTIGATION PHASE ===
+        'chapter_5_hospital_investigation': {
+            bg: 'hospital_exterior', world: 'real', location: {en: 'Yangon General Hospital', mm: 'ရန်ကုန် ဆေးရုံကြီး'}, time: 'DAY 2 - 10:00 AM',
+            steps: [
+                { text: {en: "I wake up on the floor. I skipped class.", mm: "ကြမ်းပြင်ပေါ်မှာ နိုးလာတယ်။ အတန်းလစ်လိုက်ပြီ။"} },
+                { text: {en: "I know where she is. I feel it.", mm: "သူ ဘယ်မှာရှိလဲ ကျွန်တော် သိတယ်။ ခံစားမိတယ်။"} },
+                { text: {en: "I stand before the Yangon General Hospital.", mm: "ရန်ကုန် ဆေးရုံကြီး ရှေ့ကို ရောက်နေပြီ။"} }
+            ],
+            choices: [
+                { text: {en: "Sneak into ICU.", mm: "ICU ထဲ ခိုးဝင်မယ်။"}, next: 'hospital_stealth_check', type: 'danger' },
+                { text: {en: "Go to Monastery instead.", mm: "ဘုန်းကြီးကျောင်းကို အရင်သွားမယ်။"}, next: 'monastery_path', effect: {knowledge: 10} }
+            ]
+        },
+        
+        // --- BRANCH: MONASTERY ---
+        'monastery_path': {
+            bg: 'monastery', world: 'real', audio: 'chant', location: {en: 'Old Monastery', mm: 'ရှေးဟောင်း ဘုန်းကြီးကျောင်း'},
+            steps: [
+                { text: {en: "I find the monk from the bus. He is sweeping the yard.", mm: "ကားပေါ်က ဘုန်းကြီးကို သွားရှာလိုက်တယ်။ ဆရာတော်က တံမြက်စည်း လှဲနေတယ်။"} },
+                { speaker: SPEAKERS.tayza, text: {en: "Sayadaw, I am haunted by a ring.", mm: "ဆရာတော်... တပည့်တော်ကို လက်စွပ်တစ်ကွင်းက ခြောက်လှန့်နေလို့ပါ။"} },
+                { speaker: SPEAKERS.monk, text: {en: "Ah. The Shadow Link. It binds two souls across dimensions.", mm: "အော်... အရိပ်ဆက် လက်စွပ်ပဲ။ အဲ့ဒါက ဘုံဘဝခြားနေတဲ့ ဝိညာဉ်နှစ်ခုကို ချည်နှောင်ထားတာ။"} },
+                { speaker: SPEAKERS.monk, text: {en: "To break the curse, you must find the Anchor in the Echo World.", mm: "ကျိန်စာပြေချင်ရင် ပဲ့တင်သံကမ္ဘာမှာရှိတဲ့ 'ကျောက်ဆူး' ကို ရှာပြီး ဖျက်ဆီးရမယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Ask what the Anchor is.", mm: "'ကျောက်ဆူး' က ဘာလဲဘုရား။"}, next: 'monk_anchor_reveal' }
+            ]
+        },
+        'monk_anchor_reveal': {
+            bg: 'monastery', world: 'real',
+            steps: [
+                { speaker: SPEAKERS.monk, text: {en: "It is an object of great regret. Likely an old coin or a letter.", mm: "နောင်တတရားတွေ စုဝေးနေတဲ့ ပစ္စည်းတစ်ခုပေါ့။ ရှေးဟောင်းဒင်္ဂါးပြား သို့မဟုတ် ပေးစာတစ်စောင် ဖြစ်နိုင်တယ်။"} },
+                { text: {en: "He gives me a protective thread.", mm: "ဆရာတော်က ပရိတ်ကြိုး တစ်ချောင်း ပေးလိုက်တယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Go to Hospital now.", mm: "ဆေးရုံကို သွားတော့မယ်။"}, next: 'hospital_stealth_check', item: {id: 'thread', en: 'Holy Thread', mm: 'ပရိတ်ကြိုး', icon: 'sun', descEn: "Sacred thread.", descMm: "အန္တရာယ်ကင်း ပရိတ်ကြိုး။"} }
+            ]
+        },
+
+        // --- BRANCH: HOSPITAL ---
+        'hospital_stealth_check': {
+            bg: 'hospital_corridor', world: 'real',
+            steps: [
+                { text: {en: "I wait for the nurse to look away. I slip through the double doors.", mm: "သူနာပြု အလစ်ကို စောင့်ပြီး တံခါးနှစ်ထပ်ကြားထဲ တိုးဝင်လိုက်တယ်။"} },
+                { text: {en: "Room 304. The name on the door: 'Ma Nay Chi'.", mm: "အခန်း ၃၀၄။ တံခါးပေါ်က နာမည်က 'မနေခြည်'။"} }
+            ],
+            choices: [{text: {en: "Enter.", mm: "ဝင်မယ်။"}, next: 'icu_scene'}]
+        },
+        'icu_scene': {
+            bg: 'icu_room', world: 'real', audio: 'heartbeat',
+            steps: [
+                { text: {en: "She lies there. It's really her.", mm: "သူမ အိပ်နေတယ်။ တကယ်ပဲ သူပါပဲ။"} },
+                { text: {en: "I touch her hand. The ring on my finger vibrates.", mm: "သူမလက်ကို ကိုင်ကြည့်လိုက်တယ်။ လက်စွပ်က တုန်ခါလာတယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Leave the ring (Sacrifice).", mm: "လက်စွပ်ကို ထားခဲ့မယ် (ပေးဆပ်မှု)။"}, next: 'end_sacrifice', type: 'danger' },
+                { text: {en: "Keep the ring to save her.", mm: "သူ့ကိုကယ်ဖို့ လက်စွပ်ကို သိမ်းထားမယ်။"}, next: 'chapter_6_grind_start', flag: 'knowHerCondition' }
+            ]
+        },
+
+        // === CHAPTER 8: THE GRIND (THE LOOP) ===
+        'chapter_6_grind_start': {
+            bg: 'bedroom_night', world: 'real', location: {en: 'Bedroom - Night 3', mm: 'အိပ်ခန်း - ည ၃'},
+            steps: [
+                { text: {en: "I have a choice. I can live my life, or I can sleep to save her.", mm: "ရွေးချယ်စရာ ရှိပြီ။ ကိုယ့်ဘဝကို ဆက်ရှင်သန်မလား၊ သူမကို ကယ်ဖို့ အိပ်မလား။"} },
+                { text: {en: "The exams are tomorrow. My sanity is fading.", mm: "စာမေးပွဲက မနက်ဖြန်ပဲ။ စိတ်ခွန်အားတွေလည်း ကုန်ခမ်းနေပြီ။"} }
+            ],
+            choices: [
+                { text: {en: "Sleep (Enter Echo World)", mm: "အိပ်မယ် (ပဲ့တင်သံကမ္ဘာ သွားမယ်)"}, next: 'echo_search_anchor', effect: {sanity: -20, trust: 20} },
+                { text: {en: "Study (Stay in Reality)", mm: "စာလုပ်မယ် (လက်တွေ့ဘဝမှာ နေမယ်)"}, next: 'ending_bad_real', effect: {sanity: 10} }
+            ]
+        },
+        'echo_search_anchor': {
+            bg: 'echo_ruins', world: 'parallel', location: {en: 'Echo Ruins', mm: 'ပဲ့တင်သံ အပျက်အစီးများ'},
+            steps: [
+                { text: {en: "I am back. Nay Chi is waiting.", mm: "ပြန်ရောက်လာပြီ။ နေခြည် စောင့်နေတယ်။"} },
+                { speaker: SPEAKERS.nay, text: {en: "Did you find out how to break the curse?", mm: "ကျိန်စာဖြည်ဖို့ နည်းလမ်းတွေ့လားဟင်။"} }
+            ],
+            choices: [
+                { text: {en: "We need to find the Coin.", mm: "ငါတို့ ဒင်္ဂါးပြားကို ရှာရမယ်။"}, next: 'echo_find_coin', req: (s) => s.state.flags.hasThread },
+                { text: {en: "We just need to break the ring.", mm: "လက်စွပ်ကို ဖျက်ဆီးလိုက်ရင် ရပြီ။"}, next: 'ending_choice' }
+            ]
+        },
+        'echo_find_coin': {
+            bg: 'echo_library', world: 'parallel',
+            steps: [
+                { text: {en: "We search the Echo Library. In a dusty book, we find it.", mm: "ပဲ့တင်သံ စာကြည့်တိုက်ထဲမှာ ရှာဖွေကြတယ်။ ဖုန်တက်နေတဲ့ စာအုပ်ကြားထဲမှာ တွေ့လိုက်ပြီ။"} },
+                { text: {en: "An Ancient Coin. It pulses with sadness.", mm: "ရှေးဟောင်း ဒင်္ဂါးပြားတစ်ခု။ ဝမ်းနည်းမှုတွေနဲ့ တုန်ခါနေတယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Take the Coin.", mm: "ဒင်္ဂါးပြားကို ယူမယ်။"}, next: 'ending_secret_setup', item: {id: 'coin', en: 'Regret Coin', mm: 'နောင်တ ဒင်္ဂါး', icon: 'circle-dot', descEn: "Heavy with sadness.", descMm: "ဝမ်းနည်းမှုများနှင့် လေးလံနေသည်။"} }
+            ]
+        },
+
+        // === ENDINGS ===
+        'ending_choice': {
+            bg: 'echo_shwedagon', world: 'parallel', location: {en: 'The Convergence', mm: 'ဆုံမှတ်'},
+            steps: [
+                { text: {en: "We stand at the precipice. The Guardian blocks the way.", mm: "ကျောက်ကမ်းပါးထိပ်မှာ ရပ်နေကြတယ်။ အစောင့်အရှောက်ကြီးက လမ်းပိတ်ထားတယ်။"} },
+                { speaker: SPEAKERS.guard, text: {en: "Only one can return. A life for a life.", mm: "တစ်ယောက်ပဲ ပြန်လို့ရမယ်။ အသက်တစ်ချောင်းအတွက် အသက်တစ်ချောင်းပဲ။"} }
+            ],
+            choices: [
+                { text: {en: "Give your life for her.", mm: "သူမအတွက် ကိုယ့်အသက် ပေးမယ်။"}, next: 'end_sacrifice', type: 'danger' },
+                { text: {en: "Break the ring together.", mm: "လက်စွပ်ကို အတူတူ ဖျက်ဆီးမယ်။"}, next: 'end_true' }
+            ]
+        },
+        'ending_secret_setup': {
+            bg: 'echo_shwedagon', world: 'parallel',
+            steps: [
+                { speaker: SPEAKERS.guard, text: {en: "Only one can...", mm: "တစ်ယောက်တည်းပဲ..."} },
+                { speaker: SPEAKERS.tayza, text: {en: "No. I have the Anchor.", mm: "မဟုတ်ဘူး။ ကျုပ်မှာ 'ကျောက်ဆူး' ရှိတယ်။"} },
+                { text: {en: "I throw the Coin into the void. The Guardian dissolves.", mm: "ဒင်္ဂါးပြားကို လေဟာနယ်ထဲ ပစ်ထည့်လိုက်တယ်။ အစောင့်အရှောက်ကြီး ပျောက်ကွယ်သွားတယ်။"} }
+            ],
+            choices: [
+                { text: {en: "Walk out together.", mm: "အတူတူ လမ်းလျှောက်ထွက်မယ်။"}, next: 'end_secret' }
+            ]
+        },
+
+        // --- ENDING CINEMATICS ---
+        'end_sacrifice': {
+            bg: 'void', world: 'real',
+            steps: [
+                { text: {en: "You place the ring on her finger. The light leaves your body.", mm: "လက်စွပ်ကို သူမလက်မှာ ဝတ်ပေးလိုက်တယ်။ အလင်းရောင်တွေ သင့်ခန္ဓာကိုယ်ထဲက ထွက်ခွာသွားတယ်။"} },
+                { text: {en: "In the hospital, Nay Chi opens her eyes. You close yours forever.", mm: "ဆေးရုံမှာ နေခြည် မျက်လုံးပွင့်လာတယ်။ သင်ကတော့ ထာဝရ မျက်လုံးမှိတ်သွားပြီ။"} },
+                { text: {en: "ENDING: THE SACRIFICE (SAD)", mm: "ဇာတ်သိမ်း - ပေးဆပ်မှု (ဝမ်းနည်းဖွယ်)"} }
+            ],
+            choices: [{text: {en: "Main Menu", mm: "ပင်မစာမျက်နှာ"}, next: 'prologue_1_morning'}]
+        },
+        'end_true': {
+            bg: 'shwedagon_dusk', world: 'real',
+            steps: [
+                { text: {en: "We smash the ring. A blinding flash.", mm: "လက်စွပ်ကို ရိုက်ခွဲလိုက်တယ်။ မျက်စိကျိန်းမတတ် အလင်းတန်းကြီး ပေါ်လာတယ်။"} },
+                { text: {en: "I wake up. It's morning. My phone rings.", mm: "နိုးလာတော့ မနက်ခင်း ရောက်နေပြီ။ ဖုန်းမြည်လာတယ်။"} },
+                { speaker: SPEAKERS.nay, text: {en: "Hello? Is this Tayza? I... I remember you.", mm: "ဟလို? တေဇလားဟင်? ငါ... ငါ နင့်ကို မှတ်မိတယ်။"} },
+                { text: {en: "ENDING: GOLDEN DAWN (HAPPY)", mm: "ဇာတ်သိမ်း - ရွှေရောင် အာရုဏ်ဦး (ပျော်ရွှင်ဖွယ်)"} }
+            ],
+            choices: [{text: {en: "Main Menu", mm: "ပင်မစာမျက်နှာ"}, next: 'prologue_1_morning'}]
+        },
+        'end_secret': {
+            bg: 'tea_shop', world: 'real',
+            steps: [
+                { text: {en: "One month later. The Tea Shop is busy.", mm: "တစ်လအကြာ... လက်ဖက်ရည်ဆိုင်မှာ လူစည်နေတယ်။"} },
+                { text: {en: "Nay Chi sits across from me. She remembers everything. The Echo world is gone.", mm: "နေခြည် ကျွန်တော့်ရှေ့မှာ ထိုင်နေတယ်။ သူ အကုန်မှတ်မိတယ်။ ပဲ့တင်သံကမ္ဘာကြီး ပျောက်ကွယ်သွားပြီ။"} },
+                { text: {en: "We are both alive. We broke the cycle.", mm: "ကျွန်တော်တို့နှစ်ယောက်လုံး အသက်ရှင်နေတယ်။ သံသရာကို ချိုးဖျက်နိုင်ခဲ့ပြီ။"} },
+                { text: {en: "ENDING: THE ARCHITECT (PERFECT)", mm: "ဇာတ်သိမ်း - ဗိသုကာပညာရှင် (အကောင်းဆုံး)"} }
+            ],
+            choices: [{text: {en: "Main Menu", mm: "ပင်မစာမျက်နှာ"}, next: 'prologue_1_morning'}]
+        },
+        'ending_bad_real': {
+            bg: 'bedroom_day', world: 'real',
+            steps: [
+                { text: {en: "I threw the ring into the Yangon River.", mm: "လက်စွပ်ကို ရန်ကုန်မြစ်ထဲ လွှင့်ပစ်လိုက်တယ်။"} },
+                { text: {en: "I passed the exams. I became an IT pro.", mm: "စာမေးပွဲအောင်တယ်။ IT ပညာရှင် ဖြစ်လာတယ်။"} },
+                { text: {en: "But sometimes, when it rains, I hear her crying.", mm: "ဒါပေမယ့် တခါတလေ မိုးရွာရင်... သူမ ငိုသံကို ကြားနေရတုန်းပဲ။"} },
+                { text: {en: "ENDING: REGRET (BAD)", mm: "ဇာတ်သိမ်း - နောင်တ (ဆိုးရွား)"} }
+            ],
+            choices: [{text: {en: "Main Menu", mm: "ပင်မစာမျက်နှာ"}, next: 'prologue_1_morning'}]
+        }
+    };
+
+    // --- BOOTSTRAP ---
+    const game = new GameEngine();
+    
+    // Prevent context menu
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+</script>
+    </body>
+</html>
