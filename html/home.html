@@ -477,13 +477,16 @@
             wakeup_tayza: "../images/person/wakeup-tayza.png",
             oldfan: "../images/items/oldfan.png",
             missedcall: "../images/items/missedcall.png",
+            stair: "../images/places/stair.png",
             kitchen: "../images/places/kitchen.png",
+            livingroom: "../images/places/livingroom.png"
         },
         audio: {
             morning_chant: "../audios/morning_bird.mp3",
             alarm: "../audios/alarm.mp3",
             yawn: "../audios/yawn.mp3",
             oldfan: "../audios/oldfan.mp3",
+            stair: "../audios/footstep.mp3",
             kitchen: "../audios/kitchen.mp3",
         },
         icons: {
@@ -1352,20 +1355,31 @@
         },
 
         'kitchen': {
-            bg: 'kitchen',
+            bg: 'stair',
             world: 'real',
             location: { en: 'Home - Kitchen', mm: 'အိမ် - မီးဖိုချောင်' },
             time: '07:15 AM',
             steps: [
             {
-                bg: 'kitchen',
+                bg: 'stair',
+                audio: 'stair',
+                text: {en: "*foot steps*", mm: "*ခြေသံ*"},
+            },
+            {
+                bg: 'livingroom',
                 audio: 'kitchen',
+                speaker: SPEAKERS.unknown, text: {en: "Mom, I'm awake.", mm: "အမေ..သားနိုးပါပြီ။"},
+            },
+            {
+                bg: 'livingroom',
                 speaker: SPEAKERS.unknown, text: {en: "Tayza! Why are you late? Do you want to be late for school?", mm: "တေဇ.. သားငယ်လေး.. ဘာလို့ နောက်ကျနေတာလဲ။ ကျောင်းနောက်ကျချင်နေတာလား။"},
             },
             {
                 speaker: SPEAKERS.tayza, text: {en: "I was studying late last night, Mom.", mm: "ညက စာကြည့်တာ နောက်ကျသွားလို့ပါ အမေ။"},
             },
             {
+
+                bg: 'kitchen',
                 speaker: SPEAKERS.tayza, text: {en: "So… this is my mother, Daw Mya Thandar. She’s 55, works at an office, and somehow still finds the energy to take care of all of us. She doesn’t say much about her worries… but I know she prays for me every single day. Even when I act like I don’t notice.", mm: "ဒါကတော့ ကျွန်တော့်အမေ ဒေါ်မြသန္တာပါ။ အသက် ၅၅ နှစ်ရှိပြီး ရုံးမှာ အလုပ်လုပ်တယ်။ အလုပ်ပင်ပန်းပေမယ့် မိသားစုကို ဂရုစိုက်ဖို့ အမြဲ အင်အားရှိနေသလိုပဲ။ သူမက စိုးရိမ်မှုတွေကို မပြောတတ်ဘူး… ဒါပေမယ့် နေ့တိုင်း ကျွန်တော်အတွက် ဆုတောင်းပေးနေတာကို ကျွန်တော် သိပါတယ်။ မသိသလိုလုပ်နေပေမယ့်လည်း…"},
             },
             {
