@@ -17,6 +17,9 @@
         :root {
             --bg-real: #fdf6e3;
             --bg-parallel: #0f172a;
+            --accent-gold: #eab308;
+            --glass-bg: rgba(10, 10, 10, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -71,7 +74,15 @@
         .fade-in { animation: fadeIn 1s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* UI Elements */
+        /* --- MODERN UI SYSTEM --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
         .scanlines {
             background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
             background-size: 100% 3px;
@@ -79,26 +90,98 @@
         }
 
         .dialogue-box {
-            background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.7);
+            background-color: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px) saturate(1.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            box-shadow: 0 -20px 60px rgba(0,0,0,0.8);
         }
 
         .choice-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(90deg, rgba(51, 65, 85, 0.85) 0%, rgba(30, 41, 59, 0.95) 100%);
-            border-left: 3px solid #94a3b8;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-left: 3px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .choice-btn:active, .choice-btn:hover {
-            transform: translateX(8px);
-            background: linear-gradient(90deg, rgba(71, 85, 105, 0.95) 0%, rgba(51, 65, 85, 1) 100%);
-            border-left-color: #facc15;
-            box-shadow: -5px 0 15px rgba(234, 179, 8, 0.2);
+            transform: translateX(12px);
+            background: linear-gradient(90deg, rgba(234, 179, 8, 0.1), transparent);
+            border-left-color: var(--accent-gold);
+            padding-left: 24px;
         }
 
-        .cursor::after { content: '▋'; animation: blink 1s infinite; color: #facc15; margin-left: 2px;}
+        /* Modern HUD Buttons */
+        .hud-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+        
+        .hud-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(234, 179, 8, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hud-btn:hover {
+            background: rgba(234, 179, 8, 0.9);
+            color: #000;
+            border-color: #facc15;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(234, 179, 8, 0.25);
+        }
+        
+        .hud-btn:hover::after { opacity: 1; }
+        .hud-btn:active { transform: scale(0.95); }
+        
+        .hud-btn.active-mode {
+            background: #eab308;
+            color: black;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+        }
+
+        /* Tooltip */
+        .hud-btn .tooltip {
+            position: absolute;
+            top: 110%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: rgba(0,0,0,0.9);
+            color: #eab308;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+        .hud-btn:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .cursor::after { content: '▋'; animation: blink 1s infinite; color: #eab308; margin-left: 2px;}
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         
         .custom-scroll::-webkit-scrollbar { width: 4px; }
@@ -161,6 +244,115 @@
             will-change: transform;
             width: 100%;
             height: 100%;
+        }
+
+        /* Phone & Currency Styles */
+        .phone-modal-container {
+            perspective: 1000px;
+        }
+        .phone-screen {
+            box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.1);
+        }
+        .app-icon {
+            transition: transform 0.1s;
+        }
+        .app-icon:active {
+            transform: scale(0.9);
+            filter: brightness(0.8);
+        }
+        .currency-positive { color: #4ade80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+        .currency-negative { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.5); }
+        
+        /* App Content Transitions */
+        .app-screen-enter { transform: translateX(100%); }
+        .app-screen-active { transform: translateX(0%); }
+        .app-screen-exit { transform: translateX(100%); }
+
+        /* --- MAIN MENU STYLES --- */
+        .menu-item {
+            position: relative;
+            padding: 14px 0;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-gold);
+            transition: width 0.4s ease;
+            box-shadow: 0 0 8px var(--accent-gold);
+        }
+
+        .menu-item:hover {
+            color: #fff;
+            padding-left: 20px;
+            text-shadow: 0 0 15px rgba(234, 179, 8, 0.6);
+            border-bottom-color: transparent;
+        }
+
+        .menu-item:hover::before {
+            width: 100%;
+        }
+
+        .menu-item .icon-box {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            color: var(--accent-gold);
+        }
+
+        .menu-item:hover .icon-box {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .menu-item.primary {
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .menu-item.primary:hover {
+            color: #fff;
+            background: linear-gradient(90deg, rgba(234, 179, 8, 0.15), transparent);
+        }
+
+        .animate-slide-up {
+            animation: slideUpFade 0.8s backwards;
+        }
+        
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-grain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
     </style>
     </head>
@@ -244,42 +436,143 @@
                 </div>
             </div>
 
+            <!-- Phone Modal Overlay -->
+            <div id="phone-modal" class="hidden absolute inset-0 z-[100] bg-black/70 flex items-center justify-center p-4 backdrop-blur-md transition-all duration-300 opacity-0 phone-modal-container">
+                <div class="relative group">
+                    <!-- Physical Power/Lock Button (Side Button) -->
+                    <div class="absolute top-24 -right-2 w-2 h-12 bg-gray-700 rounded-r-lg cursor-pointer hover:bg-gray-600 active:bg-gray-800 transition-colors z-0 shadow-xl" onclick="game.togglePhone()" title="Power/Lock Button (Close Phone)"></div>
+                    <!-- Volume Buttons (Visual only) -->
+                    <div class="absolute top-24 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
+                    <div class="absolute top-36 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
+
+                    <div class="relative w-[320px] h-[640px] bg-gray-900 rounded-[3rem] border-8 border-gray-800 shadow-2xl phone-screen overflow-hidden flex flex-col z-10">
+                        <!-- Status Bar -->
+                        <div class="h-8 bg-black w-full flex justify-between items-center px-6 text-[10px] text-white z-50">
+                            <span>09:41</span>
+                            <div class="flex gap-1">
+                                <i data-lucide="signal" class="w-3 h-3"></i>
+                                <i data-lucide="wifi" class="w-3 h-3"></i>
+                                <i data-lucide="battery" class="w-3 h-3"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Phone Display Area -->
+                        <div id="phone-display" class="flex-1 bg-gray-900 overflow-hidden relative">
+                            
+                            <!-- Home Screen Wallpaper -->
+                            <div id="phone-home" class="w-full h-full absolute inset-0 bg-[url('../images/items/iphonewallpaper.png')] bg-cover bg-center p-6 pt-12">
+                                <!-- App Grid -->
+                                <div class="grid grid-cols-4 gap-4 content-start">
+                                    <!-- Phone -->
+                                    <div onclick="game.openApp('phone')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="phone" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Phone</span>
+                                    </div>
+                                    <!-- Messages -->
+                                    <div onclick="game.openApp('messages')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-green-400 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="message-square" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Messages</span>
+                                    </div>
+                                    <!-- Photos -->
+                                    <div onclick="game.openApp('photos')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden relative">
+                                            <div class="absolute inset-0 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 opacity-80"></div>
+                                            <i data-lucide="image" class="text-white w-6 h-6 relative z-10"></i>
+                                        </div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Photos</span>
+                                    </div>
+                                    <!-- Camera -->
+                                    <div class="flex flex-col items-center gap-1 app-icon cursor-pointer opacity-80">
+                                        <div class="w-12 h-12 bg-gray-400 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="camera" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Camera</span>
+                                    </div>
+                                    <!-- Facebook -->
+                                    <div onclick="game.openApp('facebook')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="facebook" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Facebook</span>
+                                    </div>
+                                    <!-- YouTube -->
+                                    <div onclick="game.openApp('youtube')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="youtube" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">YouTube</span>
+                                    </div>
+                                    <!-- Spotify (Renamed from Music) -->
+                                    <div onclick="game.openApp('music')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-[#1DB954] rounded-2xl flex items-center justify-center shadow-lg">
+                                            <!-- Spotify SVG Logo -->
+                                            <svg viewBox="0 0 24 24" class="w-7 h-7 fill-current text-white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 4.32-1.38 9.841-.719 13.44 1.5.42.24.6.841.301 1.321zm.12-3.36C15.54 8.46 9.06 8.22 5.34 9.36c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.4-1.02 15.96 1.68.6.359.84 1.14.479 1.74-.359.6-1.14.84-1.74.48z"/></svg>
+                                        </div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Spotify</span>
+                                        
+                                    </div>
+                                    <!-- KBZPay -->
+                                    <div onclick="game.openApp('kbzpay')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white/20"><span class="text-white font-black text-xs">KBZ</span></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">KBZPay</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Active App Container -->
+                            <div id="active-app-container" class="absolute inset-0 bg-white translate-x-full transition-transform duration-300 z-20 flex flex-col">
+                                <!-- App Header -->
+                                <div id="app-header-bar" class="h-12 bg-gray-100 border-b flex items-center px-4 font-bold text-gray-800 shadow-sm z-30 relative">
+                                    <button onclick="game.phoneHome()" class="p-1 -ml-2 rounded-full hover:bg-gray-200 transition-colors"><i data-lucide="chevron-left" class="w-6 h-6 text-blue-500"></i></button>
+                                    <span id="app-title-text" class="ml-2 text-sm">App Name</span>
+                                </div>
+                                
+                                <!-- App Content Area -->
+                                <div id="app-content-area" class="flex-1 overflow-y-auto custom-scroll relative bg-white">
+                                    <!-- Dynamic Content injected here -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Home Indicator Button -->
+                        <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-full h-8 z-50 flex items-center justify-center cursor-pointer" onclick="game.phoneHome()">
+                            <div class="w-32 h-1 bg-white/50 rounded-full hover:bg-white transition-colors shadow-sm"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <!-- UI Layer -->
             <div id="ui-layer"
-                class="absolute inset-0 z-50 flex flex-col justify-between p-3 md:p-8 hidden">
+                class="absolute inset-0 z-50 flex flex-col justify-between p-4 md:p-8 hidden">
 
                 <!-- Top HUD -->
                 <div class="flex justify-between items-start w-full">
-                    <!-- Left: Location -->
-                    <div class="flex flex-col gap-2 max-w-[50%]">
+                    <!-- Left: Location Information -->
+                    <div class="flex flex-col gap-3 max-w-[50%]">
                         <div id="location-tag"
-                            class="bg-gray-900/90 text-yellow-400 px-3 py-2 border-l-4 border-yellow-500 font-cinzel tracking-widest text-[10px] md:text-sm uppercase backdrop-blur-md shadow-lg flex items-center gap-2 md:gap-3 rounded-r-md">
+                            class="glass-panel text-yellow-400 px-4 py-2 border-l-4 border-yellow-500 font-cinzel tracking-widest text-sm uppercase flex items-center gap-3 rounded-r-lg shadow-lg transform transition hover:translate-x-1">
                             <i data-lucide="map-pin"
-                                class="w-3 h-3 md:w-4 md:h-4 flex-shrink-0"></i>
+                                class="w-4 h-4 flex-shrink-0 animate-pulse"></i>
                             <div class="overflow-hidden">
                                 <span id="location-text"
-                                    class="block font-bold truncate">YANGON</span>
+                                    class="block font-bold truncate drop-shadow-md">YANGON</span>
                                 <span id="time-text"
-                                    class="text-[9px] md:text-[10px] text-gray-300 font-sans tracking-normal block truncate">DAY
+                                    class="text-[10px] text-gray-400 font-sans tracking-normal block truncate">DAY
                                     1 - 08:00 AM</span>
                             </div>
                         </div>
 
                         <div class="flex items-center gap-2">
                             <button onclick="game.audio.toggle()"
-                                class="bg-gray-800/70 p-2 rounded-full hover:bg-white/20 transition pointer-events-auto border border-white/10">
+                                class="hud-btn w-10 h-10 rounded-full !border-white/20">
                                 <i id="audio-icon" data-lucide="volume-2"
-                                    class="w-3 h-3 md:w-4 md:h-4 text-yellow-400"></i>
+                                    class="w-4 h-4 text-yellow-400"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Right: Menu -->
-                    <div
-                        class="flex flex-col items-end gap-2 md:gap-3 pointer-events-auto relative">
+                    <!-- Right: Modern Tool Menu -->
+                    <div class="flex flex-col items-end gap-3 pointer-events-auto relative">
                         
                         <!-- Notification Area -->
-                        <div id="unlock-notification" class="absolute top-12 right-0 notification-toast bg-white border-l-4 border-green-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60]">
+                        <div id="unlock-notification" class="absolute top-12 right-0 notification-toast bg-white border-l-4 border-green-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60] mb-2">
                             <div class="bg-green-100 p-1.5 rounded-full text-green-600">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i>
                             </div>
@@ -288,46 +581,62 @@
                                 <div id="unlock-text" class="text-sm font-bold text-gray-800 leading-tight">Home</div>
                             </div>
                         </div>
+                        
+                        <!-- Currency Notification -->
+                        <div id="currency-notification" class="absolute top-28 right-0 notification-toast bg-gray-900 border-l-4 border-yellow-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60]">
+                            <div class="bg-gray-800 p-1.5 rounded-full text-yellow-400">
+                                <i data-lucide="coins" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Transaction</div>
+                                <div id="currency-text" class="text-sm font-bold text-white leading-tight font-mono">0 MMK</div>
+                            </div>
+                        </div>
 
-                        <div class="flex gap-2">
-                            <button onclick="game.toggleMap()"
-                                class="bg-cyan-900/80 hover:bg-cyan-700 border border-cyan-500 text-cyan-100 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all shadow-[0_0_10px_rgba(6,182,212,0.3)]"
-                                title="Open Map">
-                                <i data-lucide="map"
-                                    class="w-3 h-3 md:w-4 md:h-4"></i> MAP
+                        <!-- Action Bar Container -->
+                        <div class="glass-panel p-2 rounded-2xl flex flex-row flex-wrap justify-end gap-2 shadow-2xl border-white/10">
+                            
+                            <button onclick="game.togglePhone()" class="hud-btn" aria-label="Phone">
+                                <i data-lucide="smartphone" class="w-5 h-5"></i>
+                                <span class="tooltip">Phone</span>
                             </button>
-                            <button onclick="game.toggleFullscreen()"
-                                id="fs-btn"
-                                class="bg-blue-600/90 hover:bg-blue-500 border border-blue-400 text-white px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all shadow-[0_0_10px_rgba(37,99,235,0.5)]"
-                                title="Playable Full Screen">
-                                <i data-lucide="maximize"
-                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+                            
+                            <button onclick="game.toggleMap()" class="hud-btn" aria-label="Map">
+                                <i data-lucide="map" class="w-5 h-5"></i>
+                                <span class="tooltip">Map</span>
                             </button>
-                            <button onclick="game.takeScreenshot()"
-                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all"
-                                title="Screenshot">
-                                <i data-lucide="camera"
-                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+                            
+                            <button onclick="game.saveGameManual()" class="hud-btn" aria-label="Save">
+                                <i data-lucide="save" class="w-5 h-5"></i>
+                                <span class="tooltip">Save</span>
                             </button>
-                            <button onclick="game.toggleImmersive()"
-                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all"
-                                title="Hide UI & View Art">
-                                <i data-lucide="eye"
-                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+
+                            <div class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+
+                            <button onclick="game.toggleLang()" class="hud-btn w-16" aria-label="Language">
+                                <span id="lang-btn" class="font-bold text-[10px]">မြန်မာ</span>
                             </button>
-                            <button onclick="game.toggleAuto()" id="auto-btn"
-                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-[10px] md:text-xs font-bold rounded backdrop-blur transition-all flex items-center gap-1">
-                                <i data-lucide="play-circle"
-                                    class="w-3 h-3 md:w-4 md:h-4"></i> AUTO
+
+                            <button onclick="game.toggleAuto()" id="auto-btn" class="hud-btn" aria-label="Auto Play">
+                                <i data-lucide="play-circle" class="w-5 h-5"></i>
+                                <span class="tooltip">Auto</span>
                             </button>
-                            <button onclick="game.toggleLang()"
-                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-[10px] md:text-xs font-bold rounded backdrop-blur transition-all min-w-[60px] md:w-24">
-                                <span id="lang-btn">မြန်မာ</span>
+
+                            <div class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+
+                            <button onclick="game.toggleImmersive()" class="hud-btn" aria-label="Immersive Mode">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                                <span class="tooltip">Hide UI</span>
                             </button>
-                            <button onclick="game.saveGameManual()"
-                                class="bg-gray-700/80 hover:bg-gray-600 border border-gray-500 text-gray-200 px-2 py-1 md:px-3 text-xs font-bold rounded backdrop-blur transition-all">
-                                <i data-lucide="save"
-                                    class="w-3 h-3 md:w-4 md:h-4"></i>
+                            
+                            <button onclick="game.takeScreenshot()" class="hud-btn" aria-label="Screenshot">
+                                <i data-lucide="camera" class="w-5 h-5"></i>
+                                <span class="tooltip">Snap</span>
+                            </button>
+                            
+                            <button onclick="game.toggleFullscreen()" id="fs-btn" class="hud-btn" aria-label="Fullscreen">
+                                <i data-lucide="maximize" class="w-5 h-5"></i>
+                                <span class="tooltip">Full</span>
                             </button>
                         </div>
                     </div>
@@ -340,77 +649,119 @@
                         class="flex flex-col gap-2 items-center mb-2 transition-all duration-500 min-h-[40px] max-h-[35vh] overflow-y-auto pr-1 custom-scroll pointer-events-auto">
                     </div>
                     <div id="dialogue-box"
-                        class="dialogue-box rounded-xl p-5 md:p-8 relative min-h-[160px] md:min-h-[200px] cursor-pointer group transition-all duration-300 hover:border-white/30 pointer-events-auto"
+                        class="dialogue-box p-6 md:p-8 relative min-h-[160px] md:min-h-[200px] cursor-pointer group transition-all duration-300 hover:border-yellow-500/30 pointer-events-auto"
                         onclick="game.next()">
                         <div
-                            class="absolute -top-3 md:-top-4 left-4 md:left-10 z-10">
+                            class="absolute -top-3 md:-top-4 left-6 md:left-10 z-10">
                             <div id="speaker-box"
-                                class="bg-slate-800 px-4 md:px-6 py-1 md:py-1.5 text-xs md:text-sm font-bold tracking-widest text-white uppercase transform skew-x-[-12deg] shadow-[0_5px_15px_rgba(0,0,0,0.5)] border-l-4 border-yellow-500 hidden">
+                                class="bg-gray-900 px-6 py-1.5 text-xs md:text-sm font-bold tracking-[0.2em] text-yellow-500 uppercase transform skew-x-[-12deg] shadow-[0_5px_20px_rgba(0,0,0,0.5)] border border-yellow-500/50 hidden">
                                 <span id="speaker-name"
                                     class="transform skew-x-[12deg] inline-block font-noto">NAME</span>
                             </div>
                         </div>
                         <p id="dialogue-text"
-                            class="text-base md:text-xl leading-relaxed md:leading-9 text-gray-100 font-medium tracking-wide font-noto cursor relative z-0 mt-2 md:mt-0 drop-shadow-sm">
+                            class="text-lg md:text-xl leading-relaxed md:leading-9 text-gray-200 font-medium tracking-wide font-noto cursor relative z-0 mt-2 md:mt-0 drop-shadow-md">
                         </p>
                         <div
-                            class="absolute bottom-3 right-3 md:bottom-4 md:right-4 text-yellow-400 opacity-0 transition-opacity duration-300"
+                            class="absolute bottom-4 right-6 text-yellow-500 opacity-0 transition-opacity duration-300"
                             id="next-indicator">
                             <div
                                 class="animate-bounce flex flex-col items-center">
-                                <span
-                                    class="text-[8px] md:text-[10px] uppercase tracking-widest opacity-70 mb-1">Next</span>
                                 <i data-lucide="chevron-down"
-                                    class="w-4 h-4 md:w-5 md:h-5"></i>
+                                    class="w-6 h-6"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Start Screen -->
-            <div id="start-screen"
-                class="absolute inset-0 z-[80] flex flex-col items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1596556554483-2079c6131496?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center">
-                <div
-                    class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black"></div>
+            <!-- Start Screen (Main Menu) -->
+            <div id="start-screen" class="absolute inset-0 z-[80] flex bg-black overflow-hidden">
+                
+                <!-- Background Video -->
+                <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-100 z-0 ">
+                    <source src="../videos/herovideo.mp4" type="video/mp4">
+                </video>
+                
+                <!-- Film Grain / Atmosphere Layer -->
+                <div class="menu-grain z-10"></div>
+                <!-- Dark Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30 z-10"></div>
+                
+                <!-- Main Layout Container -->
+                <div class="relative z-20 w-full h-full flex flex-col md:flex-row p-8 md:p-16 lg:p-24 items-center md:items-stretch">
+                    
+                    <!-- Left Column: Title & Mood -->
+                    <div class="flex-1 flex flex-col justify-center items-start space-y-8 max-w-3xl">
+                        
+                        <div class="animate-slide-up" style="animation-delay: 0.1s;">
+                            <div class="inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg">
+                                <div class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                                <div class="text-gray-300 tracking-[0.3em] text-[10px] md:text-xs uppercase font-semibold">
+                                    Enterprise Edition
+                                </div>
+                            </div>
+                        </div>
 
-                <div
-                    class="relative z-10 text-center space-y-4 md:space-y-6 animate-fadeIn max-w-4xl w-full">
-                    <div
-                        class="text-yellow-500 tracking-[0.3em] md:tracking-[0.5em] text-[10px] md:text-xs uppercase font-bold border-b border-yellow-500/30 pb-4 inline-block mb-2 md:mb-4">
-                        Director's Cut • Extended Edition
+                        <div class="animate-slide-up" style="animation-delay: 0.2s;">
+                            <h1 class="text-6xl md:text-8xl lg:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-500 title-font drop-shadow-2xl leading-[0.9] tracking-tighter">
+                                THE<br>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400">BETWEENS</span>
+                            </h1>
+                        </div>
+
+                        <div class="animate-slide-up space-y-4 border-l-2 border-white/30 pl-6" style="animation-delay: 0.3s;">
+                            <p class="text-gray-300 text-lg md:text-2xl font-light tracking-wide opacity-90 max-w-xl">
+                                Two worlds. One reality.
+                            </p>
+                            <p class="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed font-sans opacity-80">
+                                Navigate the fractured timelines of Yangon. Uncover the truth hidden in the echoes of the city. Your choices define the reality you wake up in.
+                            </p>
+                        </div>
                     </div>
-                    <h1
-                        class="text-4xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-800 title-font drop-shadow-2xl leading-tight px-2">
-                        THE RING BETWEEN<br>TWO YANGONS
-                    </h1>
-                    <h2
-                        class="text-xl md:text-4xl text-gray-200 font-noto font-bold mt-2 drop-shadow-md">
-                        ရန်ကုန်နှစ်မြို့ကြားက လက်စွပ်
-                    </h2>
-                    <p
-                        class="text-gray-400 text-xs md:text-base max-w-xl mx-auto leading-relaxed pt-4 md:pt-6 font-noto border-l-2 border-yellow-600/50 pl-4 md:pl-6 text-left italic hidden md:block">
-                        "There is a Yangon of Gold, and a Yangon of Echoes. One is built on faith, the other on regret. Be careful which one you wake up in."
-                    </p>
 
-                    <div
-                        class="pt-8 md:pt-12 flex flex-col md:flex-row gap-3 md:gap-4 justify-center w-full max-w-xs md:max-w-none mx-auto">
-                        <button onclick="game.init()"
-                            class="group relative px-6 md:px-10 py-3 md:py-4 bg-yellow-600/10 border border-yellow-500/50 text-yellow-100 uppercase tracking-widest text-xs md:text-sm hover:bg-yellow-600 hover:text-black transition-all duration-500 backdrop-blur-md shadow-[0_0_30px_rgba(234,179,8,0.1)] overflow-hidden rounded-sm w-full md:w-auto">
-                            <span
-                                class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-80 group-hover:h-80 opacity-10"></span>
-                            <span
-                                class="relative flex items-center justify-center gap-3 font-bold">
-                                NEW GAME / ဂိမ်းအသစ်
-                            </span>
-                        </button>
-                        <button onclick="game.loadGame()" id="load-btn"
-                            class="hidden group relative px-6 md:px-10 py-3 md:py-4 bg-gray-800/50 border border-gray-500/50 text-gray-300 uppercase tracking-widest text-xs md:text-sm hover:bg-gray-700 hover:text-white transition-all duration-500 backdrop-blur-md overflow-hidden rounded-sm w-full md:w-auto">
-                            <span
-                                class="relative flex items-center justify-center gap-3 font-bold">
-                                CONTINUE / ဆက်လက်
-                            </span>
-                        </button>
+                    <!-- Right Column: Interactive Menu -->
+                    <div class="w-full md:w-[400px] flex flex-col justify-center items-start pl-0 md:pl-16 mt-12 md:mt-0 relative animate-slide-up" style="animation-delay: 0.5s;">
+                         
+                         <!-- Divider Line (Mobile/Desktop adaptive) -->
+                         <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-[60%] bg-gradient-to-b from-transparent via-white/20 to-transparent hidden md:block"></div>
+
+                         <div class="flex flex-col w-full space-y-2">
+                             <button onclick="game.init()" class="menu-item primary">
+                                 <div class="icon-box"><i data-lucide="play" class="w-6 h-6 fill-current"></i></div>
+                                 NEW GAME
+                             </button>
+                             
+                             <button onclick="game.loadGame()" id="load-btn" class="menu-item hidden">
+                                 <div class="icon-box"><i data-lucide="rotate-ccw" class="w-5 h-5"></i></div>
+                                 RESUME JOURNEY
+                             </button>
+                             
+                             <button onclick="alert('Feature coming in next update')" class="menu-item">
+                                 <div class="icon-box"><i data-lucide="image" class="w-5 h-5"></i></div>
+                                 SCENE GALLERY
+                             </button>
+                             
+                             <button onclick="alert('Settings menu placeholder')" class="menu-item">
+                                 <div class="icon-box"><i data-lucide="settings" class="w-5 h-5"></i></div>
+                                 SETTINGS
+                             </button>
+                             
+                             <button onclick="alert('Standard Terms & Conditions Apply')" class="menu-item">
+                                 <div class="icon-box"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                                 TERMS & CONDITIONS
+                             </button>
+                             
+                             <button onclick="alert('Created by Gemini & User')" class="menu-item">
+                                 <div class="icon-box"><i data-lucide="users" class="w-5 h-5"></i></div>
+                                 CREDITS
+                             </button>
+                             
+                             <button onclick="location.reload()" class="menu-item" style="color: #ef4444; border-bottom-color: rgba(239, 68, 68, 0.2);">
+                                 <div class="icon-box" style="color: #ef4444;"><i data-lucide="power" class="w-5 h-5"></i></div>
+                                 QUIT
+                             </button>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -418,50 +769,32 @@
 
         <script>
     // --- LOCATION DATABASE ---
-    // Updated coordinates to reflect real Yangon geography relative to the new SVG
     const LOCATIONS = [
         // North/West
         { id: 'imc', type: 'school', terrain: 'land', name: { en: "Info Myanmar College", mm: "Info Myanmar College" }, x: 30, y: 35, scene: 'school_imc' },
-
         { id: 'naung_gyi', type: 'home', terrain: 'land', name: { en: "Naung Gyi's House", mm: "နောင်ကြီး အိမ်" }, x: 95, y: 30, scene: 'home_naunggyi' },
-        
         { id: 'home', type: 'home', terrain: 'land', name: { en: "Tayza's House", mm: "တေဇ အိမ်" }, x: 80, y: 20, scene: 'intro-tayza' },
-        
         // Central
-        { id: 'shwedagon', type: 'shwedagon_pagoda', terrain: 'land', name: { en: "Shwedagon Pagoda", mm: "ရွှေတိဂုံဘုရား" }, x: 40, y: 55, scene: 'place_shwedagon' },
-
+        { id: 'shwedagon', type: 'shwedagon_pagoda', terrain: 'land', name: { en: "Shwedagon Pagoda", mm: "ရွှေတိဂုံဘုရား" }, x: 40, y: 55, scene: 'shwedagon_arrival' },
         { id: 'kantawgyi', type: 'park', terrain: 'water', name: { en: "Kandawgyi Lake", mm: "ကန်တော်ကြီး" }, x: 60, y: 62, scene: 'place_kantawgyi' },
-
         { id: 'inyalake', type: 'park', terrain: 'water', name: { en: "Inya Lake", mm: "အင်းယားကန်" }, x: 50, y: 35, scene: 'place_inya' },
-
         { id: 'mmplaza', type: 'mmplaza', terrain: 'land', name: { en: "Myanmar Plaza", mm: "မြန်မာပလာဇာ" }, x: 55, y: 25, scene: 'place_mmplaza' },
-        
         // Central/West
         { id: 'junction_city', type: 'mall', terrain: 'land', name: { en: "Junction City", mm: "Junction City" }, x: 43, y: 70, scene: 'mall_jc' },
-        
         // West/River Side
         { id: 'hmone_gyi', type: 'tea_shop', terrain: 'land', name: { en: "Hmone Gyi Tea Shop", mm: "မှုန်ကြီးလက်ဖက်ရည်ဆိုင်" }, x: 20, y: 20, scene: 'tea_hmonegyi' },
-        
         // Downtown
         { id: 'sule', type: 'sule_pagoda', terrain: 'land', name: { en: "Sule Pagoda", mm: "ဆူးလေဘုရား" }, x: 60, y: 80, scene: 'place_sule' },
         { id: 'downtown', type: 'city', terrain: 'land', name: { en: "Downtown", mm: "မြို့လယ်ခေါင်" }, x: 50, y: 88, scene: 'place_downtown' },
-        
-        // East (Tamwe/Thingangyun area) - Safe from river now
+        // East
         { id: 'alwan_cafe', type: 'cafe_shop', terrain: 'land', name: { en: "A Lwan Café", mm: "အလွမ်းကဖေး" }, x: 70, y: 50, scene: 'cafe_alwan' },
     ];
 
     const ROADS = [
-        ['home', 'naung_gyi'],
-        ['naung_gyi', 'imc'],
-        ['imc', 'shwedagon'],
-        ['shwedagon', 'kantawgyi'],
-        ['shwedagon', 'junction_city'],
-        ['junction_city', 'downtown'],
-        ['downtown', 'sule'],
-        ['downtown', 'alwan_cafe'],
-        ['sule', 'hmone_gyi'],
-        ['home', 'shwedagon'],
-        ['naung_gyi', 'shwedagon'] 
+        ['home', 'naung_gyi'], ['naung_gyi', 'imc'], ['imc', 'shwedagon'],
+        ['shwedagon', 'kantawgyi'], ['shwedagon', 'junction_city'], ['junction_city', 'downtown'],
+        ['downtown', 'sule'], ['downtown', 'alwan_cafe'], ['sule', 'hmone_gyi'],
+        ['home', 'shwedagon'], ['naung_gyi', 'shwedagon'] 
     ];
 
     // --- ASSETS DATABASE ---
@@ -470,6 +803,8 @@
             downtown: "../images/places/downtown.png",
             sule: "../images/places/sule.png",
             shwedagon: "../images/places/shwedagon.png",
+            shwedagon_stairs: "../images/places/shwedagon_stairs.png",
+            shwedagon_night: "../images/places/shwedagon_night.png",
             kantawgyi: "../images/places/kantawg.png",
             home_tayza: "../images/places/home_tayza.png",
             alarm: "../images/items/alarm.png",
@@ -479,7 +814,14 @@
             missedcall: "../images/items/missedcall.png",
             stair: "../images/places/stair.png",
             kitchen: "../images/places/kitchen.png",
-            livingroom: "../images/places/livingroom.png"
+            livingroom: "../images/places/livingroom.png",
+            bathroom: "../images/places/bathroom.png",
+            dining_room: "../images/places/dining_room.png",
+            bedroom_night: "../images/places/bedroom_night.png",
+            parallel_sule: "../images/places/parallel_sule.png",
+            parallel_street: "../images/places/parallel_street.png",
+            ring_item: "../images/items/ring.png",
+            faceless_mom: "../images/person/faceless_mom.png"
         },
         audio: {
             morning_chant: "../audios/morning_bird.mp3",
@@ -488,6 +830,10 @@
             oldfan: "../audios/oldfan.mp3",
             stair: "../audios/footstep.mp3",
             kitchen: "../audios/kitchen.mp3",
+            water_splash: "../audios/water_splash.mp3",
+            pagoda_bells: "../audios/pagoda_bells.mp3",
+            city_ambience: "../audios/city_ambience.mp3",
+            creepy_drone: "../audios/creepy_drone.mp3"
         },
         icons: {
             home: "../images/places/icon-house.png",
@@ -511,7 +857,8 @@
         constructor() {
             this.state = {
                 stats: { sanity: 100, trust: 0, life: 50, knowledge: 0 },
-                flags: {}, 
+                flags: {},
+                currency: 0, 
                 day: 1,
                 sceneId: 'start',
                 lang: 'mm'
@@ -529,6 +876,8 @@
             this.currentBgKey = null; 
             this.immersiveMode = false;
             this.mapOpen = false;
+            this.phoneOpen = false;
+            this.phoneApp = null; // null = home screen
             
             // --- MAP STATE ---
             this.mapZoom = 1; 
@@ -540,6 +889,7 @@
 
             if(localStorage.getItem('ringGameSave_V5')) {
                 document.getElementById('load-btn').classList.remove('hidden');
+                document.getElementById('load-btn').classList.add('flex'); // Ensure flex is added for layout
             }
         }
 
@@ -550,18 +900,15 @@
             lucide.createIcons();
             this.loadScene('yangon_intro');
             this.setupMapInteractions();
+            this.updateCurrency(0); // Initialize UI
         }
         
-        // --- MAP SYSTEM ENHANCED (Drag & Zoom) ---
+        // --- MAP SYSTEM ENHANCED ---
         setupMapInteractions() {
             const container = document.getElementById('map-container');
-            
-            // Mouse Events
             container.addEventListener('mousedown', (e) => this.startDrag(e));
             document.addEventListener('mousemove', (e) => this.drag(e));
             document.addEventListener('mouseup', () => this.endDrag());
-            
-            // Touch Events
             container.addEventListener('touchstart', (e) => this.startDrag(e.touches[0]));
             document.addEventListener('touchmove', (e) => this.drag(e.touches[0]));
             document.addEventListener('touchend', () => this.endDrag());
@@ -577,7 +924,7 @@
 
         drag(e) {
             if (!this.isDragging || !this.mapOpen) return;
-            e.preventDefault ? e.preventDefault() : null; // Prevent mobile scroll
+            e.preventDefault ? e.preventDefault() : null;
             this.panX = e.clientX - this.startX;
             this.panY = e.clientY - this.startY;
             this.updateMapTransform();
@@ -596,17 +943,424 @@
                 setTimeout(() => modal.classList.add('hidden'), 300);
             } else {
                 this.renderMap();
-                // Reset view on open
-                this.mapZoom = 1;
-                this.panX = 0;
-                this.panY = 0;
-                this.updateMapTransform();
-                
+                this.mapZoom = 1; this.panX = 0; this.panY = 0; this.updateMapTransform();
                 modal.classList.remove('hidden');
                 void modal.offsetWidth; 
                 modal.classList.remove('opacity-0');
             }
             this.mapOpen = !this.mapOpen;
+        }
+
+        // --- PHONE SYSTEM ---
+        togglePhone() {
+            const modal = document.getElementById('phone-modal');
+            if (this.phoneOpen) {
+                modal.classList.add('opacity-0');
+                setTimeout(() => { 
+                    modal.classList.add('hidden'); 
+                    this.phoneHome(); // Reset to home when closed
+                }, 300);
+            } else {
+                modal.classList.remove('hidden');
+                void modal.offsetWidth; 
+                modal.classList.remove('opacity-0');
+            }
+            this.phoneOpen = !this.phoneOpen;
+        }
+
+        phoneHome() {
+            const activeApp = document.getElementById('active-app-container');
+            activeApp.classList.remove('app-screen-active');
+            activeApp.classList.add('translate-x-full');
+            this.phoneApp = null;
+        }
+        
+        // --- MUSIC PLAYER LOGIC ---
+        toggleMusic() {
+            const audio = document.getElementById('music-player-audio');
+            const icon = document.getElementById('music-play-icon');
+            if (!audio) return;
+            
+            if (audio.paused) {
+                audio.play();
+                // Change Play Icon to Pause
+                icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="pause" class="w-6 h-6 fill-current ml-1"></i>';
+                lucide.createIcons();
+            } else {
+                audio.pause();
+                // Change Pause Icon to Play
+                icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="play" class="w-6 h-6 fill-current ml-1"></i>';
+                lucide.createIcons();
+            }
+        }
+
+        updateMusicProgress() {
+            const audio = document.getElementById('music-player-audio');
+            const progress = document.getElementById('music-progress');
+            const thumb = document.getElementById('music-thumb');
+            const current = document.getElementById('music-current-time');
+            
+            if (audio && progress) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = `${percent}%`;
+                if(thumb) thumb.style.left = `${percent}%`;
+                
+                // Format time
+                const mins = Math.floor(audio.currentTime / 60);
+                const secs = Math.floor(audio.currentTime % 60);
+                current.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        }
+
+        initMusicDuration() {
+            const audio = document.getElementById('music-player-audio');
+            const total = document.getElementById('music-duration');
+            if (audio && total) {
+                const mins = Math.floor(audio.duration / 60);
+                const secs = Math.floor(audio.duration % 60);
+                total.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        }
+
+        openApp(appName) {
+            this.phoneApp = appName;
+            const activeApp = document.getElementById('active-app-container');
+            const contentArea = document.getElementById('app-content-area');
+            const title = document.getElementById('app-title-text');
+            const header = document.getElementById('app-header-bar');
+
+            // Reset Styles
+            header.style.display = 'flex';
+            header.className = "h-12 border-b flex items-center px-4 font-bold shadow-sm z-30 relative transition-colors";
+            
+            // Build Content
+            let html = '';
+            
+            if (appName === 'phone') {
+                title.innerText = "Phone";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="h-full flex flex-col">
+                        <div class="flex-1 flex flex-col items-center justify-center p-6">
+                             <div class="text-4xl text-gray-800 font-light mb-8"></div>
+                             <div class="grid grid-cols-3 gap-6 text-2xl font-medium text-gray-800">
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">1</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">2</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">3</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">4</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">5</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">6</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">7</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">8</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">9</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-3xl">*</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">0</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl">#</button>
+                             </div>
+                             <div class="mt-8">
+                                 <button class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center shadow-lg text-white"><i data-lucide="phone" class="w-8 h-8"></i></button>
+                             </div>
+                        </div>
+                        <div class="h-16 border-t flex items-center justify-around text-xs text-gray-500 font-medium bg-gray-50">
+                             <div class="flex flex-col items-center text-blue-500"><i data-lucide="grid" class="w-5 h-5 mb-1"></i>Keypad</div>
+                             <div class="flex flex-col items-center"><i data-lucide="clock" class="w-5 h-5 mb-1"></i>Recents</div>
+                             <div class="flex flex-col items-center"><i data-lucide="users" class="w-5 h-5 mb-1"></i>Contacts</div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'messages') {
+                title.innerText = "Messages";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="p-4 space-y-4">
+                        <div class="flex gap-3 items-center border-b border-gray-100 pb-3">
+                            <div class="w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center text-orange-600 font-bold">M</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Mom</span> <span class="text-xs text-gray-400">14m ago</span></div>
+                                <div class="text-sm text-gray-500 truncate">Please come home early today...</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center border-b border-gray-100 pb-3">
+                            <div class="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center text-purple-600 font-bold">N</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Nay Chi</span> <span class="text-xs text-gray-400">Yesterday</span></div>
+                                <div class="text-sm text-gray-500 truncate">Are you free this weekend?</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center border-b border-gray-100 pb-3">
+                            <div class="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center text-blue-600 font-bold">K</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Kyaw Gyi</span> <span class="text-xs text-gray-400">2d ago</span></div>
+                                <div class="text-sm text-gray-500 truncate">Bro, check the group chat.</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center opacity-60">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold">O</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Ooredoo</span> <span class="text-xs text-gray-400">1w ago</span></div>
+                                <div class="text-sm text-gray-500 truncate">Your package expires soon.</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'facebook') {
+                title.innerText = "Facebook";
+                header.classList.add('bg-blue-600', 'text-white');
+                html = `
+                    <div class="bg-gray-200 min-h-full">
+                        <div class="bg-white p-3 mb-2">
+                             <div class="flex gap-2">
+                                 <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                 <div class="flex-1 bg-gray-100 rounded-full px-3 flex items-center text-sm text-gray-500">What's on your mind?</div>
+                             </div>
+                        </div>
+                        <!-- Post 1 -->
+                        <div class="bg-white p-3 mb-2 shadow-sm">
+                            <div class="flex gap-2 items-center mb-2">
+                                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center"><i data-lucide="newspaper" class="w-4 h-4 text-red-500"></i></div>
+                                <div>
+                                    <div class="text-sm font-bold text-gray-800">Yangon News</div>
+                                    <div class="text-xs text-gray-400">2 hrs ago</div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-800 mb-2">Heavy rain expected in downtown Yangon this evening. Please drive safely.</div>
+                            <div class="w-full h-32 bg-gray-300 rounded mb-2 bg-[url('https://images.unsplash.com/photo-1515347619252-60a6bf4fffce?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center"></div>
+                            <div class="border-t pt-2 flex justify-between text-gray-500 text-sm">
+                                <span><i data-lucide="thumbs-up" class="inline w-4 h-4 mr-1"></i> Like</span>
+                                <span><i data-lucide="message-circle" class="inline w-4 h-4 mr-1"></i> Comment</span>
+                                <span><i data-lucide="share" class="inline w-4 h-4 mr-1"></i> Share</span>
+                            </div>
+                        </div>
+                         <!-- Post 2 -->
+                        <div class="bg-white p-3 mb-2 shadow-sm">
+                            <div class="flex gap-2 items-center mb-2">
+                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">N</div>
+                                <div>
+                                    <div class="text-sm font-bold text-gray-800">Nay Chi updated her profile picture.</div>
+                                    <div class="text-xs text-gray-400">5 hrs ago</div>
+                                </div>
+                            </div>
+                            <div class="w-full h-48 bg-gray-300 rounded mb-2 bg-[url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center"></div>
+                             <div class="border-t pt-2 flex justify-between text-gray-500 text-sm">
+                                <span><i data-lucide="thumbs-up" class="inline w-4 h-4 mr-1"></i> 142</span>
+                                <span><i data-lucide="message-circle" class="inline w-4 h-4 mr-1"></i> 12</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'youtube') {
+                title.innerText = "YouTube";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="bg-black text-white min-h-full">
+                        <div class="p-2 border-b border-gray-800">
+                             <div class="w-full h-40 bg-gray-800 mb-2 bg-[url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center relative">
+                                 <div class="absolute bottom-2 right-2 bg-black/80 text-xs px-1 rounded">10:24</div>
+                             </div>
+                             <div class="flex gap-2">
+                                 <div class="w-8 h-8 rounded-full bg-blue-500"></div>
+                                 <div class="flex-1">
+                                     <div class="text-sm font-bold leading-tight mb-1">Walking in Yangon 4K - Downtown Rain</div>
+                                     <div class="text-xs text-gray-400">Myanmar Walks • 24K views • 1 day ago</div>
+                                 </div>
+                             </div>
+                        </div>
+                        <div class="p-2 border-b border-gray-800">
+                             <div class="w-full h-40 bg-gray-800 mb-2 bg-[url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center relative">
+                                  <div class="absolute bottom-2 right-2 bg-black/80 text-xs px-1 rounded">3:45</div>
+                             </div>
+                             <div class="flex gap-2">
+                                 <div class="w-8 h-8 rounded-full bg-red-500"></div>
+                                 <div class="flex-1">
+                                     <div class="text-sm font-bold leading-tight mb-1">Lofi Myanmar Beats to Study To</div>
+                                     <div class="text-xs text-gray-400">Lofi Girl • 1.2M views • 1 month ago</div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'photos') {
+                title.innerText = "Photos";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="p-1 grid grid-cols-3 gap-1">
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1572508589584-94d778209071?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1627993436034-71f496738923?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1605218427368-35b0185e33d0?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1596556554483-2079c6131496?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1589308078059-be1415eab4c3?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                    </div>
+                `;
+            } else if (appName === 'music') {
+                title.innerText = "Spotify"; 
+                header.style.display = 'none'; // Hide default header for full screen UI
+                
+                html = `
+                    <div class="h-full flex flex-col bg-gradient-to-b from-gray-900 to-black text-white relative">
+                         <!-- Custom Header -->
+                         <div class="flex justify-between items-center p-4 pt-6 z-10">
+                            <button onclick="game.phoneHome()" class="text-white hover:bg-white/10 p-1 rounded-full"><i data-lucide="chevron-down" class="w-6 h-6"></i></button>
+                            <span class="text-xs font-bold tracking-widest uppercase text-gray-300">Now Playing</span>
+                            <button class="text-white"><i data-lucide="more-horizontal" class="w-6 h-6"></i></button>
+                         </div>
+                         
+                         <!-- Album Art -->
+                         <div class="flex-1 flex items-center justify-center p-6 z-10">
+                            <div class="w-full aspect-square bg-gray-800 shadow-2xl rounded-md overflow-hidden relative">
+                                <img src="../images/items/song.png" class="w-full h-full object-cover">
+                            </div>
+                         </div>
+                         
+                         <!-- Info & Controls -->
+                         <div class="px-6 pb-8 z-10 bg-gradient-to-t from-black via-black/50 to-transparent">
+                             <div class="flex justify-between items-end mb-6">
+                                 <div>
+                                     <div class="text-2xl font-bold mb-1">Tejano Blue</div>
+                                     <div class="text-gray-400 text-sm">Cigarettes After Sex</div>
+                                 </div>
+                                 <button class="text-green-500"><i data-lucide="heart" class="w-6 h-6 fill-current"></i></button>
+                             </div>
+                             
+                             <!-- Progress -->
+                             <div class="mb-2">
+                                 <div class="w-full h-1 bg-gray-600 rounded-full relative cursor-pointer group">
+                                     <div id="music-progress" class="absolute left-0 top-0 h-full bg-white rounded-full w-0 transition-all duration-300"></div>
+                                     <div class="absolute -top-1.5 -ml-1.5 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" style="left: 0%" id="music-thumb"></div>
+                                 </div>
+                             </div>
+                             <div class="flex justify-between text-xs text-gray-400 font-medium mb-6">
+                                 <span id="music-current-time">0:00</span>
+                                 <span id="music-duration">0:00</span>
+                             </div>
+                             
+                             <!-- Buttons -->
+                             <div class="flex justify-between items-center">
+                                 <button class="text-gray-400 hover:text-white"><i data-lucide="shuffle" class="w-5 h-5"></i></button>
+                                 <button class="text-white hover:scale-110 transition-transform"><i data-lucide="skip-back" class="w-8 h-8 fill-current"></i></button>
+                                 
+                                 <button onclick="game.toggleMusic()" class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform shadow-lg shadow-green-500/20">
+                                     <i id="music-play-icon" data-lucide="play" class="w-6 h-6 fill-black ml-1"></i>
+                                 </button>
+                                 
+                                 <button class="text-white hover:scale-110 transition-transform"><i data-lucide="skip-forward" class="w-8 h-8 fill-current"></i></button>
+                                 <button class="text-gray-400 hover:text-white"><i data-lucide="repeat" class="w-5 h-5"></i></button>
+                             </div>
+                         </div>
+                         
+                         <!-- Audio Element (Real Audio) -->
+                         <audio id="music-player-audio" src="../audios/tejano-blue.mp3" ontimeupdate="game.updateMusicProgress()" onloadedmetadata="game.initMusicDuration()"></audio>
+                    </div>
+                `;
+            } else if (appName === 'kbzpay') {
+                title.innerText = "KBZPay";
+                header.classList.add('bg-blue-700', 'text-white');
+                html = `
+                    <div class="flex-1 bg-gray-100 flex flex-col items-center pt-6 relative min-h-full">
+                        <!-- Balance Card -->
+                        <div class="w-11/12 bg-blue-600 rounded-xl p-5 shadow-lg mb-6 text-white relative overflow-hidden">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+                            <span class="text-xs text-blue-100 uppercase tracking-widest">Total Balance</span>
+                            <div class="flex items-baseline gap-1 mt-1">
+                                <span class="text-3xl font-bold tracking-tight" id="kbz-balance">${this.state.currency.toLocaleString()}</span>
+                                <span class="text-sm font-medium text-blue-200">MMK</span>
+                            </div>
+                            <div class="flex justify-between mt-4">
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="arrow-up" class="w-4 h-4"></i></div><span class="text-[10px]">Transfer</span></div>
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="arrow-down" class="w-4 h-4"></i></div><span class="text-[10px]">Cash In</span></div>
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="qr-code" class="w-4 h-4"></i></div><span class="text-[10px]">Scan</span></div>
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></div><span class="text-[10px]">History</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction History (Mock) -->
+                        <div class="w-11/12">
+                            <div class="text-xs text-gray-500 mb-2 uppercase font-bold px-1">Recent Activity</div>
+                            <div class="space-y-2" id="kbz-history">
+                                <!-- Injected JS -->
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            contentArea.innerHTML = html;
+            activeApp.classList.remove('translate-x-full');
+            activeApp.classList.add('app-screen-active');
+            
+            // Re-render KBZ History if needed
+            if (appName === 'kbzpay') {
+                this.renderKBZHistory();
+            }
+            
+            lucide.createIcons();
+        }
+
+        updateCurrency(amount) {
+            if (amount === 0 && this.state.currency === 0) {
+                 const bal = document.getElementById('kbz-balance');
+                 if(bal) bal.innerText = "0";
+                 return;
+            }
+
+            this.state.currency += amount;
+            
+            const bal = document.getElementById('kbz-balance');
+            if(bal) bal.innerText = this.state.currency.toLocaleString();
+
+            if (amount !== 0) {
+                const notif = document.getElementById('currency-notification');
+                const text = document.getElementById('currency-text');
+                const sign = amount > 0 ? '+' : '';
+                
+                text.innerText = `${sign}${amount.toLocaleString()} MMK`;
+                text.className = `text-sm font-bold leading-tight font-mono ${amount > 0 ? 'currency-positive' : 'currency-negative'}`;
+                
+                notif.classList.add('notification-show');
+                setTimeout(() => {
+                    notif.classList.remove('notification-show');
+                }, 3000);
+
+                // Add to internal history logic
+                if (!this.state.history) this.state.history = [];
+                this.state.history.unshift({ amount: amount, date: 'Today' });
+                if (this.state.history.length > 5) this.state.history.pop();
+                
+                // If app is open, update UI
+                if (this.phoneApp === 'kbzpay') {
+                    this.renderKBZHistory();
+                }
+            }
+        }
+        
+        renderKBZHistory() {
+            const historyContainer = document.getElementById('kbz-history');
+            if (!historyContainer) return;
+            
+            if (!this.state.history || this.state.history.length === 0) {
+                 historyContainer.innerHTML = '<div class="text-center text-xs text-gray-400 py-4">No transactions yet</div>';
+                 return;
+            }
+
+            historyContainer.innerHTML = '';
+            this.state.history.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-3 rounded-lg flex justify-between items-center shadow-sm border border-gray-100";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full ${item.amount > 0 ? 'bg-green-100' : 'bg-red-100'} flex items-center justify-center">
+                            <i data-lucide="${item.amount > 0 ? 'arrow-down-left' : 'arrow-up-right'}" class="w-4 h-4 ${item.amount > 0 ? 'text-green-600' : 'text-red-600'}"></i>
+                        </div>
+                        <div class="text-xs">
+                            <div class="text-gray-800 font-bold">${item.amount > 0 ? 'Received' : 'Payment'}</div>
+                            <div class="text-gray-500">${item.date}</div>
+                        </div>
+                    </div>
+                    <span class="text-xs font-mono font-bold ${item.amount > 0 ? 'text-green-600' : 'text-red-600'}">${item.amount > 0 ? '+' : ''}${item.amount.toLocaleString()} MMK</span>
+                `;
+                historyContainer.appendChild(div);
+            });
+            lucide.createIcons();
         }
 
         zoomMap(delta) {
@@ -889,10 +1643,12 @@
             const save = localStorage.getItem('ringGameSave_V5');
             if (save) {
                 this.state = JSON.parse(save);
+                if (this.state.currency === undefined) this.state.currency = 0; // Backwards compatibility
                 document.getElementById('start-screen').classList.add('hidden');
                 document.getElementById('ui-layer').classList.remove('hidden');
                 document.getElementById('ui-layer').classList.add('flex');
                 this.loadScene(this.state.sceneId);
+                this.updateCurrency(0); // Refresh UI
             }
         }
 
@@ -906,16 +1662,12 @@
             this.autoPlay = !this.autoPlay;
             const btn = document.getElementById('auto-btn');
             if (this.autoPlay) {
-                btn.innerHTML = '<i data-lucide="pause-circle" class="w-3 h-3 md:w-4 md:h-4"></i> AUTO';
-                btn.classList.remove('bg-gray-700/80', 'text-gray-200');
-                btn.classList.add('bg-yellow-600/80', 'text-white', 'border-yellow-500');
+                btn.classList.add('active-mode');
                 if (!this.isTyping && !this.isLastStep()) {
                      this.next();
                 }
             } else {
-                btn.innerHTML = '<i data-lucide="play-circle" class="w-3 h-3 md:w-4 md:h-4"></i> AUTO';
-                btn.classList.add('bg-gray-700/80', 'text-gray-200');
-                btn.classList.remove('bg-yellow-600/80', 'text-white', 'border-yellow-500');
+                btn.classList.remove('active-mode');
                 if (this.autoPlayTimer) clearTimeout(this.autoPlayTimer);
             }
             lucide.createIcons();
@@ -986,6 +1738,15 @@
                         this.showUnlockNotification(locId);
                     }
                 });
+            }
+
+            // --- CURRENCY CHECK ---
+            if (step.currency) {
+                 this.updateCurrency(step.currency);
+                 // Clear from step object so it doesn't re-trigger on re-render (e.g. language toggle)
+                 // NOTE: Since sceneData is constant, this modifies the session's copy if shallow, 
+                 // but since we want to avoid re-gaining money on language toggle, we can use a flag for current step
+                 // For now, simple implementation as requested.
             }
 
             if (step.bg) {
@@ -1132,6 +1893,11 @@
                 });
             }
 
+            // --- CURRENCY CHECK FOR CHOICES ---
+            if (choice.currency) {
+                this.updateCurrency(choice.currency);
+            }
+
             if (choice.effect) {
                 for (const [k, v] of Object.entries(choice.effect)) {
                     this.state.stats[k] = Math.max(0, Math.min(100, this.state.stats[k] + v));
@@ -1152,6 +1918,7 @@
             const maps = {
                 naychi: `<div class="relative w-full h-full flex justify-center items-end animate-[float_4s_ease-in-out_infinite]"><div class="w-64 h-[600px] bg-gradient-to-t from-blue-500/20 to-transparent blur-xl"></div><div class="absolute bottom-0 w-48 h-[500px] border-2 border-blue-400/30 rounded-t-full bg-black/50 backdrop-blur-sm"></div></div>`,
                 faceless: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-72 h-[700px] bg-black blur-md"></div><div class="absolute top-40 w-32 h-40 bg-gray-900 rounded-full animate-pulse"></div></div>`,
+                faceless_mom: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-72 h-[700px] bg-gray-900 blur-sm"></div><div class="absolute top-32 w-40 h-40 bg-gray-800 rounded-full animate-pulse filter blur-sm"></div></div>`,
                 monk: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-64 h-[600px] bg-gradient-to-t from-orange-800/80 to-transparent"></div></div>`
             };
             return maps[type] || '';
@@ -1357,7 +2124,7 @@
         'kitchen': {
             bg: 'stair',
             world: 'real',
-            location: { en: 'Home - Kitchen', mm: 'အိမ် - မီးဖိုချောင်' },
+            location: { en: 'Home - Living Room', mm: 'အိမ် - ဧည့်ခန်း'},
             time: '07:15 AM',
             steps: [
             {
@@ -1368,7 +2135,7 @@
             {
                 bg: 'livingroom',
                 audio: 'kitchen',
-                speaker: SPEAKERS.unknown, text: {en: "Mom, I'm awake.", mm: "အမေ..သားနိုးပါပြီ။"},
+                speaker: SPEAKERS.tayza, text: {en: "Mom, I'm awake.", mm: "အမေ..သားနိုးပါပြီ။"},
             },
             {
                 bg: 'livingroom',
@@ -1380,7 +2147,7 @@
             {
 
                 bg: 'kitchen',
-                speaker: SPEAKERS.tayza, text: {en: "So… this is my mother, Daw Mya Thandar. She’s 55, works at an office, and somehow still finds the energy to take care of all of us. She doesn’t say much about her worries… but I know she prays for me every single day. Even when I act like I don’t notice.", mm: "ဒါကတော့ ကျွန်တော့်အမေ ဒေါ်မြသန္တာပါ။ အသက် ၅၅ နှစ်ရှိပြီး ရုံးမှာ အလုပ်လုပ်တယ်။ အလုပ်ပင်ပန်းပေမယ့် မိသားစုကို ဂရုစိုက်ဖို့ အမြဲ အင်အားရှိနေသလိုပဲ။ သူမက စိုးရိမ်မှုတွေကို မပြောတတ်ဘူး… ဒါပေမယ့် နေ့တိုင်း ကျွန်တော်အတွက် ဆုတောင်းပေးနေတာကို ကျွန်တော် သိပါတယ်။ မသိသလိုလုပ်နေပေမယ့်လည်း…"},
+                speaker: SPEAKERS.tayza, text: {en: "So… this is my mother, Daw Mya Thandar. She’s 55, works at an office, and somehow still finds the energy to take care of all of us. She doesn’t say much about her worries… but I know she prays for me every single day. Even when I act like I don’t notice.", mm: "ဒါကတော့ ကျွန်တော့်အမေ ဒေါ်မြသန္တာပါ။ အသက် ၅၅ နှစ်ရှိပြီး ရုံးမှာ အလုပ်လုပ်တယ်။ အလုပ်ပင်ပန်းပေမယ့် မိသားစုကို ဂုဏ်ယူစေချင်နေသူတစ်ယောက်ဖြစ်ပါတယ်။ သူမက စိုးရိမ်မှုတွေကို မပြောတတ်ဘူး… ဒါပေမယ့် နေ့တိုင်း ကျွန်တော်အတွက် ဆုတောင်းပေးနေတာကို ကျွန်တော် သိပါတယ်။ မသိသလိုလုပ်နေပေမယ့်လည်း…"},
             },
             {
                 speaker: SPEAKERS.mom, text: {en: "After taking care of your skin, face, and teeth, have breakfast, Tayza. You're ready to eat.", mm: "သား..တေဇ ..မျက်နှာသစ်သွားတိုက်ပြီး မနက်စာ လာစားတော့.. စားလို့ရပြီ။"},
@@ -1388,12 +2155,465 @@
                         
         ],
         choices: [
-            { text: { en: "Sit at table", mm: "ခုံမှာထိုင်မယ်" }, next: 'kitchen' },
-            { text: { en: "Go outside", mm: "အပြင်ထွက်မယ်" }, next: 'alarm' },
+            { text: { en: "Wash Up & Eat Breakfast", mm: "မျက်နှာသစ်သွားတိုက်ပြီး မနက်စာစားမယ်" }, next: 'washup' },
+            { text: { en: "Sit at Table for a Bit", mm: "ဧည့်ခန်းမှာခနထိုင်မယ်" }, next: 'sit_livingroom' },
         ]
         },
 
+        'washup': {
+            bg: 'bathroom',
+            world: 'real',
+            location: { en: 'Home - Bathroom', mm: 'အိမ် - ရေချိုးခန်း' },
+            time: '07:20 AM',
+            audio: 'water_splash',
+            steps: [
+                {
+                    bg: 'bathroom',
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Cold water hits my face. I look at the mirror. Dark circles. Tired eyes.", mm: "ရေအေးအေးက မျက်နှာပေါ်ကျလာတယ်။ မှန်ထဲကြည့်လိုက်တော့ မျက်ကွင်းညိုတွေနဲ့ ပင်ပန်းနေတဲ့ မျက်လုံးတွေ။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Yo, Tayza. Not done yet?", mm: "ဟေ့ရောင် တေဇ။ မပြီးသေးဘူးလားကွာ။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "This is my older brother, Ko Thiha. He's a pilot. Or at least, he's training to be one. He's the golden child.", mm: "ဒါက ကျွန်တော့်အစ်ကို၊ ကိုသီဟ။ သူက လေယာဉ်မှူးတစ်ယောက်။ ဒါမှမဟုတ် လေယာဉ်မှူးသင်တန်းတက်နေတာပေါ့။ အိမ်ရဲ့ ရွှေသားလေးပေါ့။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Whoa, look at you. You look like a panda, bro. What have you been doing? Gaming all night?", mm: "ဟာ... မင်းပုံစံကြည့်ပါဦး။ ပန်ဒါရုပ်ပေါက်နေပြီ ညီလေးရာ။ ဘာတွေလုပ်နေတာလဲ။ တညလုံး ဂိမ်းဆော့နေတာလား။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "No, Ko Gyi. I'm preparing for the final exam. The pressure is real.", mm: "မဟုတ်ပါဘူး ကိုကြီးရာ။ စာမေးပွဲအတွက် စာကြည့်နေတာပါ။ ဖိအားတွေက တကယ်များတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Ko Gyi, how did you get through your pilot training exams? Any tips?", mm: "ကိုကြီး... လေယာဉ်မှူးစာမေးပွဲတုန်းက ဘယ်လိုဖြေခဲ့လဲ။ အကြံဉာဏ်လေး ဘာလေးမရှိဘူးလား။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Ah, exams. Just focus on the process, not the result. And sleep, kid. You can't fly if you're asleep at the wheel.", mm: "အော် စာမေးပွဲလား။ ရလဒ်ကိုမကြည့်နဲ့ လုပ်ငန်းစဉ်ကိုအာရုံစိုက်။ ပြီးတော့ အိပ်ရေးဝဝအိပ်။ မင်းအိပ်ငိုက်နေရင် လေယာဉ်မောင်းလို့မရဘူး။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Here, take this. Buy some snacks or coffee. Good luck.", mm: "ရော့... ဒါယူသွား။ မုန့်ပဲဖြစ်ဖြစ် ကော်ဖီပဲဖြစ်ဖြစ် ဝယ်သောက်လိုက်။ ကံကောင်းပါစေကွာ။" },
+                    currency: 5000
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Thanks, Ko Gyi.", mm: "ကျေးဇူးပါ ကိုကြီး။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to breakfast", mm: "မနက်စာစားရန်သွားမည်" }, next: 'breakfast_table' }
+            ]
+        },
 
+        'sit_livingroom': {
+            bg: 'livingroom',
+            world: 'real',
+            location: { en: 'Home - Living Room', mm: 'အိမ် - ဧည့်ခန်း' },
+            time: '07:20 AM',
+            steps: [
+                {
+                    bg: 'livingroom',
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I sit on the sofa for a moment, letting the fan cool me down.", mm: "ဆိုဖာပေါ်မှာ ခဏထိုင်လိုက်ပြီး ပန်ကာလေကို ခံစားနေလိုက်တယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Hey, Lazy-za. What are you doing? I'm done cleaning up. Gonna grab breakfast.", mm: "ဟေ့ကောင် ပျင်းတေဇ။ ဘာလုပ်နေတာလဲ။ ငါတော့ ရေချိုးပြီးပြီ။ မနက်စာသွားစားတော့မယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Mom's gonna yell if you're late for school.", mm: "ကျောင်းနောက်ကျရင် အမေဆူလိမ့်မယ်နော်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Yeah, yeah. I'm coming.", mm: "အေးပါ... လာပါပြီ။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to kitchen", mm: "မီးဖိုချောင်သို့သွားမည်" }, next: 'breakfast_table' }
+            ]
+        },
+
+        'breakfast_table': {
+            bg: 'dining_room',
+            world: 'real',
+            location: { en: 'Home - Dining Room', mm: 'အိမ် - ထမင်းစားခန်း' },
+            time: '07:30 AM',
+            steps: [
+                {
+                    bg: 'dining_room',
+                    audio: 'kitchen',
+                    speaker: SPEAKERS.mom,
+                    text: { en: "Eat quickly. Mohinga is getting cold.", mm: "မြန်မြန်စား။ မုန့်ဟင်းခါး အေးကုန်တော့မယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I eat quickly. The taste of fish soup wakes me up better than coffee.", mm: "ကျွန်တော် မြန်မြန်စားလိုက်တယ်။ ငါးဟင်းရည်အရသာက ကော်ဖီထက်တောင် ပိုပြီးလန်းဆန်းစေတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I'm leaving for school now, Mom!", mm: "အမေ... သားကျောင်းသွားတော့မယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to School / Shwedagon", mm: "ကျောင်း/ဘုရား သွားမည်" }, next: 'street_monk' }
+            ]
+        },
+
+        'street_monk': {
+            bg: 'downtown',
+            world: 'real',
+            location: { en: 'Yangon - Streets', mm: 'ရန်ကုန် - လမ်းမပေါ်' },
+            time: '08:00 AM',
+            steps: [
+                {
+                    bg: 'downtown',
+                    audio: 'city_ambience',
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I decide to stop by Shwedagon Pagoda before class. I need some peace of mind for the exam.", mm: "အတန်းမသွားခင် ရွှေတိဂုံဘုရားကို ခဏဝင်ဖို့ ဆုံးဖြတ်လိုက်တယ်။ စာမေးပွဲအတွက် စိတ်ငြိမ်သက်မှု လိုအပ်နေတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.monk,
+                    text: { en: "Young man...", mm: "လူလေး..." }
+                },
+                {
+                    bg: 'downtown', 
+                    char: 'monk',
+                    speaker: SPEAKERS.monk,
+                    text: { en: "The shadow follows the object, but sometimes... the shadow moves on its own.", mm: "အရိပ်ဆိုတာ ဝတ္ထုပစ္စည်းနောက်ကိုလိုက်တယ်... ဒါပေမယ့် တစ်ခါတစ်လေကျရင် အရိပ်က သူ့ဘာသာ ရွေ့လျားတတ်တယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Uh... sure, Sayadaw. (What was that about?)", mm: "တင်ပါ့ဘုရား... (ဘာကိုဆိုလိုတာပါလိမ့်...)" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to Shwedagon Pagoda", mm: "ရွှေတိဂုံဘုရားသို့သွားမည်" }, next: 'shwedagon_arrival' }
+            ]
+        },
+
+        'shwedagon_arrival': {
+            bg: 'shwedagon_stairs',
+            world: 'real',
+            location: { en: 'Shwedagon Pagoda', mm: 'ရွှေတိဂုံဘုရား' },
+            time: '08:30 AM',
+            audio: 'pagoda_bells',
+            unlock: ['shwedagon'],
+            steps: [
+                {
+                    bg: 'shwedagon_stairs',
+                    clearChar: true,
+                    text: { en: "The southern stairway. Cool tiles under my feet. The smell of flowers and incense.", mm: "တောင်ဘက်မုခ်စောင်းတန်း။ ခြေဖဝါးအောက်က အေးမြတဲ့ ကျောက်ပြားတွေ။ ပန်းနံ့နဲ့ အမွှေးတိုင်နံ့တွေ။" }
+                },
+                {
+                    bg: 'shwedagon',
+                    text: { en: "The Great Pagoda towers above, a mountain of gold against the blue sky.", mm: "ရွှေတိဂုံစေတီတော်မြတ်ကြီးက မိုးပြာရောင်ကောင်းကင်အောက်မှာ ရွှေတောင်ကြီးတစ်ခုလို တည်ရှိနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Find a corner to pray", mm: "ဆုတောင်းရန်နေရာရှာမည်" }, next: 'shwedagon_pray' }
+            ]
+        },
+
+        'shwedagon_pray': {
+            bg: 'shwedagon',
+            world: 'real',
+            location: { en: 'Tuesday Corner', mm: 'အင်္ဂါထောင့်' },
+            time: '08:45 AM',
+            steps: [
+                {
+                    text: { en: "I kneel at the Tuesday corner. 'Please let me pass the exam. Please let me make my parents proud.'", mm: "အင်္ဂါထောင့်မှာ ဒူးထောက်လိုက်တယ်။ 'စာမေးပွဲအောင်ပါစေ။ မိဘတွေကို ဂုဏ်ယူဝင့်ကြွားနိုင်သူ ဖြစ်ပါစေသား'။" }
+                },
+                {
+                    text: { en: "I close my eyes, chanting silently.", mm: "မျက်လုံးတွေကို မှိတ်ပြီး တိတ်တဆိတ် ဂုဏ်တော်ပွားနေလိုက်တယ်။" }
+                },
+                {
+                    audio: { id: 'ring_drop', loop: false }, /* Assuming audio fallback works */
+                    text: { en: "*CLINK*", mm: "*ခလွမ်*" }
+                },
+                {
+                    text: { en: "Ouch! Something hit my head!", mm: "အား! ခေါင်းကို တစ်ခုခု လာမှန်တယ်။" }
+                },
+                {
+                    text: { en: "I look around. Did it fall from the roof?", mm: "ဘေးဘီကို ကြည့်လိုက်တယ်။ ခေါင်မိုးပေါ်က ပြုတ်ကျလာတာလား။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Look at the object", mm: "ဘာလဲဆိုတာ ကြည့်လိုက်မည်" }, next: 'ring_incident' }
+            ]
+        },
+
+        'ring_incident': {
+            bg: 'ring_item',
+            world: 'real',
+            location: { en: 'Tuesday Corner', mm: 'အင်္ဂါထောင့်' },
+            time: '08:46 AM',
+            steps: [
+                {
+                    bg: 'ring_item',
+                    text: { en: "It's a ring. An old, silver ring with strange engravings. It doesn't look like jewelry someone would just drop.", mm: "လက်စွပ်တစ်ကွင်းပဲ။ ထူးဆန်းတဲ့ အက္ခရာတွေနဲ့ ရှေးဟောင်းငွေလက်စွပ်တစ်ကွင်း။ လွယ်လွယ်ကူကူ ပြုတ်ကျခဲ့မယ့် လက်ဝတ်ရတနာမျိုးနဲ့ မတူဘူး။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Weird. Should I leave it here?", mm: "ထူးဆန်းတယ်။ ဒီအတိုင်း ထားခဲ့သင့်လား။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "But... it feels warm.", mm: "ဒါပေမယ့်... ကိုင်ကြည့်ရတာ နွေးနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Keep it in backpack", mm: "လွယ်အိတ်ထဲ ထည့်သိမ်းထားမည်" }, next: 'keep_ring' },
+                { text: { en: "Leave it (Force Pick up)", mm: "ထားခဲ့မည် (မရပါ)" }, next: 'keep_ring' } // Forcing narrative for now
+            ]
+        },
+
+        'keep_ring': {
+            bg: 'shwedagon',
+            world: 'real',
+            location: { en: 'Shwedagon Pagoda', mm: 'ရွှေတိဂုံဘုရား' },
+            time: '09:00 AM',
+            steps: [
+                {
+                    text: { en: "I decided to keep it safe for now. Maybe I can find the owner later.", mm: "လောလောဆယ်တော့ လုံခြုံအောင် သိမ်းထားလိုက်မယ်။ နောက်မှ ပိုင်ရှင်ရှာပေးတော့မယ်။" }
+                },
+                {
+                    text: { en: "I leave the pagoda. The city is waiting.", mm: "ဘုရားပေါ်က ပြန်ဆင်းလာခဲ့တယ်။ မြို့ကြီးက စောင့်ကြိုနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to Downtown", mm: "မြို့ထဲဘက် သွားမည်" }, next: 'downtown_walk' }
+            ]
+        },
+
+        'downtown_walk': {
+            bg: 'downtown',
+            world: 'real',
+            location: { en: 'Yangon - Downtown', mm: 'ရန်ကုန် - မြို့ထဲ' },
+            time: '05:00 PM',
+            unlock: ['downtown', 'sule'],
+            steps: [
+                {
+                    bg: 'downtown',
+                    audio: 'city_ambience',
+                    text: { en: "Time flies. Evening falls on Yangon.", mm: "အချိန်တွေ ကုန်တာမြန်လိုက်တာ။ ရန်ကုန်မှာ ညနေစောင်းနေပြီ။" }
+                },
+                {
+                    text: { en: "The streets are packed. People rushing home, buses honking, the smell of street food frying.", mm: "လမ်းတွေပေါ်မှာ လူတွေပြည့်ကျပ်နေတယ်။ အိမ်ပြန်မယ့်သူတွေ၊ ကားဟွန်းသံတွေ၊ လမ်းဘေးအစားအစာ ကြော်လှော်နံ့တွေ။" }
+                },
+                {
+                    text: { en: "The Yangon River glitters in the distance. This chaos... it's beautiful in its own way.", mm: "ရန်ကုန်မြစ်က အဝေးမှာ တလက်လက်တောက်ပနေတယ်။ ဒီရှုပ်ထွေးမှုတွေက... သူ့နည်းသူ့ဟန်နဲ့တော့ လှပနေတာပါပဲ။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go Home for Dinner", mm: "ညစာစားရန် အိမ်ပြန်မည်" }, next: 'dinner_scene' }
+            ]
+        },
+
+        'dinner_scene': {
+            bg: 'dining_room',
+            world: 'real',
+            location: { en: 'Home - Dining Room', mm: 'အိမ် - ထမင်းစားခန်း' },
+            time: '07:00 PM',
+            steps: [
+                {
+                    bg: 'dining_room',
+                    speaker: SPEAKERS.mom,
+                    text: { en: "Welcome back, son. Wash your hands. Dinner is ready.", mm: "ပြန်ရောက်ပြီလား သား။ လက်ဆေးလိုက်ဦး။ ညစာရပြီ။" }
+                },
+                {
+                    speaker: SPEAKERS.dad,
+                    text: { en: "Tayza. How is the exam preparation?", mm: "တေဇ။ စာမေးပွဲပြင်ဆင်မှု အခြေအနေဘယ်လိုလဲ။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "This is my father. Strict. Traditional. He loves us, but his expectations are heavy.", mm: "ဒါက ကျွန်တော့်အဖေ။ စည်းကမ်းကြီးတယ်။ ရှေးရိုးဆန်တယ်။ ကျွန်တော်တို့ကို ချစ်ပေမယ့် သူထားတဲ့ မျှော်လင့်ချက်တွေက လေးလံလွန်းတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "It's going well, Dad.", mm: "အဆင်ပြေပါတယ် အဖေ။" }
+                },
+                {
+                    speaker: SPEAKERS.dad,
+                    text: { en: "Good. Your future depends on you. Don't disappoint us.", mm: "ကောင်းတယ်။ မင်းရဲ့အနာဂတ်က မင်းအပေါ်မှာပဲ မူတည်တယ်။ ငါတို့ကို စိတ်မပျက်စေနဲ့။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Yeah, he's been trying really hard... at sleeping.", mm: "ဟုတ်တယ် အဖေ။ သူတော်တော် ကြိုးစားနေတာ... အိပ်ဖို့လေ။" }
+                },
+                {
+                    speaker: SPEAKERS.mom,
+                    text: { en: "*Taps brother's shoulder* Ko Thiha! Don't tease your little brother. Just eat.", mm: "*ပခုံးကိုပုတ်လျက်* ကိုသီဟ! ညီလေးကို စမနေနဲ့။ ထမင်းပဲစား။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I smile faintly. This is normal. This is home.", mm: "ကျွန်တော် ဖျော့တော့စွာ ပြုံးလိုက်တယ်။ ဒါက ပုံမှန်ပါပဲ။ ဒါက အိမ်ပါပဲ။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to room to study", mm: "အခန်းပြန်ပြီး စာလုပ်မည်" }, next: 'room_night' }
+            ]
+        },
+
+        'room_night': {
+            bg: 'bedroom_night',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '11:00 PM',
+            audio: 'creepy_drone', /* subtle foreshadowing */
+            steps: [
+                {
+                    bg: 'bedroom_night',
+                    text: { en: "I study for hours. My eyes are heavy.", mm: "စာလုပ်နေတာ နာရီပေါင်းများစွာ ကြာပြီ။ မျက်ခွံတွေ လေးလံလာတယ်။" }
+                },
+                {
+                    text: { en: "Then I remember the ring.", mm: "ရုတ်တရက် လက်စွပ်ကို သတိရသွားတယ်။" }
+                },
+                {
+                    bg: 'ring_item',
+                    text: { en: "I take it out of my bag. Under the desk lamp, it glows softly.", mm: "အိတ်ထဲကနေ ထုတ်လိုက်တယ်။ မီးအိမ်အလင်းရောင်အောက်မှာ လက်စွပ်က မှိန်ဖျဖျ လင်းနေတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Just for a second...", mm: "ခဏလေးပါပဲ..." }
+                },
+                {
+                    text: { en: "I slide it onto my finger. It fits perfectly.", mm: "လက်ချောင်းထဲကို စွပ်ထည့်လိုက်တယ်။ ကွက်တိပဲ။" }
+                },
+                {
+                    bg: 'bedroom_night',
+                    text: { en: "A sudden wave of exhaustion hits me. I put my head on the desk.", mm: "ရုတ်တရက် ပင်ပန်းနွမ်းနယ်မှုတွေ ဝင်ရောက်လာတယ်။ စားပွဲခုံပေါ် ခေါင်းမှောက်ချလိုက်မိတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Fall asleep", mm: "အိပ်ပျော်သွားသည်" }, next: 'wakeup_parallel' }
+            ]
+        },
+
+        'wakeup_parallel': {
+            bg: 'parallel_sule',
+            world: 'parallel',
+            location: { en: '???', mm: '???' },
+            time: 'UNKNOWN',
+            audio: 'creepy_drone',
+            steps: [
+                {
+                    bg: 'parallel_sule',
+                    text: { en: "...", mm: "..." }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Huh? Where...?", mm: "ဟင်... ဘယ်ရောက်နေတာလဲ...?" }
+                },
+                {
+                    text: { en: "I wake up. But not at my desk. I am standing in the middle of the road. Near Sule Pagoda.", mm: "ကျွန်တော် နိုးလာတယ်။ ဒါပေမယ့် စားပွဲခုံမှာ မဟုတ်ဘူး။ လမ်းမလယ်ခေါင်မှာ ရပ်နေမိတာ။ ဆူးလေဘုရားနားမှာ။" }
+                },
+                {
+                    text: { en: "The sky is a wrong shade of blue. The air smells like... rust.", mm: "ကောင်းကင်အရောင်က မှားယွင်းနေတယ်။ လေထုထဲမှာ သံချေးနံ့လိုလို ရနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Look around", mm: "ပတ်ဝန်းကျင်ကို ကြည့်မည်" }, next: 'parallel_home_journey' },
+                { text: { en: "Go Home immediately", mm: "အိမ်ကိုချက်ချင်းပြန်မည်" }, next: 'parallel_home_journey' }
+            ]
+        },
+
+        'parallel_home_journey': {
+            bg: 'parallel_street',
+            world: 'parallel',
+            location: { en: 'Downtown', mm: 'မြို့ထဲ' },
+            time: 'UNKNOWN',
+            steps: [
+                {
+                    bg: 'parallel_street',
+                    text: { en: "I rush towards home. People are walking on the street, but...", mm: "အိမ်ဘက်ကို အမြန်ပြေးလာခဲ့တယ်။ လမ်းပေါ်မှာ လူတွေသွားလာနေကြတယ်၊ ဒါပေမယ့်..." }
+                },
+                {
+                    text: { en: "Their faces. They are blurry. Distorted. Not Burmese. Not human.", mm: "သူတို့မျက်နှာတွေ။ ဝါးနေတယ်။ ရုပ်ပျက်ဆင်းပျက်ဖြစ်နေတယ်။ မြန်မာလူမျိုးတွေမဟုတ်ဘူး။ လူတွေနဲ့မတူဘူး။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "What is happening? Am I dreaming?", mm: "ဘာတွေဖြစ်နေတာလဲ။ ငါအိမ်မက်မက်နေတာလား။" }
+                },
+                {
+                    text: { en: "I reach my house door. I knock desperately.", mm: "အိမ်ရှေ့ရောက်တော့ တံခါးကို အားကုန်ထုလိုက်တယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Mom! Dad! Open the door!", mm: "အမေ! အဖေ! တံခါးဖွင့်ပါဦး!" }
+                }
+            ],
+            choices: [
+                { text: { en: "Wait for answer", mm: "တံခါးဖွင့်မည့်သူကို စောင့်မည်" }, next: 'parallel_home_door' }
+            ]
+        },
+
+        'parallel_home_door': {
+            bg: 'home_tayza',
+            world: 'parallel',
+            location: { en: 'Home', mm: 'အိမ်' },
+            time: 'UNKNOWN',
+            steps: [
+                {
+                    audio: 'kitchen', /* Distorted slightly by world effect */
+                    text: { en: "The door creaks open.", mm: "တံခါး ကျွီကနဲ ပွင့်လာတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.mom,
+                    text: { en: "You're late, Tayza. Where have you been?", mm: "နောက်ကျလိုက်တာ တေဇရယ်။ ဘယ်တွေသွားနေတာလဲ။" }
+                },
+                {
+                    text: { en: "The voice is my mother's. The clothes are hers.", mm: "အသံက အမေရဲ့အသံ။ အဝတ်အစားတွေက အမေဝတ်နေကျ။" }
+                },
+                {
+                    bg: 'faceless_mom',
+                    char: 'faceless_mom',
+                    text: { en: "But when I look up... there is no face. Just smooth skin.", mm: "ဒါပေမယ့် မော့ကြည့်လိုက်တဲ့အခါ... မျက်နှာမရှိဘူး။ ပြောင်ချောနေတဲ့ အရေပြားပဲ ရှိတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "AHHHHHH!", mm: "အာားးးးးးး!" }
+                }
+            ],
+            choices: [
+                { text: { en: "RUN AWAY", mm: "ထွက်ပြေးမည်" }, type: "danger", next: 'run_away_meet_naychi' }
+            ]
+        },
+
+        'run_away_meet_naychi': {
+            bg: 'parallel_street',
+            world: 'parallel',
+            location: { en: 'Alleyway', mm: 'လမ်းကြား' },
+            time: 'UNKNOWN',
+            steps: [
+                {
+                    clearChar: true,
+                    text: { en: "I run blindly into the dark alleyway. My heart is pounding out of my chest.", mm: "မှောင်မဲနေတဲ့ လမ်းကြားထဲကို အတင်းပြေးဝင်လိုက်တယ်။ ရင်ဘတ်ထဲက နှလုံးခုန်သံက အပြင်ရောက်တော့မတတ်ပဲ။" }
+                },
+                {
+                    text: { en: "I bump into someone.", mm: "တစ်ယောက်ယောက်နဲ့ ဝင်တိုက်မိတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.unknown,
+                    text: { en: "Shhh! Keep it down if you want to live.", mm: "ရှူး... အသက်ရှင်ချင်ရင် တိုးတိုးနေ။" }
+                },
+                {
+                    bg: 'parallel_street',
+                    char: 'naychi',
+                    speaker: SPEAKERS.nay,
+                    text: { en: "Welcome to the Echo Yangon. I'm Nay Chi.", mm: "ပဲ့တင်သံရန်ကုန်ကနေ ကြိုဆိုပါတယ်။ ငါ့နာမည် နေခြည်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "To Be Continued...", mm: "ဆက်ရန်..." }, next: 'start' } /* Loops back for now */
+            ]
+        }
     };
 
     // --- BOOTSTRAP ---
