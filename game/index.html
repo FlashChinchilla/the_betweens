@@ -469,39 +469,52 @@
             background: rgba(0,0,0,0.1);
             color: #000;
         }
+
+        /* Preloader Shimmer Effect */
+        @keyframes shimmer-load {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .loading-shimmer {
+            background: linear-gradient(90deg, rgba(234,179,8,0.5) 0%, rgba(250,204,21,1) 50%, rgba(234,179,8,0.5) 100%);
+            background-size: 200% 100%;
+            animation: shimmer-load 2s infinite linear;
+        }
         </style>
     </head>
     <body class="text-gray-100 h-screen w-screen relative select-none bg-black transition-colors duration-1000">
 
         <!-- Preloader Screen -->
         <div id="preloader-screen" class="fixed inset-0 z-[200] bg-[#050505] flex flex-col items-center justify-center text-center p-6 transition-opacity duration-1000">
-            <div class="flex gap-8 mb-8 text-gray-500">
-                <div class="flex flex-col items-center gap-3 animate-pulse">
-                    <i data-lucide="headphones" class="w-12 h-12 text-yellow-500"></i>
-                    <span class="text-xs uppercase tracking-widest font-bold">Headphones</span>
+            
+            <div class="flex gap-12 mb-10">
+                <div class="flex flex-col items-center gap-4 transition-transform hover:scale-105">
+                    <img src="https://us.technics.com/cdn/shop/files/EAH-A800_NonTextCarousels_01_2000x2000_aa2eef2b-7bd7-4800-936b-100d796ceb13_1800x.jpg?v=1745873069" alt="Headphones Placeholder" class="w-24 h-24 object-cover rounded-full border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] opacity-1">
+                    <span class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Headphones</span>
                 </div>
-                <div class="flex flex-col items-center gap-3 animate-pulse" style="animation-delay: 0.5s">
-                    <i data-lucide="laptop" class="w-12 h-12 text-yellow-500"></i>
-                    <span class="text-xs uppercase tracking-widest font-bold">Laptop</span>
+                <div class="flex flex-col items-center gap-4 transition-transform hover:scale-105">
+                    <img src="https://i5.walmartimages.com/asr/b4b7e8fc-06c2-4f40-b607-96ee4ba8fedc.3f076998920d7a5d75b46c2bf84d610e.jpeg" alt="Laptop Placeholder" class="w-24 h-24 object-cover rounded-full border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] opacity-1">
+                    <span class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Laptop</span>
                 </div>
             </div>
             
-            <p class="text-gray-300 max-w-md text-sm md:text-base leading-relaxed mb-12 font-noto">
-                <span class="block mb-2 font-bold text-white tracking-wide">For the best immersive experience:</span>
-                Please use headphones and play on a laptop or desktop screen.<br>
-                <span class="text-xs opacity-70 mt-2 block">(အကောင်းဆုံးခံစားမှုရရှိရန် နားကြပ်နှင့် လပ်တော့ပ်ကို အသုံးပြုပါ)</span>
-            </p>
+            <div class="max-w-md mb-12">
+                <h2 class="text-xl md:text-2xl font-cinzel font-bold text-gray-200 tracking-widest mb-3 uppercase">Optimal Experience</h2>
+                <p class="text-gray-400 text-sm md:text-base leading-relaxed font-lato">
+                    For the deepest immersion, please use headphones and play on a laptop or desktop screen.
+                </p>
+            </div>
 
-            <div class="w-64 h-1.5 bg-gray-800 rounded-full overflow-hidden shadow-inner relative">
-                <div id="loading-bar-fill" class="h-full bg-yellow-500 w-0 transition-all duration-300 shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
+            <div class="w-64 h-1 bg-gray-900 rounded-full overflow-hidden shadow-inner relative mb-4">
+                <div id="loading-bar-fill" class="h-full w-0 loading-shimmer shadow-[0_0_10px_rgba(234,179,8,0.8)] transition-all duration-300"></div>
             </div>
             
-            <div class="flex items-center gap-2 mt-4">
+            <div class="flex items-center gap-3">
                 <i id="loading-spinner" data-lucide="loader-2" class="w-4 h-4 text-yellow-500 animate-spin"></i>
-                <div id="loading-text" class="text-xs font-mono text-gray-400 tracking-widest uppercase">Initializing... 0%</div>
+                <div id="loading-text" class="text-xs font-mono text-yellow-500/80 tracking-[0.2em] uppercase">Initializing... 0%</div>
             </div>
             
-            <button id="start-btn" class="hidden mt-8 px-8 py-3 bg-yellow-500 text-black font-bold tracking-widest uppercase text-sm rounded hover:bg-yellow-400 transition-colors shadow-[0_0_15px_rgba(234,179,8,0.3)]" onclick="game.startFromPreloader()">Enter Reality</button>
+            <button id="start-btn" class="hidden mt-10 px-10 py-3 bg-transparent border border-yellow-500 text-yellow-500 font-bold tracking-[0.2em] uppercase text-sm rounded hover:bg-yellow-500 hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)]" onclick="game.startFromPreloader()">Play</button>
         </div>
 
         <div id="game-container" class="relative w-full h-full overflow-hidden">
@@ -1240,14 +1253,25 @@
             const startBtn = document.getElementById('start-btn');
             const loadSpinner = document.getElementById('loading-spinner');
 
+            // Add background audio play intent
+            const playPreloaderAudio = () => {
+                if (this.audio && this.audio.themeMusic && this.audio.themeMusic.paused) {
+                    this.audio.themeMusic.volume = this.state.settings.volume * 0.4;
+                    this.audio.themeMusic.play().catch(e => console.log("Autoplay blocked, waiting for click."));
+                }
+            };
+            
+            playPreloaderAudio();
+            document.addEventListener('click', playPreloaderAudio, { once: true });
+
             const updateProgress = () => {
                 loadedCount++;
                 let percent = Math.floor((loadedCount / totalAssets) * 100);
                 if(barFill) barFill.style.width = percent + '%';
                 if(loadText) loadText.innerText = `Loading Assets... ${percent}%`;
                 
-                if (loadedCount >= totalAssets && loadText && loadText.innerText !== "System Ready") {
-                    if(loadText) loadText.innerText = "System Ready";
+                if (loadedCount >= totalAssets && loadText && loadText.innerText !== "Ready to play") {
+                    if(loadText) loadText.innerText = "Ready to play";
                     if(startBtn) startBtn.classList.remove('hidden');
                     if(loadSpinner) loadSpinner.classList.add('hidden');
                     if(barFill) barFill.classList.add('animate-pulse');
@@ -1386,6 +1410,364 @@
             activeApp.classList.remove('app-screen-active');
             activeApp.classList.add('translate-x-full');
             this.phoneApp = null;
+        }
+
+        // --- MUSIC PLAYER LOGIC ---
+        toggleMusic() {
+            const audio = document.getElementById('music-player-audio');
+            const icon = document.getElementById('music-play-icon');
+            if (!audio) return;
+            
+            if (audio.paused) {
+                audio.play();
+                // Change Play Icon to Pause
+                icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="pause" class="w-6 h-6 fill-current ml-1"></i>';
+                lucide.createIcons();
+            } else {
+                audio.pause();
+                // Change Pause Icon to Play
+                icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="play" class="w-6 h-6 fill-current ml-1"></i>';
+                lucide.createIcons();
+            }
+        }
+
+        updateMusicProgress() {
+            const audio = document.getElementById('music-player-audio');
+            const progress = document.getElementById('music-progress');
+            const thumb = document.getElementById('music-thumb');
+            const current = document.getElementById('music-current-time');
+            
+            if (audio && progress) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = `${percent}%`;
+                if(thumb) thumb.style.left = `${percent}%`;
+                
+                // Format time
+                const mins = Math.floor(audio.currentTime / 60);
+                const secs = Math.floor(audio.currentTime % 60);
+                current.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        }
+
+        initMusicDuration() {
+            const audio = document.getElementById('music-player-audio');
+            const total = document.getElementById('music-duration');
+            if (audio && total) {
+                const mins = Math.floor(audio.duration / 60);
+                const secs = Math.floor(audio.duration % 60);
+                total.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        }
+
+        openApp(appName) {
+            this.phoneApp = appName;
+            const activeApp = document.getElementById('active-app-container');
+            const contentArea = document.getElementById('app-content-area');
+            const title = document.getElementById('app-title-text');
+            const header = document.getElementById('app-header-bar');
+
+            // Reset Styles
+            header.style.display = 'flex';
+            header.className = "h-12 border-b flex items-center px-4 font-bold shadow-sm z-30 relative transition-colors";
+            
+            // Build Content
+            let html = '';
+            
+            if (appName === 'phone') {
+                title.innerText = "Phone";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="h-full flex flex-col">
+                        <div class="flex-1 flex flex-col items-center justify-center p-6">
+                             <div class="text-4xl text-gray-800 font-light mb-8"></div>
+                             <div class="grid grid-cols-3 gap-6 text-2xl font-medium text-gray-800">
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">1</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">2</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">3</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">4</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">5</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">6</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">7</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">8</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">9</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-3xl">*</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">0</button>
+                                 <button class="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl">#</button>
+                             </div>
+                             <div class="mt-8">
+                                 <button class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center shadow-lg text-white"><i data-lucide="phone" class="w-8 h-8"></i></button>
+                             </div>
+                        </div>
+                        <div class="h-16 border-t flex items-center justify-around text-xs text-gray-500 font-medium bg-gray-50">
+                             <div class="flex flex-col items-center text-blue-500"><i data-lucide="grid" class="w-5 h-5 mb-1"></i>Keypad</div>
+                             <div class="flex flex-col items-center"><i data-lucide="clock" class="w-5 h-5 mb-1"></i>Recents</div>
+                             <div class="flex flex-col items-center"><i data-lucide="users" class="w-5 h-5 mb-1"></i>Contacts</div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'messages') {
+                title.innerText = "Messages";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="p-4 space-y-4">
+                        <div class="flex gap-3 items-center border-b border-gray-100 pb-3">
+                            <div class="w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center text-orange-600 font-bold">M</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Mom</span> <span class="text-xs text-gray-400">14m ago</span></div>
+                                <div class="text-sm text-gray-500 truncate">Please come home early today...</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center border-b border-gray-100 pb-3">
+                            <div class="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center text-purple-600 font-bold">N</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Nay Chi</span> <span class="text-xs text-gray-400">Yesterday</span></div>
+                                <div class="text-sm text-gray-500 truncate">Are you free this weekend?</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center border-b border-gray-100 pb-3">
+                            <div class="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center text-blue-600 font-bold">K</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Kyaw Gyi</span> <span class="text-xs text-gray-400">2d ago</span></div>
+                                <div class="text-sm text-gray-500 truncate">Bro, check the group chat.</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center opacity-60">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold">O</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-baseline"><span class="font-bold text-gray-800">Ooredoo</span> <span class="text-xs text-gray-400">1w ago</span></div>
+                                <div class="text-sm text-gray-500 truncate">Your package expires soon.</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'facebook') {
+                title.innerText = "Facebook";
+                header.classList.add('bg-blue-600', 'text-white');
+                html = `
+                    <div class="bg-gray-200 min-h-full">
+                        <div class="bg-white p-3 mb-2">
+                             <div class="flex gap-2">
+                                 <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                 <div class="flex-1 bg-gray-100 rounded-full px-3 flex items-center text-sm text-gray-500">What's on your mind?</div>
+                             </div>
+                        </div>
+                        <!-- Post 1 -->
+                        <div class="bg-white p-3 mb-2 shadow-sm">
+                            <div class="flex gap-2 items-center mb-2">
+                                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center"><i data-lucide="newspaper" class="w-4 h-4 text-red-500"></i></div>
+                                <div>
+                                    <div class="text-sm font-bold text-gray-800">Yangon News</div>
+                                    <div class="text-xs text-gray-400">2 hrs ago</div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-800 mb-2">Heavy rain expected in downtown Yangon this evening. Please drive safely.</div>
+                            <div class="w-full h-32 bg-gray-300 rounded mb-2 bg-[url('https://images.unsplash.com/photo-1515347619252-60a6bf4fffce?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center"></div>
+                            <div class="border-t pt-2 flex justify-between text-gray-500 text-sm">
+                                <span><i data-lucide="thumbs-up" class="inline w-4 h-4 mr-1"></i> Like</span>
+                                <span><i data-lucide="message-circle" class="inline w-4 h-4 mr-1"></i> Comment</span>
+                                <span><i data-lucide="share" class="inline w-4 h-4 mr-1"></i> Share</span>
+                            </div>
+                        </div>
+                         <!-- Post 2 -->
+                        <div class="bg-white p-3 mb-2 shadow-sm">
+                            <div class="flex gap-2 items-center mb-2">
+                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">N</div>
+                                <div>
+                                    <div class="text-sm font-bold text-gray-800">Nay Chi updated her profile picture.</div>
+                                    <div class="text-xs text-gray-400">5 hrs ago</div>
+                                </div>
+                            </div>
+                            <div class="w-full h-48 bg-gray-300 rounded mb-2 bg-[url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center"></div>
+                             <div class="border-t pt-2 flex justify-between text-gray-500 text-sm">
+                                <span><i data-lucide="thumbs-up" class="inline w-4 h-4 mr-1"></i> 142</span>
+                                <span><i data-lucide="message-circle" class="inline w-4 h-4 mr-1"></i> 12</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'youtube') {
+                title.innerText = "YouTube";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="bg-black text-white min-h-full">
+                        <div class="p-2 border-b border-gray-800">
+                             <div class="w-full h-40 bg-gray-800 mb-2 bg-[url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center relative">
+                                 <div class="absolute bottom-2 right-2 bg-black/80 text-xs px-1 rounded">10:24</div>
+                             </div>
+                             <div class="flex gap-2">
+                                 <div class="w-8 h-8 rounded-full bg-blue-500"></div>
+                                 <div class="flex-1">
+                                     <div class="text-sm font-bold leading-tight mb-1">Walking in Yangon 4K - Downtown Rain</div>
+                                     <div class="text-xs text-gray-400">Myanmar Walks • 24K views • 1 day ago</div>
+                                 </div>
+                             </div>
+                        </div>
+                        <div class="p-2 border-b border-gray-800">
+                             <div class="w-full h-40 bg-gray-800 mb-2 bg-[url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center relative">
+                                  <div class="absolute bottom-2 right-2 bg-black/80 text-xs px-1 rounded">3:45</div>
+                             </div>
+                             <div class="flex gap-2">
+                                 <div class="w-8 h-8 rounded-full bg-red-500"></div>
+                                 <div class="flex-1">
+                                     <div class="text-sm font-bold leading-tight mb-1">Lofi Myanmar Beats to Study To</div>
+                                     <div class="text-xs text-gray-400">Lofi Girl • 1.2M views • 1 month ago</div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                `;
+            } else if (appName === 'photos') {
+                title.innerText = "Photos";
+                header.classList.add('bg-white', 'text-gray-800');
+                html = `
+                    <div class="p-1 grid grid-cols-3 gap-1">
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1572508589584-94d778209071?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1627993436034-71f496738923?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1605218427368-35b0185e33d0?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1596556554483-2079c6131496?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                        <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1589308078059-be1415eab4c3?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
+                    </div>
+                `;
+            } else if (appName === 'music') {
+                title.innerText = "Spotify"; 
+                header.style.display = 'none'; // Hide default header for full screen UI
+                
+                html = `
+                    <div class="h-full flex flex-col bg-gradient-to-b from-gray-900 to-black text-white relative">
+                         <!-- Custom Header -->
+                         <div class="flex justify-between items-center p-4 pt-6 z-10">
+                            <button onclick="game.phoneHome()" class="text-white hover:bg-white/10 p-1 rounded-full"><i data-lucide="chevron-down" class="w-6 h-6"></i></button>
+                            <span class="text-xs font-bold tracking-widest uppercase text-gray-300">Now Playing</span>
+                            <button class="text-white"><i data-lucide="more-horizontal" class="w-6 h-6"></i></button>
+                         </div>
+                         
+                         <!-- Album Art -->
+                         <div class="flex-1 flex items-center justify-center p-6 z-10">
+                            <div class="w-full aspect-square bg-gray-800 shadow-2xl rounded-md overflow-hidden relative">
+                                <img src="../images/items/song.png" class="w-full h-full object-cover">
+                            </div>
+                         </div>
+                         
+                         <!-- Info & Controls -->
+                         <div class="px-6 pb-8 z-10 bg-gradient-to-t from-black via-black/50 to-transparent">
+                             <div class="flex justify-between items-end mb-6">
+                                 <div>
+                                     <div class="text-2xl font-bold mb-1">Tejano Blue</div>
+                                     <div class="text-gray-400 text-sm">Cigarettes After Sex</div>
+                                 </div>
+                                 <button class="text-green-500"><i data-lucide="heart" class="w-6 h-6 fill-current"></i></button>
+                             </div>
+                             
+                             <!-- Progress -->
+                             <div class="mb-2">
+                                 <div class="w-full h-1 bg-gray-600 rounded-full relative cursor-pointer group">
+                                     <div id="music-progress" class="absolute left-0 top-0 h-full bg-white rounded-full w-0 transition-all duration-300"></div>
+                                     <div class="absolute -top-1.5 -ml-1.5 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" style="left: 0%" id="music-thumb"></div>
+                                 </div>
+                             </div>
+                             <div class="flex justify-between text-xs text-gray-400 font-medium mb-6">
+                                 <span id="music-current-time">0:00</span>
+                                 <span id="music-duration">0:00</span>
+                             </div>
+                             
+                             <!-- Buttons -->
+                             <div class="flex justify-between items-center">
+                                 <button class="text-gray-400 hover:text-white"><i data-lucide="shuffle" class="w-5 h-5"></i></button>
+                                 <button class="text-white hover:scale-110 transition-transform"><i data-lucide="skip-back" class="w-8 h-8 fill-current"></i></button>
+                                 
+                                 <button onclick="game.toggleMusic()" class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform shadow-lg shadow-green-500/20">
+                                     <i id="music-play-icon" data-lucide="play" class="w-6 h-6 fill-black ml-1"></i>
+                                 </button>
+                                 
+                                 <button class="text-white hover:scale-110 transition-transform"><i data-lucide="skip-forward" class="w-8 h-8 fill-current"></i></button>
+                                 <button class="text-gray-400 hover:text-white"><i data-lucide="repeat" class="w-5 h-5"></i></button>
+                             </div>
+                         </div>
+                         
+                         <!-- Audio Element (Real Audio) -->
+                         <audio id="music-player-audio" src="../audios/tejano-blue.mp3" ontimeupdate="game.updateMusicProgress()" onloadedmetadata="game.initMusicDuration()"></audio>
+                    </div>
+                `;
+            } else if (appName === 'kbzpay') {
+                title.innerText = "KBZPay";
+                header.classList.add('bg-blue-700', 'text-white');
+                html = `
+                    <div class="flex-1 bg-gray-100 flex flex-col items-center pt-6 relative min-h-full">
+                        <!-- Balance Card -->
+                        <div class="w-11/12 bg-blue-600 rounded-xl p-5 shadow-lg mb-6 text-white relative overflow-hidden">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+                            <span class="text-xs text-blue-100 uppercase tracking-widest">Total Balance</span>
+                            <div class="flex items-baseline gap-1 mt-1">
+                                <span class="text-3xl font-bold tracking-tight" id="kbz-balance">${this.state.currency.toLocaleString()}</span>
+                                <span class="text-sm font-medium text-blue-200">MMK</span>
+                            </div>
+                            <div class="flex justify-between mt-4">
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="arrow-up" class="w-4 h-4"></i></div><span class="text-[10px]">Transfer</span></div>
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="arrow-down" class="w-4 h-4"></i></div><span class="text-[10px]">Cash In</span></div>
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="qr-code" class="w-4 h-4"></i></div><span class="text-[10px]">Scan</span></div>
+                                <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></div><span class="text-[10px]">History</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction History (Mock) -->
+                        <div class="w-11/12">
+                            <div class="text-xs text-gray-500 mb-2 uppercase font-bold px-1">Recent Activity</div>
+                            <div class="space-y-2" id="kbz-history">
+                                <!-- Injected JS -->
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            contentArea.innerHTML = html;
+            activeApp.classList.remove('translate-x-full');
+            activeApp.classList.add('app-screen-active');
+            
+            // Re-render KBZ History if needed
+            if (appName === 'kbzpay') {
+                this.renderKBZHistory();
+            }
+            
+            lucide.createIcons();
+        }
+
+        updateCurrency(amount) {
+            if (amount === 0 && this.state.currency === 0) {
+                 const bal = document.getElementById('kbz-balance');
+                 if(bal) bal.innerText = "0";
+                 return;
+            }
+
+            this.state.currency += amount;
+            
+            const bal = document.getElementById('kbz-balance');
+            if(bal) bal.innerText = this.state.currency.toLocaleString();
+
+            if (amount !== 0) {
+                const notif = document.getElementById('currency-notification');
+                const text = document.getElementById('currency-text');
+                const sign = amount > 0 ? '+' : '';
+                
+                text.innerText = `${sign}${amount.toLocaleString()} MMK`;
+                text.className = `text-sm font-bold leading-tight font-mono ${amount > 0 ? 'currency-positive' : 'currency-negative'}`;
+                
+                notif.classList.add('notification-show');
+                setTimeout(() => {
+                    notif.classList.remove('notification-show');
+                }, 3000);
+
+                // Add to internal history logic
+                if (!this.state.history) this.state.history = [];
+                this.state.history.unshift({ amount: amount, date: 'Today' });
+                if (this.state.history.length > 5) this.state.history.pop();
+                
+                // If app is open, update UI
+                if (this.phoneApp === 'kbzpay') {
+                    this.renderKBZHistory();
+                }
+            }
         }
 
         updateCurrency(amount) {
@@ -2268,6 +2650,601 @@
             { text: { en: "Continue", mm: "ရှေ့ဆက်မည်" }, next: 'alarm' },
         ]
         },
+        
+        'alarm': {
+            bg: 'home_tayza',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:01 AM',
+            steps: [
+            {
+                bg: 'home_tayza',
+                audio: 'morning_chant',
+                text: {
+                    en: "...",
+                    mm: "..."
+                }
+            },
+            {
+                bg: 'alarm',
+                audio: { id: 'alarm', loop: true },
+                text: {
+                    en: "*The alarm is ringing*",
+                    mm: "*နှိုးစက်အသံမြည်သည်*"
+                }
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Close the Alarm", mm: "နှိုးစက်ပိတ်မည်" }, next: 'intro-tayza' },
+        ]
+        },
+
+        'intro-tayza': {
+            bg: 'sleep_tayza',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:01 AM',
+            steps: [
+            {
+                bg: 'sleep_tayza',
+                audio: { id: 'yawn', loop: false },
+                unlock: ['home'],
+                text: {
+                    en: "Wahhhhh...",
+                    mm: "၀ါးးးးးးးး"
+                }
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Sleep for a while", mm: "ခဏလောက် ပြန်အိပ်လိုက်မယ်" }, next: 'alarm' },
+            { text: { en: "Wake up", mm: "အိပ်ရာထမည်" }, next: 'wakeup-tayza' },
+        ]
+        },
+
+        'wakeup-tayza': {
+            bg: 'wakeup_tayza',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:05 AM',
+            steps: [
+            {
+                bg: 'wakeup_tayza',
+                audio: { id: 'oldfan', loop: true },
+                speaker: SPEAKERS.unknown, text: {en: "Another morning.", mm: "နောက်ထပ် မနက်ခင်းတစ်ခု..."}
+            },
+            {
+                bg: 'oldfan',
+                speaker: SPEAKERS.unknown, text: {en: "The fan spins lazily overhead, counting seconds I don't have.", mm: "ပန်ကာက ခေါင်းပေါ်မှာဖြေးညှင်းစွာ လည်ပတ်ရင်း ကျွန်တော့်ကတော့ ကုန်ဆုံးသွားတဲ့ အချိန်တွေကို ရေတွက်နေမိတယ်။"}
+            },
+            {
+                speaker: SPEAKERS.unknown, text: {en: "The sun is already burning through the curtains. I hate the heat.", mm: "နေရောင်က လိုက်ကာတွေကို ဖောက်ပြီး ပူလောင်နေပြီ။ ဒီအပူဒဏ်ကို ကျွန်တော်မုန်းတယ်။"},
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Check the phone", mm: "ဖုန်းကြည့်မယ်" }, next: 'missedcall' },
+        ]
+        },
+
+        'missedcall': {
+            bg: 'missedcall',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '07:05 AM',
+            steps: [
+            {
+                bg: 'missedcall',
+                speaker: SPEAKERS.unknown, text: {en: "I check my phone. 14 missed calls from 'Mom'. She is in the kitchen downstairs. This is how our house works.", mm: "ဖုန်းကို စစ်ကြည့်လိုက်တယ်။ အမေဆီက Missed Call ၁၄ ခု။ အမေက အိမ်အောက်ထပ် မီးဖိုချောင်မှာ ရှိနေတာကိုတောင် ဖုန်းဆက်နေတုန်းပဲ။"},
+            },
+            {
+                speaker: SPEAKERS.unknown, text: {en: "The pressure starts before I even leave the bed.", mm: "အိပ်ရာမထခင်ကတည်းက ဖိအားတွေက စတင်နေပြီ။"},
+            },
+            {
+                speaker: SPEAKERS.tayza, text: {en: "My name is Tayza, I am 21 years old and an IT student at Info Myanmar University in Yangon, currently preparing for my upcoming final exam while trying my best to make my family proud.", mm: "ကျွန်တော့်နာမည် 'တေဇ' ပါ၊ အသက်ကတော့ ၂၁ နှစ်ပြည့်ပြီး လက်ရှိမှာတော့ ရန်ကုန်မြို့ရှိ Info Myanmar University မှ IT ကျောင်းသားတစ်ယောက်ဖြစ်ကာ လာမည့် နောက်ဆုံးစာမေးပွဲအတွက် ကြိုးစားလေ့လာရင်း မိသားစုကို ဂုဏ်ယူစေချင်နေသူတစ်ယောက်ဖြစ်ပါတယ်။"},
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Rush downstairs", mm: "အောက်ထပ်ကို အမြန်ဆင်းမယ်" }, next: 'kitchen' },
+            { text: { en: "Stay in bed for 5 more minutes.", mm: "၅ မိနစ်လောက် ဆက်လှဲနေမယ်" }, next: 'alarm' },
+        ]
+        },
+
+        'kitchen': {
+            bg: 'stair',
+            world: 'real',
+            location: { en: 'Home - Living Room', mm: 'အိမ် - ဧည့်ခန်း'},
+            time: '07:15 AM',
+            steps: [
+            {
+                bg: 'stair',
+                audio: 'stair',
+                text: {en: "*foot steps*", mm: "*ခြေသံ*"},
+            },
+            {
+                bg: 'livingroom',
+                audio: 'kitchen',
+                speaker: SPEAKERS.tayza, text: {en: "Mom, I'm awake.", mm: "အမေ..သားနိုးပါပြီ။"},
+            },
+            {
+                bg: 'livingroom',
+                speaker: SPEAKERS.unknown, text: {en: "Tayza! Why are you late? Do you want to be late for school?", mm: "တေဇ.. သားငယ်လေး.. ဘာလို့ နောက်ကျနေတာလဲ။ ကျောင်းနောက်ကျချင်နေတာလား။"},
+            },
+            {
+                speaker: SPEAKERS.tayza, text: {en: "I was studying late last night, Mom.", mm: "ညက စာကြည့်တာ နောက်ကျသွားလို့ပါ အမေ။"},
+            },
+            {
+
+                bg: 'kitchen',
+                speaker: SPEAKERS.tayza, text: {en: "So… this is my mother, Daw Mya Thandar. She’s 55, works at an office, and somehow still finds the energy to take care of all of us. She doesn’t say much about her worries… but I know she prays for me every single day. Even when I act like I don’t notice.", mm: "ဒါကတော့ ကျွန်တော့်အမေ ဒေါ်မြသန္တာပါ။ အသက် ၅၅ နှစ်ရှိပြီး ရုံးမှာ အလုပ်လုပ်တယ်။ အလုပ်ပင်ပန်းပေမယ့် မိသားစုကို ဂုဏ်ယူစေချင်နေသူတစ်ယောက်ဖြစ်ပါတယ်။ သူမက စိုးရိမ်မှုတွေကို မပြောတတ်ဘူး… ဒါပေမယ့် နေ့တိုင်း ကျွန်တော်အတွက် ဆုတောင်းပေးနေတာကို ကျွန်တော် သိပါတယ်။ မသိသလိုလုပ်နေပေမယ့်လည်း…"},
+            },
+            {
+                speaker: SPEAKERS.mom, text: {en: "After taking care of your skin, face, and teeth, have breakfast, Tayza. You're ready to eat.", mm: "သား..တေဇ ..မျက်နှာသစ်သွားတိုက်ပြီး မနက်စာ လာစားတော့.. စားလို့ရပြီ။"},
+            },
+                        
+        ],
+        choices: [
+            { text: { en: "Wash Up & Eat Breakfast", mm: "မျက်နှာသစ်သွားတိုက်ပြီး မနက်စာစားမယ်" }, next: 'washup' },
+            { text: { en: "Sit at Table for a Bit", mm: "ဧည့်ခန်းမှာခနထိုင်မယ်" }, next: 'sit_livingroom' },
+        ]
+        },
+
+        'washup': {
+            bg: 'bathroom',
+            world: 'real',
+            location: { en: 'Home - Bathroom', mm: 'အိမ် - ရေချိုးခန်း' },
+            time: '07:20 AM',
+            audio: 'water_splash',
+            steps: [
+                {
+                    bg: 'bathroom',
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Cold water hits my face. I look at the mirror. Dark circles. Tired eyes.", mm: "ရေအေးအေးက မျက်နှာပေါ်ကျလာတယ်။ မှန်ထဲကြည့်လိုက်တော့ မျက်ကွင်းညိုတွေနဲ့ ပင်ပန်းနေတဲ့ မျက်လုံးတွေ။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Yo, Tayza. Not done yet?", mm: "ဟေ့ရောင် တေဇ။ မပြီးသေးဘူးလားကွာ။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "This is my older brother, Ko Thiha. He's a pilot. Or at least, he's training to be one. He's the golden child.", mm: "ဒါက ကျွန်တော့်အစ်ကို၊ ကိုသီဟ။ သူက လေယာဉ်မှူးတစ်ယောက်။ ဒါမှမဟုတ် လေယာဉ်မှူးသင်တန်းတက်နေတာပေါ့။ အိမ်ရဲ့ ရွှေသားလေးပေါ့။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Whoa, look at you. You look like a panda, bro. What have you been doing? Gaming all night?", mm: "ဟာ... မင်းပုံစံကြည့်ပါဦး။ ပန်ဒါရုပ်ပေါက်နေပြီ ညီလေးရာ။ ဘာတွေလုပ်နေတာလဲ။ တညလုံး ဂိမ်းဆော့နေတာလား။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "No, Ko Gyi. I'm preparing for the final exam. The pressure is real.", mm: "မဟုတ်ပါဘူး ကိုကြီးရာ။ စာမေးပွဲအတွက် စာကြည့်နေတာပါ။ ဖိအားတွေက တကယ်များတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Ko Gyi, how did you get through your pilot training exams? Any tips?", mm: "ကိုကြီး... လေယာဉ်မှူးစာမေးပွဲတုန်းက ဘယ်လိုဖြေခဲ့လဲ။ အကြံဉာဏ်လေး ဘာလေးမရှိဘူးလား။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Ah, exams. Just focus on the process, not the result. And sleep, kid. You can't fly if you're asleep at the wheel.", mm: "အော် စာမေးပွဲလား။ ရလဒ်ကိုမကြည့်နဲ့ လုပ်ငန်းစဉ်ကိုအာရုံစိုက်။ ပြီးတော့ အိပ်ရေးဝဝအိပ်။ မင်းအိပ်ငိုက်နေရင် လေယာဉ်မောင်းလို့မရဘူး။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Here, take this. Buy some snacks or coffee. Good luck.", mm: "ရော့... ဒါယူသွား။ မုန့်ပဲဖြစ်ဖြစ် ကော်ဖီပဲဖြစ်ဖြစ် ဝယ်သောက်လိုက်။ ကံကောင်းပါစေကွာ။" },
+                    currency: 5000
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Thanks, Ko Gyi.", mm: "ကျေးဇူးပါ ကိုကြီး။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to breakfast", mm: "မနက်စာစားရန်သွားမည်" }, next: 'breakfast_table' }
+            ]
+        },
+
+        'sit_livingroom': {
+            bg: 'livingroom',
+            world: 'real',
+            location: { en: 'Home - Living Room', mm: 'အိမ် - ဧည့်ခန်း' },
+            time: '07:20 AM',
+            steps: [
+                {
+                    bg: 'livingroom',
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I sit on the sofa for a moment, letting the fan cool me down.", mm: "ဆိုဖာပေါ်မှာ ခဏထိုင်လိုက်ပြီး ပန်ကာလေကို ခံစားနေလိုက်တယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Hey, Lazy-za. What are you doing? I'm done cleaning up. Gonna grab breakfast.", mm: "ဟေ့ကောင် ပျင်းတေဇ။ ဘာလုပ်နေတာလဲ။ ငါတော့ ရေချိုးပြီးပြီ။ မနက်စာသွားစားတော့မယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Mom's gonna yell if you're late for school.", mm: "ကျောင်းနောက်ကျရင် အမေဆူလိမ့်မယ်နော်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Yeah, yeah. I'm coming.", mm: "အေးပါ... လာပါပြီ။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to kitchen", mm: "မီးဖိုချောင်သို့သွားမည်" }, next: 'breakfast_table' }
+            ]
+        },
+
+        'breakfast_table': {
+            bg: 'dining_room',
+            world: 'real',
+            location: { en: 'Home - Dining Room', mm: 'အိမ် - ထမင်းစားခန်း' },
+            time: '07:30 AM',
+            steps: [
+                {
+                    bg: 'dining_room',
+                    audio: 'kitchen',
+                    speaker: SPEAKERS.mom,
+                    text: { en: "Eat quickly. Mohinga is getting cold.", mm: "မြန်မြန်စား။ မုန့်ဟင်းခါး အေးကုန်တော့မယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I eat quickly. The taste of fish soup wakes me up better than coffee.", mm: "ကျွန်တော် မြန်မြန်စားလိုက်တယ်။ ငါးဟင်းရည်အရသာက ကော်ဖီထက်တောင် ပိုပြီးလန်းဆန်းစေတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I'm leaving for school now, Mom!", mm: "အမေ... သားကျောင်းသွားတော့မယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to School / Shwedagon", mm: "ကျောင်း/ဘုရား သွားမည်" }, next: 'street_monk' }
+            ]
+        },
+
+        'street_monk': {
+            bg: 'downtown',
+            world: 'real',
+            location: { en: 'Yangon - Streets', mm: 'ရန်ကုန် - လမ်းမပေါ်' },
+            time: '08:00 AM',
+            steps: [
+                {
+                    bg: 'downtown',
+                    audio: 'city_ambience',
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I decide to stop by Shwedagon Pagoda before class. I need some peace of mind for the exam.", mm: "အတန်းမသွားခင် ရွှေတိဂုံဘုရားကို ခဏဝင်ဖို့ ဆုံးဖြတ်လိုက်တယ်။ စာမေးပွဲအတွက် စိတ်ငြိမ်သက်မှု လိုအပ်နေတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.monk,
+                    text: { en: "Young man...", mm: "လူလေး..." }
+                },
+                {
+                    bg: 'downtown', 
+                    char: 'monk',
+                    speaker: SPEAKERS.monk,
+                    text: { en: "The shadow follows the object, but sometimes... the shadow moves on its own.", mm: "အရိပ်ဆိုတာ ဝတ္ထုပစ္စည်းနောက်ကိုလိုက်တယ်... ဒါပေမယ့် တစ်ခါတစ်လေကျရင် အရိပ်က သူ့ဘာသာ ရွေ့လျားတတ်တယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Uh... sure, Sayadaw. (What was that about?)", mm: "တင်ပါ့ဘုရား... (ဘာကိုဆိုလိုတာပါလိမ့်...)" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to Shwedagon Pagoda", mm: "ရွှေတိဂုံဘုရားသို့သွားမည်" }, next: 'shwedagon_arrival' }
+            ]
+        },
+
+        'shwedagon_arrival': {
+            bg: 'shwedagon_stairs',
+            world: 'real',
+            location: { en: 'Shwedagon Pagoda', mm: 'ရွှေတိဂုံဘုရား' },
+            time: '08:30 AM',
+            audio: 'pagoda_bells',
+            unlock: ['shwedagon'],
+            steps: [
+                {
+                    bg: 'shwedagon_stairs',
+                    clearChar: true,
+                    text: { en: "The southern stairway. Cool tiles under my feet. The smell of flowers and incense.", mm: "တောင်ဘက်မုခ်စောင်းတန်း။ ခြေဖဝါးအောက်က အေးမြတဲ့ ကျောက်ပြားတွေ။ ပန်းနံ့နဲ့ အမွှေးတိုင်နံ့တွေ။" }
+                },
+                {
+                    bg: 'shwedagon',
+                    text: { en: "The Great Pagoda towers above, a mountain of gold against the blue sky.", mm: "ရွှေတိဂုံစေတီတော်မြတ်ကြီးက မိုးပြာရောင်ကောင်းကင်အောက်မှာ ရွှေတောင်ကြီးတစ်ခုလို တည်ရှိနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Find a corner to pray", mm: "ဆုတောင်းရန်နေရာရှာမည်" }, next: 'shwedagon_pray' }
+            ]
+        },
+
+        'shwedagon_pray': {
+            bg: 'shwedagon',
+            world: 'real',
+            location: { en: 'Tuesday Corner', mm: 'အင်္ဂါထောင့်' },
+            time: '08:45 AM',
+            steps: [
+                {
+                    text: { en: "I kneel at the Tuesday corner. 'Please let me pass the exam. Please let me make my parents proud.'", mm: "အင်္ဂါထောင့်မှာ ဒူးထောက်လိုက်တယ်။ 'စာမေးပွဲအောင်ပါစေ။ မိဘတွေကို ဂုဏ်ယူဝင့်ကြွားနိုင်သူ ဖြစ်ပါစေသား'။" }
+                },
+                {
+                    text: { en: "I close my eyes, chanting silently.", mm: "မျက်လုံးတွေကို မှိတ်ပြီး တိတ်တဆိတ် ဂုဏ်တော်ပွားနေလိုက်တယ်။" }
+                },
+                {
+                    audio: { id: 'ring_drop', loop: false }, /* Assuming audio fallback works */
+                    text: { en: "*CLINK*", mm: "*ခလွမ်*" }
+                },
+                {
+                    text: { en: "Ouch! Something hit my head!", mm: "အား! ခေါင်းကို တစ်ခုခု လာမှန်တယ်။" }
+                },
+                {
+                    text: { en: "I look around. Did it fall from the roof?", mm: "ဘေးဘီကို ကြည့်လိုက်တယ်။ ခေါင်မိုးပေါ်က ပြုတ်ကျလာတာလား။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Look at the object", mm: "ဘာလဲဆိုတာ ကြည့်လိုက်မည်" }, next: 'ring_incident' }
+            ]
+        },
+
+        'ring_incident': {
+            bg: 'ring_item',
+            world: 'real',
+            location: { en: 'Tuesday Corner', mm: 'အင်္ဂါထောင့်' },
+            time: '08:46 AM',
+            steps: [
+                {
+                    bg: 'ring_item',
+                    text: { en: "It's a ring. An old, silver ring with strange engravings. It doesn't look like jewelry someone would just drop.", mm: "လက်စွပ်တစ်ကွင်းပဲ။ ထူးဆန်းတဲ့ အက္ခရာတွေနဲ့ ရှေးဟောင်းငွေလက်စွပ်တစ်ကွင်း။ လွယ်လွယ်ကူကူ ပြုတ်ကျခဲ့မယ့် လက်ဝတ်ရတနာမျိုးနဲ့ မတူဘူး။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Weird. Should I leave it here?", mm: "ထူးဆန်းတယ်။ ဒီအတိုင်း ထားခဲ့သင့်လား။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "But... it feels warm.", mm: "ဒါပေမယ့်... ကိုင်ကြည့်ရတာ နွေးနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Keep it in backpack", mm: "လွယ်အိတ်ထဲ ထည့်သိမ်းထားမည်" }, next: 'keep_ring' },
+                { text: { en: "Leave it (Force Pick up)", mm: "ထားခဲ့မည် (မရပါ)" }, next: 'keep_ring' } // Forcing narrative for now
+            ]
+        },
+
+        'keep_ring': {
+            bg: 'shwedagon',
+            world: 'real',
+            location: { en: 'Shwedagon Pagoda', mm: 'ရွှေတိဂုံဘုရား' },
+            time: '09:00 AM',
+            steps: [
+                {
+                    text: { en: "I decided to keep it safe for now. Maybe I can find the owner later.", mm: "လောလောဆယ်တော့ လုံခြုံအောင် သိမ်းထားလိုက်မယ်။ နောက်မှ ပိုင်ရှင်ရှာပေးတော့မယ်။" }
+                },
+                {
+                    text: { en: "I leave the pagoda. The city is waiting.", mm: "ဘုရားပေါ်က ပြန်ဆင်းလာခဲ့တယ်။ မြို့ကြီးက စောင့်ကြိုနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to Downtown", mm: "မြို့ထဲဘက် သွားမည်" }, next: 'downtown_walk' }
+            ]
+        },
+
+        'downtown_walk': {
+            bg: 'downtown',
+            world: 'real',
+            location: { en: 'Yangon - Downtown', mm: 'ရန်ကုန် - မြို့ထဲ' },
+            time: '05:00 PM',
+            unlock: ['downtown', 'sule'],
+            steps: [
+                {
+                    bg: 'downtown',
+                    audio: 'city_ambience',
+                    text: { en: "Time flies. Evening falls on Yangon.", mm: "အချိန်တွေ ကုန်တာမြန်လိုက်တာ။ ရန်ကုန်မှာ ညနေစောင်းနေပြီ။" }
+                },
+                {
+                    text: { en: "The streets are packed. People rushing home, buses honking, the smell of street food frying.", mm: "လမ်းတွေပေါ်မှာ လူတွေပြည့်ကျပ်နေတယ်။ အိမ်ပြန်မယ့်သူတွေ၊ ကားဟွန်းသံတွေ၊ လမ်းဘေးအစားအစာ ကြော်လှော်နံ့တွေ။" }
+                },
+                {
+                    text: { en: "The Yangon River glitters in the distance. This chaos... it's beautiful in its own way.", mm: "ရန်ကုန်မြစ်က အဝေးမှာ တလက်လက်တောက်ပနေတယ်။ ဒီရှုပ်ထွေးမှုတွေက... သူ့နည်းသူ့ဟန်နဲ့တော့ လှပနေတာပါပဲ။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go Home for Dinner", mm: "ညစာစားရန် အိမ်ပြန်မည်" }, next: 'dinner_scene' }
+            ]
+        },
+
+        'dinner_scene': {
+            bg: 'dining_room',
+            world: 'real',
+            location: { en: 'Home - Dining Room', mm: 'အိမ် - ထမင်းစားခန်း' },
+            time: '07:00 PM',
+            steps: [
+                {
+                    bg: 'dining_room',
+                    speaker: SPEAKERS.mom,
+                    text: { en: "Welcome back, son. Wash your hands. Dinner is ready.", mm: "ပြန်ရောက်ပြီလား သား။ လက်ဆေးလိုက်ဦး။ ညစာရပြီ။" }
+                },
+                {
+                    speaker: SPEAKERS.dad,
+                    text: { en: "Tayza. How is the exam preparation?", mm: "တေဇ။ စာမေးပွဲပြင်ဆင်မှု အခြေအနေဘယ်လိုလဲ။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "This is my father. Strict. Traditional. He loves us, but his expectations are heavy.", mm: "ဒါက ကျွန်တော့်အဖေ။ စည်းကမ်းကြီးတယ်။ ရှေးရိုးဆန်တယ်။ ကျွန်တော်တို့ကို ချစ်ပေမယ့် သူထားတဲ့ မျှော်လင့်ချက်တွေက လေးလံလွန်းတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "It's going well, Dad.", mm: "အဆင်ပြေပါတယ် အဖေ။" }
+                },
+                {
+                    speaker: SPEAKERS.dad,
+                    text: { en: "Good. Your future depends on you. Don't disappoint us.", mm: "ကောင်းတယ်။ မင်းရဲ့အနာဂတ်က မင်းအပေါ်မှာပဲ မူတည်တယ်။ ငါတို့ကို စိတ်မပျက်စေနဲ့။" }
+                },
+                {
+                    speaker: SPEAKERS.bro,
+                    text: { en: "Yeah, he's been trying really hard... at sleeping.", mm: "ဟုတ်တယ် အဖေ။ သူတော်တော် ကြိုးစားနေတာ... အိပ်ဖို့လေ။" }
+                },
+                {
+                    speaker: SPEAKERS.mom,
+                    text: { en: "*Taps brother's shoulder* Ko Thiha! Don't tease your little brother. Just eat.", mm: "*ပခုံးကိုပုတ်လျက်* ကိုသီဟ! ညီလေးကို စမနေနဲ့။ ထမင်းပဲစား။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "I smile faintly. This is normal. This is home.", mm: "ကျွန်တော် ဖျော့တော့စွာ ပြုံးလိုက်တယ်။ ဒါက ပုံမှန်ပါပဲ။ ဒါက အိမ်ပါပဲ။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Go to room to study", mm: "အခန်းပြန်ပြီး စာလုပ်မည်" }, next: 'room_night' }
+            ]
+        },
+
+        'room_night': {
+            bg: 'bedroom_night',
+            world: 'real',
+            location: { en: 'Home - Bedroom', mm: 'အိမ် - အိပ်ခန်း' },
+            time: '11:00 PM',
+            audio: 'creepy_drone', /* subtle foreshadowing */
+            steps: [
+                {
+                    bg: 'bedroom_night',
+                    text: { en: "I study for hours. My eyes are heavy.", mm: "စာလုပ်နေတာ နာရီပေါင်းများစွာ ကြာပြီ။ မျက်ခွံတွေ လေးလံလာတယ်။" }
+                },
+                {
+                    text: { en: "Then I remember the ring.", mm: "ရုတ်တရက် လက်စွပ်ကို သတိရသွားတယ်။" }
+                },
+                {
+                    bg: 'ring_item',
+                    text: { en: "I take it out of my bag. Under the desk lamp, it glows softly.", mm: "အိတ်ထဲကနေ ထုတ်လိုက်တယ်။ မီးအိမ်အလင်းရောင်အောက်မှာ လက်စွပ်က မှိန်ဖျဖျ လင်းနေတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Just for a second...", mm: "ခဏလေးပါပဲ..." }
+                },
+                {
+                    text: { en: "I slide it onto my finger. It fits perfectly.", mm: "လက်ချောင်းထဲကို စွပ်ထည့်လိုက်တယ်။ ကွက်တိပဲ။" }
+                },
+                {
+                    bg: 'bedroom_night',
+                    text: { en: "A sudden wave of exhaustion hits me. I put my head on the desk.", mm: "ရုတ်တရက် ပင်ပန်းနွမ်းနယ်မှုတွေ ဝင်ရောက်လာတယ်။ စားပွဲခုံပေါ် ခေါင်းမှောက်ချလိုက်မိတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Fall asleep", mm: "အိပ်ပျော်သွားသည်" }, next: 'wakeup_parallel' }
+            ]
+        },
+
+        'wakeup_parallel': {
+            bg: 'parallel_sule',
+            world: 'parallel',
+            location: { en: '???', mm: '???' },
+            time: 'UNKNOWN',
+            audio: 'creepy_drone',
+            steps: [
+                {
+                    bg: 'parallel_sule',
+                    text: { en: "...", mm: "..." }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Huh? Where...?", mm: "ဟင်... ဘယ်ရောက်နေတာလဲ...?" }
+                },
+                {
+                    text: { en: "I wake up. But not at my desk. I am standing in the middle of the road. Near Sule Pagoda.", mm: "ကျွန်တော် နိုးလာတယ်။ ဒါပေမယ့် စားပွဲခုံမှာ မဟုတ်ဘူး။ လမ်းမလယ်ခေါင်မှာ ရပ်နေမိတာ။ ဆူးလေဘုရားနားမှာ။" }
+                },
+                {
+                    text: { en: "The sky is a wrong shade of blue. The air smells like... rust.", mm: "ကောင်းကင်အရောင်က မှားယွင်းနေတယ်။ လေထုထဲမှာ သံချေးနံ့လိုလို ရနေတယ်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "Look around", mm: "ပတ်ဝန်းကျင်ကို ကြည့်မည်" }, next: 'parallel_home_journey' },
+                { text: { en: "Go Home immediately", mm: "အိမ်ကိုချက်ချင်းပြန်မည်" }, next: 'parallel_home_journey' }
+            ]
+        },
+
+        'parallel_home_journey': {
+            bg: 'parallel_street',
+            world: 'parallel',
+            location: { en: 'Downtown', mm: 'မြို့ထဲ' },
+            time: 'UNKNOWN',
+            steps: [
+                {
+                    bg: 'parallel_street',
+                    text: { en: "I rush towards home. People are walking on the street, but...", mm: "အိမ်ဘက်ကို အမြန်ပြေးလာခဲ့တယ်။ လမ်းပေါ်မှာ လူတွေသွားလာနေကြတယ်၊ ဒါပေမယ့်..." }
+                },
+                {
+                    text: { en: "Their faces. They are blurry. Distorted. Not Burmese. Not human.", mm: "သူတို့မျက်နှာတွေ။ ဝါးနေတယ်။ ရုပ်ပျက်ဆင်းပျက်ဖြစ်နေတယ်။ မြန်မာလူမျိုးတွေမဟုတ်ဘူး။ လူတွေနဲ့မတူဘူး။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "What is happening? Am I dreaming?", mm: "ဘာတွေဖြစ်နေတာလဲ။ ငါအိမ်မက်မက်နေတာလား။" }
+                },
+                {
+                    text: { en: "I reach my house door. I knock desperately.", mm: "အိမ်ရှေ့ရောက်တော့ တံခါးကို အားကုန်ထုလိုက်တယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "Mom! Dad! Open the door!", mm: "အမေ! အဖေ! တံခါးဖွင့်ပါဦး!" }
+                }
+            ],
+            choices: [
+                { text: { en: "Wait for answer", mm: "တံခါးဖွင့်မည့်သူကို စောင့်မည်" }, next: 'parallel_home_door' }
+            ]
+        },
+
+        'parallel_home_door': {
+            bg: 'home_tayza',
+            world: 'parallel',
+            location: { en: 'Home', mm: 'အိမ်' },
+            time: 'UNKNOWN',
+            steps: [
+                {
+                    audio: 'kitchen', /* Distorted slightly by world effect */
+                    text: { en: "The door creaks open.", mm: "တံခါး ကျွီကနဲ ပွင့်လာတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.mom,
+                    text: { en: "You're late, Tayza. Where have you been?", mm: "နောက်ကျလိုက်တာ တေဇရယ်။ ဘယ်တွေသွားနေတာလဲ။" }
+                },
+                {
+                    text: { en: "The voice is my mother's. The clothes are hers.", mm: "အသံက အမေရဲ့အသံ။ အဝတ်အစားတွေက အမေဝတ်နေကျ။" }
+                },
+                {
+                    bg: 'faceless_mom',
+                    char: 'faceless_mom',
+                    text: { en: "But when I look up... there is no face. Just smooth skin.", mm: "ဒါပေမယ့် မော့ကြည့်လိုက်တဲ့အခါ... မျက်နှာမရှိဘူး။ ပြောင်ချောနေတဲ့ အရေပြားပဲ ရှိတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.tayza,
+                    text: { en: "AHHHHHH!", mm: "အာားးးးးးး!" }
+                }
+            ],
+            choices: [
+                { text: { en: "RUN AWAY", mm: "ထွက်ပြေးမည်" }, type: "danger", next: 'run_away_meet_naychi' }
+            ]
+        },
+
+        'run_away_meet_naychi': {
+            bg: 'parallel_street',
+            world: 'parallel',
+            location: { en: 'Alleyway', mm: 'လမ်းကြား' },
+            time: 'UNKNOWN',
+            steps: [
+                {
+                    clearChar: true,
+                    text: { en: "I run blindly into the dark alleyway. My heart is pounding out of my chest.", mm: "မှောင်မဲနေတဲ့ လမ်းကြားထဲကို အတင်းပြေးဝင်လိုက်တယ်။ ရင်ဘတ်ထဲက နှလုံးခုန်သံက အပြင်ရောက်တော့မတတ်ပဲ။" }
+                },
+                {
+                    text: { en: "I bump into someone.", mm: "တစ်ယောက်ယောက်နဲ့ ဝင်တိုက်မိတယ်။" }
+                },
+                {
+                    speaker: SPEAKERS.unknown,
+                    text: { en: "Shhh! Keep it down if you want to live.", mm: "ရှူး... အသက်ရှင်ချင်ရင် တိုးတိုးနေ။" }
+                },
+                {
+                    bg: 'parallel_street',
+                    char: 'naychi',
+                    speaker: SPEAKERS.nay,
+                    text: { en: "Welcome to the Echo Yangon. I'm Nay Chi.", mm: "ပဲ့တင်သံရန်ကုန်ကနေ ကြိုဆိုပါတယ်။ ငါ့နာမည် နေခြည်။" }
+                }
+            ],
+            choices: [
+                { text: { en: "To Be Continued...", mm: "ဆက်ရန်..." }, next: 'start' } /* Loops back for now */
+            ]
+        }
     };
 
     // --- BOOTSTRAP ---
