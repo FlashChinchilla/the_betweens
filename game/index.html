@@ -45,7 +45,7 @@
         }
         .camera-move { animation: panZoom 60s infinite ease-in-out alternate; }
         .static-cam { animation: none !important; transform: scale(1.0) translate(0, 0) !important; transition: transform 0.5s ease-out; }
-        #camera-rig { filter: brightness(1.1); }
+        #camera-rig { filter: brightness(1.1); transition: filter 1s ease; }
 
         @keyframes glitch-anim {
             0% { transform: translate(0) }
@@ -286,9 +286,13 @@
         body.gfx-low .world-real { filter: brightness(1.1) !important; }
         body.gfx-low .world-parallel { filter: brightness(0.7) !important; }
         body.gfx-low .world-collapse { animation: none !important; filter: contrast(1.2) grayscale(1) !important; }
+        body.gfx-low #camera-rig { filter: saturate(0.8) blur(0.5px); }
         
         body.gfx-med .glass-panel, body.gfx-med .dialogue-box { backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important; }
         body.gfx-med .camera-move { animation-duration: 120s !important; }
+        body.gfx-med #camera-rig { filter: saturate(1); }
+
+        body.gfx-high #camera-rig { filter: saturate(1.2) contrast(1.05); }
 
         /* Light Theme Overrides (Global Game Elements) */
         body.theme-light { background-color: #f1f5f9; color: #1e293b; }
@@ -436,16 +440,19 @@
 
         /* Tooltip Adjustments for Glass */
         .tooltip-content {
-            background: rgba(20, 20, 20, 0.85);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             color: rgba(255,255,255,0.9);
         }
         body.theme-light .tooltip-content {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             color: #1c1c1e;
         }
 
@@ -482,39 +489,52 @@
         }
         </style>
     </head>
-    <body class="text-gray-100 h-screen w-screen relative select-none bg-black transition-colors duration-1000">
+    <body
+        class="text-gray-100 h-screen w-screen relative select-none bg-black transition-colors duration-1000">
 
         <!-- Preloader Screen -->
-        <div id="preloader-screen" class="fixed inset-0 z-[200] bg-[#050505] flex flex-col items-center justify-center text-center p-6 transition-opacity duration-1000">
-            
+        <div id="preloader-screen"
+            class="fixed inset-0 z-[200] bg-[#050505] flex flex-col items-center justify-center text-center p-6 transition-opacity duration-1000">
+
             <div class="flex gap-12 mb-10">
-                <div class="flex flex-col items-center gap-4 transition-transform hover:scale-105">
-                    <img src="https://us.technics.com/cdn/shop/files/EAH-A800_NonTextCarousels_01_2000x2000_aa2eef2b-7bd7-4800-936b-100d796ceb13_1800x.jpg?v=1745873069" alt="Headphones Placeholder" class="w-24 h-24 object-cover rounded-full border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] opacity-1">
-                    <span class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Headphones</span>
-                </div>
-                <div class="flex flex-col items-center gap-4 transition-transform hover:scale-105">
-                    <img src="https://i5.walmartimages.com/asr/b4b7e8fc-06c2-4f40-b607-96ee4ba8fedc.3f076998920d7a5d75b46c2bf84d610e.jpeg" alt="Laptop Placeholder" class="w-24 h-24 object-cover rounded-full border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] opacity-1">
-                    <span class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Laptop</span>
+                <div
+                    class="flex flex-col items-center gap-4 transition-transform hover:scale-105">
+                    <img
+                        src="https://us.technics.com/cdn/shop/files/EAH-A800_NonTextCarousels_01_2000x2000_aa2eef2b-7bd7-4800-936b-100d796ceb13_1800x.jpg?v=1745873069"
+                        alt="Headphones Placeholder"
+                        class="w-24 h-24 object-cover rounded-full border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] opacity-1">
+                    <span
+                        class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Headphones</span>
                 </div>
             </div>
-            
+
             <div class="max-w-md mb-12">
-                <h2 class="text-xl md:text-2xl font-cinzel font-bold text-gray-200 tracking-widest mb-3 uppercase">Optimal Experience</h2>
-                <p class="text-gray-400 text-sm md:text-base leading-relaxed font-lato">
-                    For the deepest immersion, please use headphones and play on a laptop or desktop screen.
+                <h2
+                    class="text-xl md:text-2xl font-cinzel font-bold text-gray-200 tracking-widest mb-3 uppercase">USE
+                    HEADPHONES FOR THE BEST EXPERIENCE</h2>
+                <p
+                    class="text-gray-400 text-sm md:text-base leading-relaxed font-lato">
+                    Recommended Device - Laptop, Desktop, Tablet
                 </p>
             </div>
 
-            <div class="w-64 h-1 bg-gray-900 rounded-full overflow-hidden shadow-inner relative mb-4">
-                <div id="loading-bar-fill" class="h-full w-0 loading-shimmer shadow-[0_0_10px_rgba(234,179,8,0.8)] transition-all duration-300"></div>
+            <div
+                class="w-64 h-1 bg-gray-900 rounded-full overflow-hidden shadow-inner relative mb-4">
+                <div id="loading-bar-fill"
+                    class="h-full w-0 loading-shimmer shadow-[0_0_10px_rgba(234,179,8,0.8)] transition-all duration-300"></div>
             </div>
-            
+
             <div class="flex items-center gap-3">
-                <i id="loading-spinner" data-lucide="loader-2" class="w-4 h-4 text-yellow-500 animate-spin"></i>
-                <div id="loading-text" class="text-xs font-mono text-yellow-500/80 tracking-[0.2em] uppercase">Initializing... 0%</div>
+                <i id="loading-spinner" data-lucide="loader-2"
+                    class="w-4 h-4 text-yellow-500 animate-spin"></i>
+                <div id="loading-text"
+                    class="text-xs font-mono text-yellow-500/80 tracking-[0.2em] uppercase">Initializing...
+                    0%</div>
             </div>
-            
-            <button id="start-btn" class="hidden mt-10 px-10 py-3 bg-transparent border border-yellow-500 text-yellow-500 font-bold tracking-[0.2em] uppercase text-sm rounded hover:bg-yellow-500 hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)]" onclick="game.startFromPreloader()">Play</button>
+
+            <button id="start-btn"
+                class="hidden mt-10 px-10 py-3 bg-transparent border border-yellow-500 text-yellow-500 font-bold tracking-[0.2em] uppercase text-sm rounded hover:bg-yellow-500 hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)]"
+                onclick="game.startFromPreloader()">Play</button>
         </div>
 
         <div id="game-container" class="relative w-full h-full overflow-hidden">
@@ -545,39 +565,60 @@
             <div id="character-layer"
                 class="absolute inset-0 flex items-end justify-center pointer-events-none z-20 pb-0 transition-transform duration-700 translate-y-10 opacity-0">
             </div>
-            
+
             <!-- Map Modal Overlay -->
-            <div id="map-modal" class="hidden absolute inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
-                <div class="relative w-full max-w-6xl h-[85vh] bg-[#f8f9fa] rounded-xl overflow-hidden shadow-2xl group font-roboto text-gray-800 border-4 border-white/50 flex flex-col">
-                    
+            <div id="map-modal"
+                class="hidden absolute inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
+                <div
+                    class="relative w-full max-w-6xl h-[85vh] bg-[#f8f9fa] rounded-xl overflow-hidden shadow-2xl group font-roboto text-gray-800 border-4 border-white/50 flex flex-col">
+
                     <!-- Search Bar Facade -->
-                    <div class="absolute top-4 left-4 right-16 md:right-auto md:w-80 bg-white h-12 rounded-lg shadow-md flex items-center px-4 gap-3 z-50">
+                    <div
+                        class="absolute top-4 left-4 right-16 md:right-auto md:w-80 bg-white h-12 rounded-lg shadow-md flex items-center px-4 gap-3 z-50">
                         <i data-lucide="menu" class="text-gray-500 w-5 h-5"></i>
-                        <span class="text-sm md:text-base text-gray-700 font-medium">Yangon, Myanmar</span>
-                        <i data-lucide="search" class="text-blue-500 w-5 h-5 ml-auto"></i>
+                        <span
+                            class="text-sm md:text-base text-gray-700 font-medium">Yangon,
+                            Myanmar</span>
+                        <i data-lucide="search"
+                            class="text-blue-500 w-5 h-5 ml-auto"></i>
                     </div>
 
                     <!-- Map Controls (Functional Zoom) -->
-                    <div class="absolute bottom-6 right-4 flex flex-col gap-2 z-50">
-                         <div class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform" onclick="game.resetZoom()" title="Reset View"><i data-lucide="compass" class="w-6 h-6"></i></div>
-                         <div class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform" onclick="game.zoomMap(0.25)"><i data-lucide="plus" class="w-6 h-6"></i></div>
-                         <div class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform" onclick="game.zoomMap(-0.25)"><i data-lucide="minus" class="w-6 h-6"></i></div>
+                    <div
+                        class="absolute bottom-6 right-4 flex flex-col gap-2 z-50">
+                        <div
+                            class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform"
+                            onclick="game.resetZoom()" title="Reset View"><i
+                                data-lucide="compass" class="w-6 h-6"></i></div>
+                        <div
+                            class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform"
+                            onclick="game.zoomMap(0.25)"><i data-lucide="plus"
+                                class="w-6 h-6"></i></div>
+                        <div
+                            class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform"
+                            onclick="game.zoomMap(-0.25)"><i data-lucide="minus"
+                                class="w-6 h-6"></i></div>
                     </div>
 
                     <!-- Map Container (Viewport) -->
                     <div id="map-container" class="w-full h-full relative">
                         <!-- Map World (Transform Target) -->
-                        <div id="map-world" class="absolute inset-0 w-full h-full">
+                        <div id="map-world"
+                            class="absolute inset-0 w-full h-full">
                             <!-- Water Background -->
-                            <div class="absolute inset-0 google-map-bg opacity-100"></div>
-                            
+                            <div
+                                class="absolute inset-0 google-map-bg opacity-100"></div>
+
                             <!-- Geography Layer (Land & Parks SVG) -->
-                            <div id="geo-layer" class="absolute inset-0 w-full h-full pointer-events-none z-0">
+                            <div id="geo-layer"
+                                class="absolute inset-0 w-full h-full pointer-events-none z-0">
                                 <!-- Injected via JS -->
                             </div>
 
                             <!-- Roads Layer (SVG) -->
-                            <svg id="road-layer" class="absolute inset-0 w-full h-full pointer-events-none z-5" xmlns="http://www.w3.org/2000/svg">
+                            <svg id="road-layer"
+                                class="absolute inset-0 w-full h-full pointer-events-none z-5"
+                                xmlns="http://www.w3.org/2000/svg">
                                 <!-- Roads injected via JS -->
                             </svg>
 
@@ -589,24 +630,33 @@
                     </div>
 
                     <!-- Close Button -->
-                    <button onclick="game.toggleMap()" class="absolute top-4 right-4 bg-white hover:bg-gray-100 text-gray-600 p-2 rounded-full shadow-md z-50 transition-colors">
+                    <button onclick="game.toggleMap()"
+                        class="absolute top-4 right-4 bg-white hover:bg-gray-100 text-gray-600 p-2 rounded-full shadow-md z-50 transition-colors">
                         <i data-lucide="x" class="w-6 h-6"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Phone Modal Overlay -->
-            <div id="phone-modal" class="hidden absolute inset-0 z-[100] bg-black/70 flex items-center justify-center p-4 backdrop-blur-md transition-all duration-300 opacity-0 phone-modal-container">
+            <div id="phone-modal"
+                class="hidden absolute inset-0 z-[100] bg-black/70 flex items-center justify-center p-4 backdrop-blur-md transition-all duration-300 opacity-0 phone-modal-container">
                 <div class="relative group">
                     <!-- Physical Power/Lock Button (Side Button) -->
-                    <div class="absolute top-24 -right-2 w-2 h-12 bg-gray-700 rounded-r-lg cursor-pointer hover:bg-gray-600 active:bg-gray-800 transition-colors z-0 shadow-xl" onclick="game.togglePhone()" title="Power/Lock Button (Close Phone)"></div>
+                    <div
+                        class="absolute top-24 -right-2 w-2 h-12 bg-gray-700 rounded-r-lg cursor-pointer hover:bg-gray-600 active:bg-gray-800 transition-colors z-0 shadow-xl"
+                        onclick="game.togglePhone()"
+                        title="Power/Lock Button (Close Phone)"></div>
                     <!-- Volume Buttons (Visual only) -->
-                    <div class="absolute top-24 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
-                    <div class="absolute top-36 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
+                    <div
+                        class="absolute top-24 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
+                    <div
+                        class="absolute top-36 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
 
-                    <div class="relative w-[320px] h-[640px] bg-gray-900 rounded-[3rem] border-8 border-gray-800 shadow-2xl phone-screen overflow-hidden flex flex-col z-10">
+                    <div
+                        class="relative w-[320px] h-[640px] bg-gray-900 rounded-[3rem] border-8 border-gray-800 shadow-2xl phone-screen overflow-hidden flex flex-col z-10">
                         <!-- Status Bar -->
-                        <div class="h-8 bg-black w-full flex justify-between items-center px-6 text-[10px] text-white z-50">
+                        <div
+                            class="h-8 bg-black w-full flex justify-between items-center px-6 text-[10px] text-white z-50">
                             <span>09:41</span>
                             <div class="flex gap-1">
                                 <i data-lucide="signal" class="w-3 h-3"></i>
@@ -614,78 +664,130 @@
                                 <i data-lucide="battery" class="w-3 h-3"></i>
                             </div>
                         </div>
-                        
+
                         <!-- Phone Display Area -->
-                        <div id="phone-display" class="flex-1 bg-gray-900 overflow-hidden relative">
-                            
+                        <div id="phone-display"
+                            class="flex-1 bg-gray-900 overflow-hidden relative">
+
                             <!-- Home Screen Wallpaper -->
-                            <div id="phone-home" class="w-full h-full absolute inset-0 bg-[url('../images/items/iphonewallpaper.png')] bg-cover bg-center p-6 pt-12">
+                            <div id="phone-home"
+                                class="w-full h-full absolute inset-0 bg-[url('../images/items/iphonewallpaper.png')] bg-cover bg-center p-6 pt-12">
                                 <!-- App Grid -->
-                                <div class="grid grid-cols-4 gap-4 content-start">
+                                <div
+                                    class="grid grid-cols-4 gap-4 content-start">
                                     <!-- Phone -->
-                                    <div onclick="game.openApp('phone')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="phone" class="text-white w-6 h-6"></i></div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Phone</span>
+                                    <div onclick="game.openApp('phone')"
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div
+                                            class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg"><i
+                                                data-lucide="phone"
+                                                class="text-white w-6 h-6"></i></div>
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">Phone</span>
                                     </div>
                                     <!-- Messages -->
-                                    <div onclick="game.openApp('messages')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div class="w-12 h-12 bg-green-400 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="message-square" class="text-white w-6 h-6"></i></div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Messages</span>
+                                    <div onclick="game.openApp('messages')"
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div
+                                            class="w-12 h-12 bg-green-400 rounded-2xl flex items-center justify-center shadow-lg"><i
+                                                data-lucide="message-square"
+                                                class="text-white w-6 h-6"></i></div>
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">Messages</span>
                                     </div>
                                     <!-- Photos -->
-                                    <div onclick="game.openApp('photos')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden relative">
-                                            <div class="absolute inset-0 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 opacity-80"></div>
-                                            <i data-lucide="image" class="text-white w-6 h-6 relative z-10"></i>
+                                    <div onclick="game.openApp('photos')"
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div
+                                            class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden relative">
+                                            <div
+                                                class="absolute inset-0 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 opacity-80"></div>
+                                            <i data-lucide="image"
+                                                class="text-white w-6 h-6 relative z-10"></i>
                                         </div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Photos</span>
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">Photos</span>
                                     </div>
                                     <!-- Camera -->
-                                    <div class="flex flex-col items-center gap-1 app-icon cursor-pointer opacity-80">
-                                        <div class="w-12 h-12 bg-gray-400 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="camera" class="text-white w-6 h-6"></i></div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Camera</span>
+                                    <div
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer opacity-80">
+                                        <div
+                                            class="w-12 h-12 bg-gray-400 rounded-2xl flex items-center justify-center shadow-lg"><i
+                                                data-lucide="camera"
+                                                class="text-white w-6 h-6"></i></div>
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">Camera</span>
                                     </div>
                                     <!-- Facebook -->
-                                    <div onclick="game.openApp('facebook')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="facebook" class="text-white w-6 h-6"></i></div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Facebook</span>
+                                    <div onclick="game.openApp('facebook')"
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div
+                                            class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg"><i
+                                                data-lucide="facebook"
+                                                class="text-white w-6 h-6"></i></div>
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">Facebook</span>
                                     </div>
                                     <!-- YouTube -->
-                                    <div onclick="game.openApp('youtube')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="youtube" class="text-white w-6 h-6"></i></div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">YouTube</span>
+                                    <div onclick="game.openApp('youtube')"
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div
+                                            class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg"><i
+                                                data-lucide="youtube"
+                                                class="text-white w-6 h-6"></i></div>
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">YouTube</span>
                                     </div>
                                     <!-- Spotify -->
-                                    <div onclick="game.openApp('music')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div class="w-12 h-12 bg-[#1DB954] rounded-2xl flex items-center justify-center shadow-lg">
-                                            <svg viewBox="0 0 24 24" class="w-7 h-7 fill-current text-white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 4.32-1.38 9.841-.719 13.44 1.5.42.24.6.841.301 1.321zm.12-3.36C15.54 8.46 9.06 8.22 5.34 9.36c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.4-1.02 15.96 1.68.6.359.84 1.14.479 1.74-.359.6-1.14.84-1.74.48z"/></svg>
+                                    <div onclick="game.openApp('music')"
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div
+                                            class="w-12 h-12 bg-[#1DB954] rounded-2xl flex items-center justify-center shadow-lg">
+                                            <svg viewBox="0 0 24 24"
+                                                class="w-7 h-7 fill-current text-white"><path
+                                                    d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 4.32-1.38 9.841-.719 13.44 1.5.42.24.6.841.301 1.321zm.12-3.36C15.54 8.46 9.06 8.22 5.34 9.36c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.4-1.02 15.96 1.68.6.359.84 1.14.479 1.74-.359.6-1.14.84-1.74.48z" /></svg>
                                         </div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Spotify</span>
-                                        
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">Spotify</span>
+
                                     </div>
                                     <!-- KBZPay -->
-                                    <div onclick="game.openApp('kbzpay')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div class="w-12 h-12 bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white/20"><span class="text-white font-black text-xs">KBZ</span></div>
-                                        <span class="text-[10px] text-white font-medium drop-shadow-md">KBZPay</span>
+                                    <div onclick="game.openApp('kbzpay')"
+                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div
+                                            class="w-12 h-12 bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white/20"><span
+                                                class="text-white font-black text-xs">KBZ</span></div>
+                                        <span
+                                            class="text-[10px] text-white font-medium drop-shadow-md">KBZPay</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Active App Container -->
-                            <div id="active-app-container" class="absolute inset-0 bg-white translate-x-full transition-transform duration-300 z-20 flex flex-col">
-                                <div id="app-header-bar" class="h-12 bg-gray-100 border-b flex items-center px-4 font-bold text-gray-800 shadow-sm z-30 relative">
-                                    <button onclick="game.phoneHome()" class="p-1 -ml-2 rounded-full hover:bg-gray-200 transition-colors"><i data-lucide="chevron-left" class="w-6 h-6 text-blue-500"></i></button>
-                                    <span id="app-title-text" class="ml-2 text-sm">App Name</span>
+                            <div id="active-app-container"
+                                class="absolute inset-0 bg-white translate-x-full transition-transform duration-300 z-20 flex flex-col">
+                                <div id="app-header-bar"
+                                    class="h-12 bg-gray-100 border-b flex items-center px-4 font-bold text-gray-800 shadow-sm z-30 relative">
+                                    <button onclick="game.phoneHome()"
+                                        class="p-1 -ml-2 rounded-full hover:bg-gray-200 transition-colors"><i
+                                            data-lucide="chevron-left"
+                                            class="w-6 h-6 text-blue-500"></i></button>
+                                    <span id="app-title-text"
+                                        class="ml-2 text-sm">App Name</span>
                                 </div>
-                                <div id="app-content-area" class="flex-1 overflow-y-auto custom-scroll relative bg-white">
+                                <div id="app-content-area"
+                                    class="flex-1 overflow-y-auto custom-scroll relative bg-white">
                                 </div>
                             </div>
 
                         </div>
 
                         <!-- Home Indicator Button -->
-                        <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-full h-8 z-50 flex items-center justify-center cursor-pointer" onclick="game.phoneHome()">
-                            <div class="w-32 h-1 bg-white/50 rounded-full hover:bg-white transition-colors shadow-sm"></div>
+                        <div
+                            class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-full h-8 z-50 flex items-center justify-center cursor-pointer"
+                            onclick="game.phoneHome()">
+                            <div
+                                class="w-32 h-1 bg-white/50 rounded-full hover:bg-white transition-colors shadow-sm"></div>
                         </div>
 
                     </div>
@@ -693,134 +795,242 @@
             </div>
 
             <!-- Settings Modal Overlay -->
-            <div id="settings-modal" class="hidden absolute inset-0 z-[110] bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
-                <div class="relative w-full max-w-2xl ios-glass rounded-3xl p-6 md:p-8 flex flex-col gap-6 transition-colors">
-                    
+            <div id="settings-modal"
+                class="hidden absolute inset-0 z-[110] bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
+                <div
+                    class="relative w-full max-w-2xl ios-glass rounded-3xl p-6 md:p-8 flex flex-col gap-6 transition-colors">
+
                     <!-- Header -->
-                    <div class="flex justify-between items-center ios-glass-header pb-4">
-                        <h2 id="st-title" class="text-2xl font-cinzel font-bold text-yellow-500 tracking-wider">Settings</h2>
-                        <button onclick="game.closeSettings()" class="p-2 ios-close-btn flex items-center justify-center">
+                    <div
+                        class="flex justify-between items-center ios-glass-header pb-4">
+                        <h2 id="st-title"
+                            class="text-2xl font-cinzel font-bold text-yellow-500 tracking-wider">Settings</h2>
+                        <button onclick="game.closeSettings()"
+                            class="p-2 ios-close-btn flex items-center justify-center">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
                     </div>
-                    
-                    <!-- Settings Content List -->
-                    <div class="flex flex-col gap-6 overflow-y-auto custom-scroll max-h-[65vh] pr-2">
 
-                        <!-- Volume Setting -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10">
-                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="volume-2" class="w-5 h-5 opacity-70"></i>
-                                <span id="st-vol" class="font-bold text-base md:text-lg tracking-wide opacity-90">Master Volume</span>
-                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
-                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 tooltip-content">
-                                    <span id="st-vol-tip">Adjusts the overall game volume.</span>
+                    <!-- Settings Content List -->
+                    <div
+                        class="flex flex-col gap-6 overflow-y-auto custom-scroll max-h-[65vh] pr-2">
+
+                        <!-- Game Audio Volume Setting -->
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div
+                                class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="volume-2"
+                                    class="w-5 h-5 opacity-70"></i>
+                                <span id="st-ga-vol"
+                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Game
+                                    Audio Vol</span>
+                                <i data-lucide="help-circle"
+                                    class="w-4 h-4 opacity-50"></i>
+                                <div
+                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-ga-vol-tip">Adjusts the volume
+                                        of game sound effects.</span>
                                 </div>
                             </div>
-                            <input type="range" id="vol-slider" min="0" max="1" step="0.1" value="1" oninput="game.setVolume(this.value)" class="w-full md:w-56 ios-slider">
+                            <input type="range" id="ga-vol-slider" min="0"
+                                max="1" step="0.1" value="1"
+                                oninput="game.setVolume(this.value)"
+                                class="w-full md:w-56 ios-slider">
                         </div>
 
-                        <!-- Theme Music Setting -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10">
-                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="music" class="w-5 h-5 opacity-70"></i>
-                                <span id="st-tm" class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme Music</span>
-                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
-                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 tooltip-content">
-                                    <span id="st-tm-tip">Toggle the main background theme song.</span>
+                        <!-- Theme Music Volume Setting -->
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div
+                                class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="music"
+                                    class="w-5 h-5 opacity-70"></i>
+                                <span id="st-tm-vol"
+                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme
+                                    Music Vol</span>
+                                <i data-lucide="help-circle"
+                                    class="w-4 h-4 opacity-50"></i>
+                                <div
+                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-tm-vol-tip">Adjusts the volume
+                                        of the main theme song.</span>
                                 </div>
                             </div>
-                            <div class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setThemeMusic('on')" data-val="on" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-tm st-btn-active">
-                                    <span id="st-tm-on">On</span>
+                            <input type="range" id="tm-vol-slider" min="0"
+                                max="1" step="0.1" value="0.4"
+                                oninput="game.setThemeVolume(this.value)"
+                                class="w-full md:w-56 ios-slider">
+                        </div>
+
+                        <!-- Game Audio On/Off -->
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div
+                                class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="speaker"
+                                    class="w-5 h-5 opacity-70"></i>
+                                <span id="st-ga-state"
+                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Game
+                                    Scene Audio</span>
+                                <i data-lucide="help-circle"
+                                    class="w-4 h-4 opacity-50"></i>
+                                <div
+                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-ga-state-tip">Toggle the scene
+                                        specific sound effects.</span>
+                                </div>
+                            </div>
+                            <div
+                                class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setGameAudio('on')"
+                                    data-val="on"
+                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-ga st-btn-active">
+                                    <span id="st-ga-on">On</span>
                                 </button>
-                                <button onclick="game.setThemeMusic('off')" data-val="off" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-tm">
-                                    <span id="st-tm-off">Off</span>
+                                <button onclick="game.setGameAudio('off')"
+                                    data-val="off"
+                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-ga">
+                                    <span id="st-ga-off">Off</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Font Size Setting -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10">
-                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="type" class="w-5 h-5 opacity-70"></i>
-                                <span id="st-font" class="font-bold text-base md:text-lg tracking-wide opacity-90">Font Size</span>
-                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
-                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 tooltip-content">
-                                    <span id="st-font-tip">Changes the size of the reading text.</span>
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div
+                                class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="type"
+                                    class="w-5 h-5 opacity-70"></i>
+                                <span id="st-font"
+                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Font
+                                    Size</span>
+                                <i data-lucide="help-circle"
+                                    class="w-4 h-4 opacity-50"></i>
+                                <div
+                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-font-tip">Changes the size of
+                                        the reading text.</span>
                                 </div>
                             </div>
-                            <div class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setFontSize('small')" data-val="small" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
+                            <div
+                                class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setFontSize('small')"
+                                    data-val="small"
+                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
                                     <span id="st-font-sm">Small</span>
                                 </button>
-                                <button onclick="game.setFontSize('medium')" data-val="medium" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font st-btn-active">
+                                <button onclick="game.setFontSize('medium')"
+                                    data-val="medium"
+                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font st-btn-active">
                                     <span id="st-font-md">Medium</span>
                                 </button>
-                                <button onclick="game.setFontSize('large')" data-val="large" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
+                                <button onclick="game.setFontSize('large')"
+                                    data-val="large"
+                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
                                     <span id="st-font-lg">Large</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Graphics Setting -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10">
-                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="monitor" class="w-5 h-5 opacity-70"></i>
-                                <span id="st-gfx" class="font-bold text-base md:text-lg tracking-wide opacity-90">Graphics Quality</span>
-                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
-                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 tooltip-content">
-                                    <span id="st-gfx-tip">Lowers visual effects for better performance.</span>
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div
+                                class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="monitor"
+                                    class="w-5 h-5 opacity-70"></i>
+                                <span id="st-gfx"
+                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Graphics
+                                    Quality</span>
+                                <i data-lucide="help-circle"
+                                    class="w-4 h-4 opacity-50"></i>
+                                <div
+                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-gfx-tip">Lowers visual effects
+                                        for better performance.</span>
                                 </div>
                             </div>
-                            <div class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setGraphics('low')" data-val="low" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
+                            <div
+                                class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setGraphics('low')"
+                                    data-val="low"
+                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
                                     <span id="st-gfx-low">Low</span>
                                 </button>
-                                <button onclick="game.setGraphics('medium')" data-val="medium" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
+                                <button onclick="game.setGraphics('medium')"
+                                    data-val="medium"
+                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
                                     <span id="st-gfx-med">Medium</span>
                                 </button>
-                                <button onclick="game.setGraphics('high')" data-val="high" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx st-btn-active">
+                                <button onclick="game.setGraphics('high')"
+                                    data-val="high"
+                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx st-btn-active">
                                     <span id="st-gfx-high">High</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Language Setting -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10">
-                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="globe" class="w-5 h-5 opacity-70"></i>
-                                <span id="st-lang" class="font-bold text-base md:text-lg tracking-wide opacity-90">Language</span>
-                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
-                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 tooltip-content">
-                                    <span id="st-lang-tip">Switch between English and Burmese.</span>
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div
+                                class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="globe"
+                                    class="w-5 h-5 opacity-70"></i>
+                                <span id="st-lang"
+                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Language</span>
+                                <i data-lucide="help-circle"
+                                    class="w-4 h-4 opacity-50"></i>
+                                <div
+                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-lang-tip">Switch between
+                                        English and Burmese.</span>
                                 </div>
                             </div>
-                            <div class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setLanguage('en')" data-val="en" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang">
+                            <div
+                                class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setLanguage('en')"
+                                    data-val="en"
+                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang">
                                     English
                                 </button>
-                                <button onclick="game.setLanguage('mm')" data-val="mm" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang st-btn-active">
+                                <button onclick="game.setLanguage('mm')"
+                                    data-val="mm"
+                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang st-btn-active">
                                     မြန်မာ
                                 </button>
                             </div>
                         </div>
 
                         <!-- Theme Setting -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10">
-                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="sun-moon" class="w-5 h-5 opacity-70"></i>
-                                <span id="st-theme" class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme</span>
-                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
-                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 tooltip-content">
-                                    <span id="st-theme-tip">Toggle between Dark and Light mode.</span>
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div
+                                class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="sun-moon"
+                                    class="w-5 h-5 opacity-70"></i>
+                                <span id="st-theme"
+                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme</span>
+                                <i data-lucide="help-circle"
+                                    class="w-4 h-4 opacity-50"></i>
+                                <div
+                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-theme-tip">Toggle between Dark
+                                        and Light mode.</span>
                                 </div>
                             </div>
-                            <div class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setTheme('dark')" data-val="dark" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme st-btn-active">
+                            <div
+                                class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setTheme('dark')"
+                                    data-val="dark"
+                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme st-btn-active">
                                     <span id="st-theme-dark">Dark</span>
                                 </button>
-                                <button onclick="game.setTheme('light')" data-val="light" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme">
+                                <button onclick="game.setTheme('light')"
+                                    data-val="light"
+                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme">
                                     <span id="st-theme-light">Light</span>
                                 </button>
                             </div>
@@ -861,79 +1071,117 @@
                     </div>
 
                     <!-- Right: Modern Tool Menu -->
-                    <div class="flex flex-col items-end gap-3 pointer-events-auto relative">
-                        
+                    <div
+                        class="flex flex-col items-end gap-3 pointer-events-auto relative">
+
                         <!-- Notification Area -->
-                        <div id="unlock-notification" class="absolute top-12 right-0 notification-toast bg-white border-l-4 border-green-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60] mb-2">
-                            <div class="bg-green-100 p-1.5 rounded-full text-green-600">
+                        <div id="unlock-notification"
+                            class="absolute top-12 right-0 notification-toast bg-white border-l-4 border-green-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60] mb-2">
+                            <div
+                                class="bg-green-100 p-1.5 rounded-full text-green-600">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i>
                             </div>
                             <div>
-                                <div class="text-[10px] uppercase text-gray-500 font-bold tracking-wider">New Location</div>
-                                <div id="unlock-text" class="text-sm font-bold text-gray-800 leading-tight">Home</div>
+                                <div
+                                    class="text-[10px] uppercase text-gray-500 font-bold tracking-wider">New
+                                    Location</div>
+                                <div id="unlock-text"
+                                    class="text-sm font-bold text-gray-800 leading-tight">Home</div>
                             </div>
                         </div>
-                        
+
                         <!-- Currency Notification -->
-                        <div id="currency-notification" class="absolute top-28 right-0 notification-toast bg-gray-900 border-l-4 border-yellow-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60]">
-                            <div class="bg-gray-800 p-1.5 rounded-full text-yellow-400">
+                        <div id="currency-notification"
+                            class="absolute top-28 right-0 notification-toast bg-gray-900 border-l-4 border-yellow-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60]">
+                            <div
+                                class="bg-gray-800 p-1.5 rounded-full text-yellow-400">
                                 <i data-lucide="coins" class="w-4 h-4"></i>
                             </div>
                             <div>
-                                <div class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Transaction</div>
-                                <div id="currency-text" class="text-sm font-bold text-white leading-tight font-mono">0 MMK</div>
+                                <div
+                                    class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Transaction</div>
+                                <div id="currency-text"
+                                    class="text-sm font-bold text-white leading-tight font-mono">0
+                                    MMK</div>
                             </div>
                         </div>
 
                         <!-- Action Bar Container -->
-                        <div class="glass-panel p-2 rounded-2xl flex flex-row flex-wrap justify-end gap-2 shadow-2xl border-white/10">
-                            
-                            <button onclick="game.togglePhone()" class="hud-btn" aria-label="Phone">
+                        <div
+                            class="glass-panel p-2 rounded-2xl flex flex-row flex-wrap justify-end gap-2 shadow-2xl border-white/10">
+
+                            <button onclick="game.togglePhone()" class="hud-btn"
+                                aria-label="Phone">
                                 <i data-lucide="smartphone" class="w-5 h-5"></i>
                                 <span class="tooltip">Phone</span>
                             </button>
-                            
-                            <button onclick="game.toggleMap()" class="hud-btn" aria-label="Map">
+
+                            <button onclick="game.toggleMap()" class="hud-btn"
+                                aria-label="Map">
                                 <i data-lucide="map" class="w-5 h-5"></i>
                                 <span class="tooltip">Map</span>
                             </button>
-                            
-                            <button onclick="game.saveGameManual()" class="hud-btn" aria-label="Save">
+
+                            <button onclick="game.saveGameManual()"
+                                class="hud-btn" aria-label="Save">
                                 <i data-lucide="save" class="w-5 h-5"></i>
                                 <span class="tooltip">Save</span>
                             </button>
-                            
-                            <button onclick="game.openSettings()" class="hud-btn" aria-label="Settings">
+
+                            <button onclick="game.openSettings()"
+                                class="hud-btn" aria-label="Settings">
                                 <i data-lucide="settings" class="w-5 h-5"></i>
-                                <span class="tooltip" id="hud-st-tip">Settings</span>
+                                <span class="tooltip"
+                                    id="hud-st-tip">Settings</span>
                             </button>
 
-                            <div class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+                            <div
+                                class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
 
-                            <button onclick="game.toggleLang()" class="hud-btn w-16" aria-label="Language">
-                                <span id="lang-btn" class="font-bold text-[10px]">မြန်မာ</span>
+                            <button onclick="game.toggleLang()"
+                                class="hud-btn w-16" aria-label="Language">
+                                <span id="lang-btn"
+                                    class="font-bold text-[10px]">မြန်မာ</span>
                             </button>
 
-                            <button onclick="game.toggleAuto()" id="auto-btn" class="hud-btn" aria-label="Auto Play">
-                                <i data-lucide="play-circle" class="w-5 h-5"></i>
+                            <button onclick="game.toggleAuto()" id="auto-btn"
+                                class="hud-btn" aria-label="Auto Play">
+                                <i data-lucide="play-circle"
+                                    class="w-5 h-5"></i>
                                 <span class="tooltip">Auto</span>
                             </button>
 
-                            <div class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+                            <div
+                                class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
 
-                            <button onclick="game.toggleImmersive()" class="hud-btn" aria-label="Immersive Mode">
+                            <button onclick="game.toggleImmersive()"
+                                class="hud-btn" aria-label="Immersive Mode">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                                 <span class="tooltip">Hide UI</span>
                             </button>
-                            
-                            <button onclick="game.takeScreenshot()" class="hud-btn" aria-label="Screenshot">
+
+                            <button onclick="game.takeScreenshot()"
+                                class="hud-btn" aria-label="Screenshot">
                                 <i data-lucide="camera" class="w-5 h-5"></i>
                                 <span class="tooltip">Snap</span>
                             </button>
-                            
-                            <button onclick="game.toggleFullscreen()" id="fs-btn" class="hud-btn" aria-label="Fullscreen">
+
+                            <button onclick="game.toggleFullscreen()"
+                                id="fs-btn" class="hud-btn"
+                                aria-label="Fullscreen">
                                 <i data-lucide="maximize" class="w-5 h-5"></i>
                                 <span class="tooltip">Full</span>
+                            </button>
+
+                            <div
+                                class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+
+                            <!-- QUIT BUTTON -->
+                            <button onclick="game.quitToMenu()" class="hud-btn"
+                                aria-label="Menu">
+                                <i data-lucide="home" class="w-5 h-5"></i>
+                                <span class="tooltip"
+                                    id="hud-quit-tip">Menu</span>
                             </button>
                         </div>
                     </div>
@@ -973,92 +1221,135 @@
             </div>
 
             <!-- Start Screen (Main Menu) -->
-            <div id="start-screen" class="absolute inset-0 z-[80] flex bg-black overflow-hidden transition-colors">
-                
+            <div id="start-screen"
+                class="absolute inset-0 z-[80] flex bg-black overflow-hidden transition-colors">
+
                 <!-- Background Video -->
-                <video id="main-menu-video" loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-100 z-0 ">
-                    <source src="../videos/herovideo.mp4" type="video/mp4">
+                <video id="main-menu-video" loop muted playsinline
+                    class="absolute inset-0 w-full h-full object-cover opacity-100 z-0 ">
+                    <source src="https://www.pexels.com/download/video/6205145/"
+                        type="video/mp4">
                 </video>
-                
+
                 <!-- Film Grain / Atmosphere Layer -->
                 <div class="menu-grain z-10 transition-opacity"></div>
                 <!-- Dark Gradient Overlay -->
-                <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30 z-10 transition-colors"></div>
-                
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30 z-10 transition-colors"></div>
+
                 <!-- Main Layout Container -->
-                <div class="relative z-20 w-full h-full flex flex-col md:flex-row p-8 md:p-16 lg:p-24 items-center md:items-stretch">
-                    
+                <div
+                    class="relative z-20 w-full h-full flex flex-col md:flex-row p-8 md:p-16 lg:p-24 items-center md:items-stretch">
+
                     <!-- Left Column: Title & Mood -->
-                    <div class="flex-1 flex flex-col justify-center items-start space-y-8 max-w-3xl">
-                        
-                        <div class="animate-slide-up" style="animation-delay: 0.1s;">
-                            <div class="inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg">
-                                <div class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
-                                <div class="text-gray-300 tracking-[0.3em] text-[10px] md:text-xs uppercase font-semibold">
+                    <div
+                        class="flex-1 flex flex-col justify-center items-start space-y-8 max-w-3xl">
+
+                        <div class="animate-slide-up"
+                            style="animation-delay: 0.1s;">
+                            <div
+                                class="inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg">
+                                <div
+                                    class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                                <div
+                                    class="text-gray-300 tracking-[0.3em] text-[10px] md:text-xs uppercase font-semibold">
                                     Enterprise Edition
                                 </div>
                             </div>
                         </div>
 
-                        <div class="animate-slide-up" style="animation-delay: 0.2s;">
-                            <h1 class="text-6xl md:text-8xl lg:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-500 title-font drop-shadow-2xl leading-[0.9] tracking-tighter">
+                        <div class="animate-slide-up"
+                            style="animation-delay: 0.2s;">
+                            <h1
+                                class="text-6xl md:text-8xl lg:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-500 title-font drop-shadow-2xl leading-[0.9] tracking-tighter">
                                 THE<br>
-                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400 transition-colors">BETWEENS</span>
+                                <span
+                                    class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400 transition-colors">BETWEENS</span>
                             </h1>
                         </div>
 
-                        <div class="animate-slide-up space-y-4 border-l-2 border-white/30 pl-6" style="animation-delay: 0.3s;">
-                            <p class="text-gray-300 text-lg md:text-2xl font-light tracking-wide opacity-90 max-w-xl transition-colors">
+                        <div
+                            class="animate-slide-up space-y-4 border-l-2 border-white/30 pl-6"
+                            style="animation-delay: 0.3s;">
+                            <p
+                                class="text-gray-300 text-lg md:text-2xl font-light tracking-wide opacity-90 max-w-xl transition-colors">
                                 Two worlds. One reality.
                             </p>
-                            <p class="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed font-sans opacity-80 transition-colors">
-                                Navigate the fractured timelines of Yangon. Uncover the truth hidden in the echoes of the city. Your choices define the reality you wake up in.
+                            <p
+                                class="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed font-sans opacity-80 transition-colors">
+                                Navigate the fractured timelines of Yangon.
+                                Uncover the truth hidden in the echoes of the
+                                city. Your choices define the reality you wake
+                                up in.
                             </p>
                         </div>
                     </div>
 
                     <!-- Right Column: Interactive Menu -->
-                    <div class="w-full md:w-[400px] flex flex-col justify-center items-start pl-0 md:pl-16 mt-12 md:mt-0 relative animate-slide-up" style="animation-delay: 0.5s;">
-                         
-                         <!-- Divider Line (Mobile/Desktop adaptive) -->
-                         <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-[60%] bg-gradient-to-b from-transparent via-white/20 to-transparent hidden md:block"></div>
+                    <div
+                        class="w-full md:w-[400px] flex flex-col justify-center items-start pl-0 md:pl-16 mt-12 md:mt-0 relative animate-slide-up"
+                        style="animation-delay: 0.5s;">
 
-                         <div class="flex flex-col w-full space-y-2">
-                             <button onclick="game.init()" class="menu-item primary">
-                                 <div class="icon-box"><i data-lucide="play" class="w-6 h-6 fill-current"></i></div>
-                                 <span id="st-menu-new">NEW GAME</span>
-                             </button>
-                             
-                             <button onclick="game.loadGame()" id="load-btn" class="menu-item hidden">
-                                 <div class="icon-box"><i data-lucide="rotate-ccw" class="w-5 h-5"></i></div>
-                                 <span id="st-menu-load">RESUME JOURNEY</span>
-                             </button>
-                             
-                             <button onclick="alert('Feature coming in next update')" class="menu-item">
-                                 <div class="icon-box"><i data-lucide="image" class="w-5 h-5"></i></div>
-                                 <span id="st-menu-gallery">SCENE GALLERY</span>
-                             </button>
-                             
-                             <button onclick="game.openSettings()" class="menu-item">
-                                 <div class="icon-box"><i data-lucide="settings" class="w-5 h-5"></i></div>
-                                 <span id="st-menu-set">SETTINGS</span>
-                             </button>
-                             
-                             <button onclick="alert('Standard Terms & Conditions Apply')" class="menu-item">
-                                 <div class="icon-box"><i data-lucide="file-text" class="w-5 h-5"></i></div>
-                                 TERMS & CONDITIONS
-                             </button>
-                             
-                             <button onclick="alert('Created by Gemini & User')" class="menu-item">
-                                 <div class="icon-box"><i data-lucide="users" class="w-5 h-5"></i></div>
-                                 CREDITS
-                             </button>
-                             
-                             <button onclick="location.reload()" class="menu-item" style="color: #ef4444; border-bottom-color: rgba(239, 68, 68, 0.2);">
-                                 <div class="icon-box" style="color: #ef4444;"><i data-lucide="power" class="w-5 h-5"></i></div>
-                                 <span id="st-menu-quit">QUIT</span>
-                             </button>
-                         </div>
+                        <!-- Divider Line (Mobile/Desktop adaptive) -->
+                        <div
+                            class="absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-[60%] bg-gradient-to-b from-transparent via-white/20 to-transparent hidden md:block"></div>
+
+                        <div class="flex flex-col w-full space-y-2">
+                            <button onclick="game.init()"
+                                class="menu-item primary">
+                                <div class="icon-box"><i data-lucide="play"
+                                        class="w-6 h-6 fill-current"></i></div>
+                                <span id="st-menu-new">NEW GAME</span>
+                            </button>
+
+                            <button onclick="game.loadGame()" id="load-btn"
+                                class="menu-item hidden">
+                                <div class="icon-box"><i
+                                        data-lucide="rotate-ccw"
+                                        class="w-5 h-5"></i></div>
+                                <span id="st-menu-load">RESUME JOURNEY</span>
+                            </button>
+
+                            <button
+                                onclick="alert('Feature coming in next update')"
+                                class="menu-item">
+                                <div class="icon-box"><i data-lucide="image"
+                                        class="w-5 h-5"></i></div>
+                                <span id="st-menu-gallery">SCENE GALLERY</span>
+                            </button>
+
+                            <button onclick="game.openSettings()"
+                                class="menu-item">
+                                <div class="icon-box"><i data-lucide="settings"
+                                        class="w-5 h-5"></i></div>
+                                <span id="st-menu-set">SETTINGS</span>
+                            </button>
+
+                            <button
+                                onclick="alert('Standard Terms & Conditions Apply')"
+                                class="menu-item">
+                                <div class="icon-box"><i data-lucide="file-text"
+                                        class="w-5 h-5"></i></div>
+                                <span id="st-menu-terms">TERMS AND
+                                    CONDITIONS</span>
+                            </button>
+
+                            <button onclick="alert('Created by Gemini & User')"
+                                class="menu-item">
+                                <div class="icon-box"><i data-lucide="users"
+                                        class="w-5 h-5"></i></div>
+                                <span id="st-menu-credits">CREDITS</span>
+                            </button>
+
+                            <button onclick="location.reload()"
+                                class="menu-item"
+                                style="color: #ef4444; border-bottom-color: rgba(239, 68, 68, 0.2);">
+                                <div class="icon-box" style="color: #ef4444;"><i
+                                        data-lucide="power"
+                                        class="w-5 h-5"></i></div>
+                                <span id="st-menu-quit">QUIT</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1068,12 +1359,14 @@
     // --- DICTIONARY FOR SETTINGS ---
     const SETTINGS_DICT = {
         title: { en: "Settings", mm: "ဆက်တင်များ" },
-        volume: { en: "Master Volume", mm: "အသံအတိုးအကျယ်" },
-        vol_tip: { en: "Adjusts the overall game volume.", mm: "ဂိမ်းတစ်ခုလုံး၏ အသံအတိုးအကျယ်ကို ချိန်ညှိရန်။" },
-        theme_music: { en: "Theme Music", mm: "နောက်ခံတေးဂီတ" },
-        tm_tip: { en: "Toggle the main background theme song.", mm: "ပင်မနောက်ခံတေးဂီတကို ဖွင့်ရန် သို့မဟုတ် ပိတ်ရန်။" },
-        tm_on: { en: "On", mm: "ဖွင့်" },
-        tm_off: { en: "Off", mm: "ပိတ်" },
+        ga_vol: { en: "Game Audio Vol", mm: "ဂိမ်းအသံအတိုးအကျယ်" },
+        ga_vol_tip: { en: "Adjusts the volume of game sound effects.", mm: "ဂိမ်းအတွင်းအသံများ၏ အတိုးအကျယ်ကို ချိန်ညှိရန်။" },
+        tm_vol: { en: "Theme Music Vol", mm: "နောက်ခံတေးဂီတ အတိုးအကျယ်" },
+        tm_vol_tip: { en: "Adjusts the volume of the main theme song.", mm: "ပင်မနောက်ခံတေးဂီတ၏ အတိုးအကျယ်ကို ချိန်ညှိရန်။" },
+        ga_state: { en: "Game Scene Audio", mm: "ဂိမ်းနောက်ခံအသံ" },
+        ga_state_tip: { en: "Toggle the scene specific sound effects.", mm: "ဂိမ်းအတွင်းနောက်ခံအသံများကို ဖွင့်ရန် သို့မဟုတ် ပိတ်ရန်။" },
+        ga_on: { en: "On", mm: "ဖွင့်" },
+        ga_off: { en: "Off", mm: "ပိတ်" },
         font_size: { en: "Font Size", mm: "စာလုံးအရွယ်အစား" },
         font_tip: { en: "Changes the size of the reading text.", mm: "စာဖတ်ရမည့် စာလုံးများ၏ အရွယ်အစားကို ပြောင်းလဲရန်။" },
         font_sm: { en: "Small", mm: "အသေးစား" },
@@ -1094,7 +1387,10 @@
         menu_load: { en: "RESUME JOURNEY", mm: "ဆက်လက်ကစားရန်" },
         menu_gallery: { en: "SCENE GALLERY", mm: "ဓာတ်ပုံပြခန်း" },
         menu_set: { en: "SETTINGS", mm: "ဆက်တင်များ" },
-        menu_quit: { en: "QUIT", mm: "ထွက်မည်" }
+        menu_terms: { en: "TERMS & CONDITIONS", mm: "စည်းမျဥ်းနှင့် သတ်မှတ်ချက်များ"},
+        menu_credits: { en: "CREDITS", mm: "ခရက်ဒစ်"},
+        menu_quit: { en: "QUIT", mm: "ထွက်မည်" },
+        hud_quit: { en: "Menu", mm: "အစသို့" }
     };
 
     // --- LOCATION DATABASE ---
@@ -1188,7 +1484,8 @@
                 lang: 'mm',
                 settings: {
                     volume: 1.0,
-                    themeMusic: 'on',
+                    themeVolume: 0.4,
+                    gameAudio: 'on',
                     fontSize: 'medium',
                     graphics: 'high',
                     theme: 'dark'
@@ -1231,6 +1528,9 @@
                     this.state.settings = parsed.settings;
                 }
             }
+            // Ensure defaults for new settings
+            if (this.state.settings.themeVolume === undefined) this.state.settings.themeVolume = 0.4;
+            if (this.state.settings.gameAudio === undefined) this.state.settings.gameAudio = 'on';
             
             // Run global UI apply
             this.applySettings();
@@ -1256,7 +1556,7 @@
             // Add background audio play intent
             const playPreloaderAudio = () => {
                 if (this.audio && this.audio.themeMusic && this.audio.themeMusic.paused) {
-                    this.audio.themeMusic.volume = this.state.settings.volume * 0.4;
+                    this.audio.themeMusic.volume = this.state.settings.themeVolume !== undefined ? this.state.settings.themeVolume : 0.4;
                     this.audio.themeMusic.play().catch(e => console.log("Autoplay blocked, waiting for click."));
                 }
             };
@@ -1270,8 +1570,8 @@
                 if(barFill) barFill.style.width = percent + '%';
                 if(loadText) loadText.innerText = `Loading Assets... ${percent}%`;
                 
-                if (loadedCount >= totalAssets && loadText && loadText.innerText !== "Ready to play") {
-                    if(loadText) loadText.innerText = "Ready to play";
+                if (loadedCount >= totalAssets && loadText && loadText.innerText !== "Ready to go") {
+                    if(loadText) loadText.innerText = "Ready to go";
                     if(startBtn) startBtn.classList.remove('hidden');
                     if(loadSpinner) loadSpinner.classList.add('hidden');
                     if(barFill) barFill.classList.add('animate-pulse');
@@ -1337,9 +1637,27 @@
             this.loadScene('yangon_intro');
             this.setupMapInteractions();
             this.updateCurrency(0);
+        }
+
+        quitToMenu() {
+            document.getElementById('ui-layer').classList.add('hidden');
+            document.getElementById('ui-layer').classList.remove('flex');
             
-            // Explicitly start theme music after user interaction starts the game
-            this.audio.setThemeMusic(this.state.settings.themeMusic);
+            const startScreen = document.getElementById('start-screen');
+            startScreen.classList.remove('hidden');
+            startScreen.classList.remove('opacity-0');
+            
+            document.getElementById('load-btn').classList.remove('hidden');
+            document.getElementById('load-btn').classList.add('flex');
+            
+            this.isTyping = false;
+            if(this.typingTimer) clearTimeout(this.typingTimer);
+            if(this.autoPlayTimer) clearTimeout(this.autoPlayTimer);
+            
+            if (this.audio && this.audio.bgMusic) {
+                this.audio.bgMusic.pause();
+            }
+            this.saveGameManual();
         }
         
         setupMapInteractions() {
@@ -1758,43 +2076,6 @@
                     notif.classList.remove('notification-show');
                 }, 3000);
 
-                // Add to internal history logic
-                if (!this.state.history) this.state.history = [];
-                this.state.history.unshift({ amount: amount, date: 'Today' });
-                if (this.state.history.length > 5) this.state.history.pop();
-                
-                // If app is open, update UI
-                if (this.phoneApp === 'kbzpay') {
-                    this.renderKBZHistory();
-                }
-            }
-        }
-
-        updateCurrency(amount) {
-            if (amount === 0 && this.state.currency === 0) {
-                 const bal = document.getElementById('kbz-balance');
-                 if(bal) bal.innerText = "0";
-                 return;
-            }
-
-            this.state.currency += amount;
-            
-            const bal = document.getElementById('kbz-balance');
-            if(bal) bal.innerText = this.state.currency.toLocaleString();
-
-            if (amount !== 0) {
-                const notif = document.getElementById('currency-notification');
-                const text = document.getElementById('currency-text');
-                const sign = amount > 0 ? '+' : '';
-                
-                text.innerText = `${sign}${amount.toLocaleString()} MMK`;
-                text.className = `text-sm font-bold leading-tight font-mono ${amount > 0 ? 'currency-positive' : 'currency-negative'}`;
-                
-                notif.classList.add('notification-show');
-                setTimeout(() => {
-                    notif.classList.remove('notification-show');
-                }, 3000);
-
                 if (!this.state.history) this.state.history = [];
                 this.state.history.unshift({ amount: amount, date: 'Today' });
                 if (this.state.history.length > 5) this.state.history.pop();
@@ -2096,7 +2377,7 @@
             if (save) {
                 this.state = JSON.parse(save);
                 if (this.state.currency === undefined) this.state.currency = 0;
-                if (!this.state.settings) this.state.settings = { volume: 1.0, themeMusic: 'on', fontSize: 'medium', graphics: 'high', theme: 'dark' };
+                if (!this.state.settings) this.state.settings = { volume: 1.0, themeVolume: 0.4, gameAudio: 'on', fontSize: 'medium', graphics: 'high', theme: 'dark' };
                 
                 this.applySettings();
                 document.getElementById('start-screen').classList.add('hidden');
@@ -2104,9 +2385,6 @@
                 document.getElementById('ui-layer').classList.add('flex');
                 this.loadScene(this.state.sceneId);
                 this.updateCurrency(0); 
-                
-                // Explicitly start theme music after user interaction starts the game
-                this.audio.setThemeMusic(this.state.settings.themeMusic);
             }
         }
 
@@ -2152,7 +2430,8 @@
 
         applySettings() {
             this.setVolume(this.state.settings.volume, false);
-            this.setThemeMusic(this.state.settings.themeMusic || 'on', false);
+            this.setThemeVolume(this.state.settings.themeVolume !== undefined ? this.state.settings.themeVolume : 0.4, false);
+            this.setGameAudio(this.state.settings.gameAudio || 'on', false);
             this.setFontSize(this.state.settings.fontSize, false);
             this.setGraphics(this.state.settings.graphics, false);
             this.setTheme(this.state.settings.theme, false);
@@ -2160,8 +2439,9 @@
         }
 
         syncSettingsUI() {
-            document.getElementById('vol-slider').value = this.state.settings.volume;
-            this.updateBtnGroup('tm', this.state.settings.themeMusic || 'on');
+            document.getElementById('ga-vol-slider').value = this.state.settings.volume;
+            document.getElementById('tm-vol-slider').value = this.state.settings.themeVolume !== undefined ? this.state.settings.themeVolume : 0.4;
+            this.updateBtnGroup('ga', this.state.settings.gameAudio || 'on');
             this.updateBtnGroup('font', this.state.settings.fontSize);
             this.updateBtnGroup('gfx', this.state.settings.graphics);
             this.updateBtnGroup('lang', this.state.lang);
@@ -2194,18 +2474,23 @@
             updateText('st-menu-gallery', 'menu_gallery');
             updateText('st-menu-set', 'menu_set');
             updateText('st-menu-quit', 'menu_quit');
+            updateText('st-menu-credits', 'menu_credits');
+            updateText('st-menu-terms', 'menu_terms');
             
             // HUD Tooltips
             updateText('hud-st-tip', 'menu_set');
+            updateText('hud-quit-tip', 'hud_quit');
 
             // Modal Titles
             updateText('st-title', 'title');
-            updateText('st-vol', 'volume');
-            updateText('st-vol-tip', 'vol_tip');
-            updateText('st-tm', 'theme_music');
-            updateText('st-tm-tip', 'tm_tip');
-            updateText('st-tm-on', 'tm_on');
-            updateText('st-tm-off', 'tm_off');
+            updateText('st-ga-vol', 'ga_vol');
+            updateText('st-ga-vol-tip', 'ga_vol_tip');
+            updateText('st-tm-vol', 'tm_vol');
+            updateText('st-tm-vol-tip', 'tm_vol_tip');
+            updateText('st-ga-state', 'ga_state');
+            updateText('st-ga-state-tip', 'ga_state_tip');
+            updateText('st-ga-on', 'ga_on');
+            updateText('st-ga-off', 'ga_off');
             updateText('st-font', 'font_size');
             updateText('st-font-tip', 'font_tip');
             updateText('st-font-sm', 'font_sm');
@@ -2230,9 +2515,15 @@
             if(sync) this.syncSettingsUI();
         }
 
-        setThemeMusic(state, sync = true) {
-            this.state.settings.themeMusic = state;
-            this.audio.setThemeMusic(state);
+        setThemeVolume(val, sync = true) {
+            this.state.settings.themeVolume = parseFloat(val);
+            this.audio.setThemeVolume(this.state.settings.themeVolume);
+            if(sync) this.syncSettingsUI();
+        }
+
+        setGameAudio(state, sync = true) {
+            this.state.settings.gameAudio = state;
+            this.audio.setGameAudio(state);
             if(sync) this.syncSettingsUI();
         }
 
@@ -2246,9 +2537,10 @@
 
         setGraphics(level, sync = true) {
             this.state.settings.graphics = level;
-            document.body.classList.remove('gfx-low', 'gfx-med');
+            document.body.classList.remove('gfx-low', 'gfx-med', 'gfx-high');
             if (level === 'low') document.body.classList.add('gfx-low');
             if (level === 'medium') document.body.classList.add('gfx-med');
+            if (level === 'high') document.body.classList.add('gfx-high');
             if(sync) this.syncSettingsUI();
         }
 
@@ -2312,6 +2604,7 @@
             if(this.state.settings.fontSize === 'large') settingsClasses.push('font-lg');
             if(this.state.settings.graphics === 'low') settingsClasses.push('gfx-low');
             if(this.state.settings.graphics === 'medium') settingsClasses.push('gfx-med');
+            if(this.state.settings.graphics === 'high') settingsClasses.push('gfx-high');
             if(this.state.settings.theme === 'light') settingsClasses.push('theme-light');
             
             document.body.className = `${baseClasses} ${settingsClasses.join(' ')}`;
@@ -2534,7 +2827,8 @@
             this.active = true; 
             this.current = null; 
             this.volume = 1.0;
-            this.themeActive = true;
+            this.themeVolume = 0.4;
+            this.gameAudioActive = true;
             this.themeMusic = new Audio(ASSETS.audio.main_theme || "../audios/theme.mp3");
             this.themeMusic.loop = true;
         } 
@@ -2542,15 +2836,25 @@
         setVolume(v) {
             this.volume = v;
             if(this.bgMusic) this.bgMusic.volume = this.volume;
-            if(this.themeMusic) this.themeMusic.volume = this.volume * 0.4; // Slightly softer to sit behind game audio
         }
 
-        setThemeMusic(state) {
-            this.themeActive = (state === 'on');
-            if (this.themeActive && this.active) {
+        setThemeVolume(v) {
+            this.themeVolume = v;
+            if(this.themeMusic) this.themeMusic.volume = this.themeVolume;
+            
+            if (this.themeVolume > 0 && this.themeMusic.paused && this.active) {
                 this.themeMusic.play().catch(e => console.log("Audio autoplay blocked by browser"));
-            } else {
+            } else if (this.themeVolume == 0 && !this.themeMusic.paused) {
                 this.themeMusic.pause();
+            }
+        }
+
+        setGameAudio(state) {
+            this.gameAudioActive = (state === 'on');
+            if (this.gameAudioActive && this.active && this.bgMusic && this.bgMusic.paused) {
+                this.bgMusic.play().catch(e => console.log("Audio autoplay blocked by browser"));
+            } else if (!this.gameAudioActive && this.bgMusic) {
+                this.bgMusic.pause();
             }
         }
 
@@ -2560,8 +2864,8 @@
             if (this.active) {
                 icon.setAttribute('data-lucide', 'volume-2');
                 icon.classList.add('text-yellow-400'); 
-                if(this.current && this.bgMusic) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
-                if(this.themeActive && this.themeMusic) this.themeMusic.play().catch(e => console.log("Audio autoplay blocked"));
+                if(this.current && this.bgMusic && this.gameAudioActive) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
+                if(this.themeMusic && this.themeVolume > 0) this.themeMusic.play().catch(e => console.log("Audio autoplay blocked"));
             } else {
                 icon.setAttribute('data-lucide', 'volume-x');
                 icon.classList.remove('text-yellow-400');
@@ -2582,9 +2886,9 @@
             if (this.current !== id) {
                  this.bgMusic.src = ASSETS.audio[id];
                  this.current = id;
-                 if (this.active) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
+                 if (this.active && this.gameAudioActive) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
             } else {
-                 if (this.active && this.bgMusic.paused) {
+                 if (this.active && this.gameAudioActive && this.bgMusic.paused) {
                      this.bgMusic.currentTime = 0;
                      this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
                  }
@@ -3244,7 +3548,7 @@
             choices: [
                 { text: { en: "To Be Continued...", mm: "ဆက်ရန်..." }, next: 'start' } /* Loops back for now */
             ]
-        }
+        },
     };
 
     // --- BOOTSTRAP ---

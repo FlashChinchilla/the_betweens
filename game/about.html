@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | The Betweens</title>
+    <style>
+        :root {
+            --bg-base: #000000;
+            --bg-surface: #1d1d1f;
+            --bg-surface-elevated: #2c2c2e;
+            --bg-card: rgba(29, 29, 31, 0.6);
+            --text-primary: #f5f5f7;
+            --text-secondary: #86868b;
+            --text-tertiary: #6e6e73;
+            --accent-color: #2997ff;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-light: rgba(255, 255, 255, 0.05);
+
+            --glass-blur: blur(40px) saturate(200%);
+
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            
+            --nav-height: 60px;
+            --section-padding: 140px;
+            --container-width: 1400px;
+            
+            --border-radius-sm: 16px;
+            --border-radius-md: 24px;
+            --border-radius-lg: 32px;
+            --border-radius-pill: 100px;
+
+            /* iOS Water Drop / Spring Animations */
+            --transition-spring: 0.6s cubic-bezier(0.4, 1.2, 0.2, 1);
+            --transition-squash: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            --transition-medium: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        html { font-size: 16px; background-color: var(--bg-base); color: var(--text-primary); font-family: var(--font-family); line-height: 1.47059; letter-spacing: -0.022em; scroll-behavior: smooth; }
+        body { overflow-x: hidden; }
+        ::selection { background-color: rgba(41, 151, 255, 0.4); color: var(--text-primary); }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-surface-elevated); border-radius: 10px; border: 2px solid var(--bg-base); }
+
+        a { text-decoration: none; color: inherit; outline: none; }
+        button { border: none; background: none; font-family: inherit; cursor: pointer; outline: none; }
+        img { max-width: 100%; display: block; object-fit: cover; }
+        ul { list-style: none; }
+
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 24px; }
+        .section-title { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; letter-spacing: -0.04em; text-align: center; margin-bottom: 20px; background: linear-gradient(180deg, #fff 0%, #86868b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 10px 30px rgba(255,255,255,0.1); }
+        .section-subtitle { font-size: clamp(1.2rem, 2vw, 1.5rem); color: var(--text-secondary); text-align: center; max-width: 800px; margin: 0 auto 80px auto; font-weight: 400; line-height: 1.3; }
+
+        .reveal { opacity: 0; transform: translateY(40px) scale(0.95); transition: var(--transition-spring); }
+        .reveal.active { opacity: 1; transform: translateY(0) scale(1); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+
+        /* --- WATER DROP FLOATING NAVBAR --- */
+        .navbar {
+            position: fixed;
+            top: 24px; left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 48px);
+            max-width: 1000px;
+            height: var(--nav-height);
+            background: rgba(30, 30, 32, 0.4);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--border-radius-pill);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-spring);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .navbar.scrolled {
+            background: rgba(20, 20, 22, 0.7);
+            top: 16px;
+            max-width: 900px;
+            height: 54px;
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 8px 0 24px;
+        }
+
+        .nav-logo { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            letter-spacing: -0.01em; 
+            background: linear-gradient(90deg, #fff, #a1a1a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition-spring);
+        }
+
+        .nav-logo:hover { transform: scale(1.05); }
+        .nav-logo:active { transform: scale(0.92); transition: var(--transition-squash); }
+
+        .nav-links { display: flex; align-items: center; gap: 8px; position: relative; }
+        
+        .nav-water-drop {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.3);
+            border-radius: var(--border-radius-pill);
+            z-index: 0;
+            transition: all 0.4s cubic-bezier(0.4, 1.2, 0.2, 1);
+            opacity: 0;
+            pointer-events: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .nav-link {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: var(--border-radius-pill);
+            transition: all 0.3s cubic-bezier(0.4, 1.2, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .nav-link:hover, .nav-link.active-drop {
+            transform: scale(1.08);
+            color: #fff;
+            text-shadow: 0 0 12px rgba(255,255,255,0.6);
+            filter: brightness(1.2);
+        }
+
+        .nav-link:active {
+            transform: scale(0.9);
+            transition: var(--transition-squash);
+        }
+
+        .dropdown { position: relative; }
+        .dropdown-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%; left: 50%;
+            transform: translateX(-50%) translateY(10px) scale(0.9);
+            background: rgba(30, 30, 32, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--border-radius-md);
+            padding: 10px;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-spring);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            transform-origin: top center;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(20px) scale(1);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition-spring);
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02) translateX(4px);
+        }
+        
+        .dropdown-item:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.15);
+            transition: var(--transition-squash);
+        }
+
+        /* WATER DROP SQUISH BUTTONS */
+        .btn-play-now, .hero-cta, .btn-submit {
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
+            color: #000;
+            border-radius: var(--border-radius-pill);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-spring);
+            box-shadow: 0 0 0 rgba(255,255,255,0);
+        }
+
+        .btn-play-now {
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+        
+        .hero-cta {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 22px 54px; font-size: 1.15rem;
+            background: rgba(255, 255, 255, 0.1); color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .btn-submit {
+            padding: 16px 36px;
+            font-size: 1.05rem;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            align-self: flex-start;
+            margin-top: 10px;
+        }
+
+        .btn-play-now:hover, .btn-submit:hover {
+            transform: scale(1.06);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+            background: #fff;
+        }
+        
+        .hero-cta:hover {
+            transform: scale(1.06);
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 15px 40px rgba(255,255,255,0.2);
+        }
+
+        .btn-play-now:active, .hero-cta:active, .btn-submit:active {
+            transform: scale(0.88);
+            transition: var(--transition-squash);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; padding: 10px; border-radius: 50%; transition: var(--transition-spring); }
+        .mobile-menu-btn:active { transform: scale(0.8); transition: var(--transition-squash); background: rgba(255,255,255,0.1); }
+        .mobile-menu-btn span { width: 20px; height: 2px; background: var(--text-primary); transition: var(--transition-spring); border-radius: 2px; }
+
+        /* --- ABOUT HERO --- */
+        .about-hero { position: relative; height: 100vh; min-height: 700px; display: flex; align-items: center; justify-content: center; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2500&auto=format&fit=crop') center/cover no-repeat; background-attachment: fixed; }
+        .about-hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, var(--bg-base) 100%); backdrop-filter: blur(2px); }
+        .about-hero-content { position: relative; z-index: 2; text-align: center; max-width: 900px; padding: 0 24px; opacity: 0; transform: translateY(40px) scale(0.95); animation: heroFadeIn 1.4s var(--transition-spring) 0.2s forwards; }
+        @keyframes heroFadeIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+        .about-hero-title { font-size: clamp(4rem, 8vw, 8.5rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 24px; background: linear-gradient(180deg, #fff 0%, #86868b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .about-hero-desc { font-size: clamp(1.3rem, 2.5vw, 1.8rem); color: rgba(255,255,255,0.8); font-weight: 400; line-height: 1.5; }
+
+        /* --- GAME EXPLANATION --- */
+        .game-section { padding: var(--section-padding) 0; background-color: var(--bg-base); }
+        .game-content-wrapper { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 80px; }
+        .game-text-block { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; align-items: start; }
+        .game-text-block h3 { font-size: 2.5rem; font-weight: 700; color: var(--text-primary); position: sticky; top: 100px; letter-spacing: -0.03em; }
+        .game-text-block p { font-size: 1.35rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 32px; font-weight: 400; transition: var(--transition-spring); }
+        .game-text-block p strong { color: var(--text-primary); font-weight: 600; }
+        .game-text-block p:hover { color: #fff; transform: translateX(5px); }
+
+        /* --- CHARACTERS SECTION --- */
+        .characters-section { padding: var(--section-padding) 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden; }
+        .characters-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 60%); pointer-events: none; }
+        
+        .characters-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; margin-bottom: 60px; min-width: 100%;
+        }
+
+        .character-card {
+            background: rgba(40, 40, 42, 0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--border-radius-md);
+            overflow: hidden; transition: var(--transition-spring); display: flex; flex-direction: column; cursor: pointer;
+            backdrop-filter: var(--glass-blur); box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative;
+        }
+        
+        /* Bouncy iOS Apple morph hover/click */
+        .character-card:hover {
+            transform: translateY(-10px) scale(1.03); box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            border-color: rgba(255,255,255,0.2); background: rgba(50, 50, 52, 0.6);
+        }
+        .character-card:active {
+            transform: translateY(-2px) scale(0.96); transition: var(--transition-squash);
+        }
+
+        .character-img-wrapper { width: 100%; aspect-ratio: 4/5; overflow: hidden; position: relative; }
+        .character-img-wrapper img { width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); filter: brightness(0.85); }
+        .character-card:hover .character-img-wrapper img { transform: scale(1.08); filter: brightness(1); }
+
+        .character-info { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; z-index: 2; }
+        .char-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+        .char-name { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; transition: var(--transition-spring); }
+        .character-card:hover .char-name { transform: translateX(2px); }
+        .char-age { font-size: 0.8rem; color: var(--text-primary); background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: var(--border-radius-pill); font-weight: 600; backdrop-filter: blur(10px); }
+        .char-role { font-size: 0.95rem; color: var(--accent-color); font-weight: 600; margin-bottom: 16px; }
+        .char-desc { font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; transition: var(--transition-spring); }
+        .character-card:hover .char-desc { color: #fff; }
+
+        .action-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.02); border: 2px dashed rgba(255,255,255,0.15); text-align: center; padding: 40px 20px;
+        }
+        .action-card:hover { background: rgba(255,255,255,0.08); border-style: solid; border-color: rgba(255,255,255,0.3); }
+        .action-card svg { width: 48px; height: 48px; fill: none; stroke: var(--text-primary); stroke-width: 2; margin-bottom: 16px; transition: var(--transition-spring); }
+        .action-card:hover svg { transform: scale(1.15) translateY(-5px); }
+        .action-card:active svg { transform: scale(0.9); transition: var(--transition-squash); }
+        .action-card span { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+        .action-card p { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 8px; }
+
+        .char-hidden { display: none; }
+
+        .characters-grid-wrapper { width: 100%; overflow-x: auto; padding-bottom: 30px; }
+        .characters-grid-wrapper::-webkit-scrollbar { height: 8px; }
+        .characters-grid-wrapper::-webkit-scrollbar-thumb { background: var(--bg-surface-elevated); border-radius: var(--border-radius-pill); border: 2px solid var(--bg-surface); }
+
+        /* --- CHAPTERS SECTION --- */
+        .chapters-section { padding: var(--section-padding) 0; background-color: var(--bg-base); }
+        .chapters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 1200px; margin: 0 auto; }
+        
+        .chapter-card {
+            position: relative; border-radius: var(--border-radius-lg); overflow: hidden; aspect-ratio: 16/9; cursor: pointer;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); transition: var(--transition-spring); border: 1px solid rgba(255,255,255,0.05);
+        }
+        .chapter-card img { width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); filter: brightness(0.7); }
+        .chapter-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 40px 80px rgba(0,0,0,0.7); border-color: rgba(255,255,255,0.2); }
+        .chapter-card:active { transform: translateY(0) scale(0.97); transition: var(--transition-squash); }
+        .chapter-card:hover img { transform: scale(1.06); filter: brightness(0.9); }
+        .chapter-card:nth-child(5) { grid-column: span 2; aspect-ratio: 21/9; }
+
+        .chapter-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 80px 40px 40px 40px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+            z-index: 2; pointer-events: none; transition: var(--transition-spring);
+        }
+        .chapter-card:hover .chapter-overlay { padding-bottom: 50px; }
+
+        .chapter-number { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent-color); font-weight: 800; margin-bottom: 12px; display: block; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .chapter-title { font-size: 2.4rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.02em; transition: var(--transition-spring); }
+        .chapter-card:hover .chapter-title { transform: translateX(5px); }
+        .chapter-desc { font-size: 1.15rem; color: rgba(255,255,255,0.8); max-width: 85%; line-height: 1.5; }
+
+        /* --- DEVELOPER SECTION --- */
+        .developer-section { padding: var(--section-padding) 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); position: relative; overflow: hidden; }
+        .developer-section::before { content: ''; position: absolute; right: -10%; top: -20%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(41, 151, 255, 0.05) 0%, transparent 70%); pointer-events: none; }
+        
+        .dev-container { 
+            max-width: 950px; 
+            margin: 0 auto; 
+            display: grid; 
+            grid-template-columns: 260px 1fr; 
+            gap: 60px; 
+            align-items: center; 
+            position: relative; 
+            z-index: 2;
+            background: rgba(30, 30, 32, 0.5);
+            padding: 48px;
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+        
+        .dev-image-wrapper { 
+            position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 3/4; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); transition: var(--transition-spring); border: 1px solid rgba(255,255,255,0.1);
+        }
+        .dev-image-wrapper img { width: 100%; height: 100%; transition: var(--transition-spring); }
+        .dev-image-wrapper:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 40px 80px rgba(0,0,0,0.7); border-color: rgba(255,255,255,0.3); }
+        .dev-image-wrapper:hover img { transform: scale(1.05); }
+        
+        .dev-info { display: flex; flex-direction: column; gap: 30px; }
+        .dev-header h2 { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; background: linear-gradient(90deg, #fff, #a1a1a6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .dev-header p { font-size: 1.1rem; color: var(--accent-color); font-weight: 600; }
+        
+        .dev-details-list { display: flex; flex-direction: column; gap: 12px; }
+        .dev-detail-item { display: grid; grid-template-columns: 120px 1fr; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--border-light); transition: var(--transition-spring); cursor: default; }
+        .dev-detail-item:hover { transform: translateX(10px); border-color: rgba(255,255,255,0.2); }
+        .dev-detail-label { color: var(--text-tertiary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+        .dev-detail-value { color: var(--text-primary); font-size: 1rem; font-weight: 500; }
+        .dev-detail-value a { color: var(--text-primary); transition: var(--transition-spring); position: relative; display: inline-block; }
+        .dev-detail-value a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px; background: var(--accent-color); transform: scaleX(0); transform-origin: left; transition: var(--transition-spring); }
+        .dev-detail-value a:hover { color: var(--accent-color); transform: scale(1.05); }
+        .dev-detail-value a:hover::after { transform: scaleX(1); }
+
+        /* CONTACT SUBMIT BUTTON FOR BOTH PAGES */
+        .btn-submit {
+            padding: 16px 36px;
+            font-size: 1.05rem;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            align-self: flex-start;
+            margin-top: 10px;
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
+            color: #000;
+            border-radius: var(--border-radius-pill);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-spring);
+        }
+        .btn-submit:hover {
+            transform: scale(1.06);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+            background: #fff;
+        }
+        .btn-submit:active {
+            transform: scale(0.88);
+            transition: var(--transition-squash);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* --- FOOTER --- */
+        .footer { background: #000; padding: 100px 0 40px; border-top: 1px solid var(--border-light); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 80px; }
+        .footer-brand h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 20px; background: linear-gradient(90deg, #fff, #86868b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .footer-brand p { color: var(--text-secondary); font-size: 1rem; max-width: 320px; line-height: 1.6; }
+        .footer-links h4 { font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.1em; }
+        .footer-links ul { display: flex; flex-direction: column; gap: 16px; }
+        .footer-links a { color: var(--text-secondary); font-size: 0.95rem; transition: var(--transition-spring); display: inline-block; }
+        .footer-links a:hover { color: var(--text-primary); transform: translateX(5px); }
+        
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 40px; border-top: 1px solid var(--border-light); }
+        .copyright { color: var(--text-tertiary); font-size: 0.85rem; }
+        .social-icons { display: flex; gap: 16px; }
+        .social-icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: var(--text-primary); transition: var(--transition-spring); border: 1px solid rgba(255,255,255,0.05); }
+        .social-icon:hover { background: var(--text-primary); color: var(--bg-base); transform: scale(1.15); box-shadow: 0 10px 20px rgba(255,255,255,0.2); }
+        .social-icon:active { transform: scale(0.85); transition: var(--transition-squash); }
+        .social-icon svg { width: 20px; height: 20px; fill: currentColor; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1200px) {
+            .characters-grid { min-width: 1000px; } 
+            .dev-container { grid-template-columns: 240px 1fr; gap: 40px; }
+        }
+        @media (max-width: 768px) {
+            .navbar { width: calc(100% - 32px); top: 16px; }
+            .navbar.scrolled { top: 12px; }
+            .nav-links {
+                position: absolute; top: 120%; right: 0; width: 250px;
+                background: rgba(30, 30, 32, 0.85); backdrop-filter: var(--glass-blur); flex-direction: column; align-items: flex-start;
+                padding: 24px; gap: 16px; border-radius: var(--border-radius-md); border: 1px solid rgba(255,255,255,0.1);
+                transform: scale(0.9) translateY(-20px); opacity: 0; visibility: hidden; transition: var(--transition-spring);
+                box-shadow: 0 30px 60px rgba(0,0,0,0.6); transform-origin: top right;
+            }
+            .nav-links.mobile-active { transform: scale(1) translateY(0); opacity: 1; visibility: visible; }
+            .nav-link { width: 100%; }
+            .mobile-menu-btn { display: flex; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; padding: 10px; border-radius: 50%; transition: var(--transition-spring); }
+            .mobile-menu-btn:active { transform: scale(0.8); transition: var(--transition-squash); background: rgba(255,255,255,0.1); }
+            .mobile-menu-btn span { width: 20px; height: 2px; background: var(--text-primary); transition: var(--transition-spring); border-radius: 2px; }
+            .dropdown-menu { position: static; transform: none; opacity: 1; visibility: visible; box-shadow: none; background: transparent; border: none; padding: 12px 0 0 12px; display: none; }
+            .dropdown.active .dropdown-menu { display: block; }
+            .btn-play-now { margin-left: 0; width: 100%; text-align: center; margin-top: 10px; }
+
+            .game-text-block { grid-template-columns: 1fr; gap: 20px; }
+            .game-text-block h3 { position: static; }
+            .chapters-grid { grid-template-columns: 1fr; }
+            .chapter-card:nth-child(5) { grid-column: span 1; aspect-ratio: 16/9; }
+            .dev-container { grid-template-columns: 1fr; gap: 40px; padding: 32px; }
+            .dev-image-wrapper { max-width: 240px; margin: 0 auto; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+            .footer-bottom { flex-direction: column; gap: 24px; text-align: center; }
+            .dev-detail-item { grid-template-columns: 1fr; gap: 8px; border-bottom: none; padding-bottom: 12px; }
+            .dev-details-list { gap: 16px; }
+        }
+        @media (max-width: 500px) {
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="home.html" class="nav-logo">The Betweens</a>
+            <div class="nav-links" id="navLinks">
+                <a href="home.html" class="nav-link">Home</a>
+                <div class="dropdown">
+                    <a href="about.html" class="nav-link active dropdown-toggle" id="aboutDropdownToggle">
+                        About 
+                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#game" class="dropdown-item">Game</a>
+                        <a href="#characters" class="dropdown-item">Characters</a>
+                        <a href="#chapters" class="dropdown-item">Chapters</a>
+                        <a href="#developer" class="dropdown-item">Developer</a>
+                    </div>
+                </div>
+                <a href="home.html#faqs" class="nav-link">FAQs</a>
+                <a href="#play" class="btn-play-now">Play Now</a>
+            </div>
+            
+            <div class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="about-hero">
+        <div class="about-hero-content reveal">
+            <h1 class="about-hero-title">Beyond Reality</h1>
+            <p class="about-hero-desc">Discover the lore, the souls bound to the ring, and the mind behind the parallel worlds of Yangon.</p>
+        </div>
+    </header>
+
+    <section id="game" class="game-section">
+        <div class="container">
+            <h2 class="section-title reveal">The Core Experience</h2>
+            <p class="section-subtitle reveal delay-1">Every heartbeat is a choice. Every choice is a consequence.</p>
+            
+            <div class="game-content-wrapper">
+                <div class="game-text-block reveal delay-2">
+                    <h3>User Driven</h3>
+                    <div>
+                        <p><strong>The Betweens</strong> is not just a story you read; it is a reality you architect. From the moment the mysterious ring binds to you, the narrative fractures into countless possibilities based purely on your interactions.</p>
+                        <p>There is no "correct" path. The game engines tracks your psychological profile through minor choices—how you speak to a stranger, whether you trust an old friend—and dynamically alters the environment of the Echo City.</p>
+                    </div>
+                </div>
+                <div class="game-text-block reveal">
+                    <h3>Choices Matter</h3>
+                    <div>
+                        <p>The butterfly effect is real. A seemingly insignificant decision in Chapter 1 can lead to the salvation or demise of a key character in the Final Chapter. The parallel Yangon is unforgiving.</p>
+                        <p>Will you prioritize your <strong>Family and Friends</strong>, risking the fabric of your own universe? Will you pursue <strong>Love or a Partner</strong> in a world that might cease to exist? Or will you choose to <strong>Live your Life</strong> safely, letting the parallel dimension consume itself? The endings are vast, and entirely yours to bear.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="characters" class="characters-section">
+        <div class="container">
+            <h2 class="section-title reveal">The Bound Souls</h2>
+            <p class="section-subtitle reveal delay-1">Those trapped between the worlds. Who will you trust?</p>
+
+            <div class="characters-grid-wrapper">
+                <div class="characters-grid" id="charactersGrid">
+                    
+                    <div class="character-card reveal delay-1">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop" alt="Mg Tayza"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Mg Tayza</span><span class="char-age">22</span></div>
+                            <span class="char-role">The Protagonist</span>
+                            <p class="char-desc">A university student whose life is upended by the ring. Struggling to maintain sanity while balancing two existences.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal delay-1">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop" alt="Ma Naychi"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Ma Naychi</span><span class="char-age">21</span></div>
+                            <span class="char-role">Childhood Friend</span>
+                            <p class="char-desc">Fiercely loyal but deeply suspicious of Tayza's recent erratic behavior. She anchors him to the real world.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal delay-1">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=600&auto=format&fit=crop" alt="Daw Thidar"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Daw Thidar</span><span class="char-age">54</span></div>
+                            <span class="char-role">The Mother</span>
+                            <p class="char-desc">A protective figure whose parallel version holds dark secrets about the origins of the ring and the family bloodline.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal delay-1">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop" alt="Mg Thiha"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Mg Thiha</span><span class="char-age">23</span></div>
+                            <span class="char-role">The Rival</span>
+                            <p class="char-desc">Ambitious and ruthless. In the Echo City, his counterpart has already harnessed the power of the fractures.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal delay-1">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop" alt="Su Su"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Su Su</span><span class="char-age">20</span></div>
+                            <span class="char-role">The Informant</span>
+                            <p class="char-desc">A hacker who discovered anomalies in the city's electromagnetic fields just before the first tear occurred.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1488161628813-044c502b0c36?q=80&w=600&auto=format&fit=crop" alt="U Aung"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">U Aung</span><span class="char-age">60</span></div>
+                            <span class="char-role">The Historian</span>
+                            <p class="char-desc">An old university professor who has spent his life researching Yangon's lost urban legends. He knows too much.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop" alt="Khin"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Khin</span><span class="char-age">22</span></div>
+                            <span class="char-role">Echo Wanderer</span>
+                            <p class="char-desc">A mysterious girl found only in the parallel Yangon. She seems to have no counterpart in the real world.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop" alt="Zarni"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Zarni</span><span class="char-age">25</span></div>
+                            <span class="char-role">The Enforcer</span>
+                            <p class="char-desc">A corrupt detective in the real world, but a merciless warlord in the parallel timeline. A threat in both.</p>
+                        </div>
+                    </div>
+                    <div class="character-card reveal">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=600&auto=format&fit=crop" alt="Aye Aye"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Aye Aye</span><span class="char-age">19</span></div>
+                            <span class="char-role">The Sister</span>
+                            <p class="char-desc">Tayza's younger sister. Her safety becomes the primary catalyst for his desperate choices as worlds collide.</p>
+                        </div>
+                    </div>
+
+                    <div class="character-card action-card reveal" id="cardShowMore">
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                        <span>Show More</span>
+                        <p>5 Hidden Characters</p>
+                    </div>
+
+                    <div class="character-card char-hidden">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop" alt="Ko Min"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Ko Min</span><span class="char-age">30</span></div>
+                            <span class="char-role">The Mentor</span>
+                            <p class="char-desc">A senior student who acts as a guide, but whose motives remain shrouded in ambiguity until the late game.</p>
+                        </div>
+                    </div>
+                    <div class="character-card char-hidden">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=600&auto=format&fit=crop" alt="Nandar"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Nandar</span><span class="char-age">28</span></div>
+                            <span class="char-role">The Oracle</span>
+                            <p class="char-desc">She possesses fragments of the ring and can see brief glimpses of the timelines collapsing.</p>
+                        </div>
+                    </div>
+                    <div class="character-card char-hidden">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=600&auto=format&fit=crop" alt="Tun Tun"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Tun Tun</span><span class="char-age">45</span></div>
+                            <span class="char-role">The Blacksmith</span>
+                            <p class="char-desc">The only person who knows how the ring was forged, hiding in the slums of Echo City.</p>
+                        </div>
+                    </div>
+                    <div class="character-card char-hidden">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1548142813-c348350df52b?q=80&w=600&auto=format&fit=crop" alt="Thazin"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Thazin</span><span class="char-age">24</span></div>
+                            <span class="char-role">The Betrayer</span>
+                            <p class="char-desc">Once an ally, the parallel dimension twisted her memories, making her believe Tayza is the enemy.</p>
+                        </div>
+                    </div>
+                    <div class="character-card char-hidden">
+                        <div class="character-img-wrapper"><img src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?q=80&w=600&auto=format&fit=crop" alt="Kyaw"></div>
+                        <div class="character-info">
+                            <div class="char-header"><span class="char-name">Kyaw</span><span class="char-age">21</span></div>
+                            <span class="char-role">The Sacrifice</span>
+                            <p class="char-desc">A tragic figure whose existence is inherently unstable. Saving him requires immense sacrifices elsewhere.</p>
+                        </div>
+                    </div>
+
+                    <div class="character-card action-card char-hidden" id="cardShowLess">
+                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                        <span>Show Less</span>
+                        <p>Collapse View</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="chapters" class="chapters-section">
+        <div class="container">
+            <h2 class="section-title reveal">The Journey</h2>
+            <p class="section-subtitle reveal delay-1">Five acts. One conclusion. Countless variations.</p>
+
+            <div class="chapters-grid">
+                <div class="chapter-card reveal">
+                    <img src="https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?q=80&w=1200&auto=format&fit=crop" alt="Chapter 1">
+                    <div class="chapter-overlay">
+                        <span class="chapter-number">Chapter 01</span>
+                        <h3 class="chapter-title">The Fracture</h3>
+                        <p class="chapter-desc">A normal day in Yangon shatters as the ring finds its host. Learn the rules, or perish early.</p>
+                    </div>
+                </div>
+                <div class="chapter-card reveal delay-1">
+                    <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1200&auto=format&fit=crop" alt="Chapter 2">
+                    <div class="chapter-overlay">
+                        <span class="chapter-number">Chapter 02</span>
+                        <h3 class="chapter-title">Echoes of Trust</h3>
+                        <p class="chapter-desc">Navigate the parallel city. Allies in your world may be your greatest enemies here.</p>
+                    </div>
+                </div>
+                <div class="chapter-card reveal">
+                    <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1200&auto=format&fit=crop" alt="Chapter 3">
+                    <div class="chapter-overlay">
+                        <span class="chapter-number">Chapter 03</span>
+                        <h3 class="chapter-title">Bloodlines</h3>
+                        <p class="chapter-desc">Delve into family secrets. The ring has been here before, and the past demands a toll.</p>
+                    </div>
+                </div>
+                <div class="chapter-card reveal delay-1">
+                    <img src="https://images.unsplash.com/photo-1505506874110-6a7a4c9891fb?q=80&w=1200&auto=format&fit=crop" alt="Chapter 4">
+                    <div class="chapter-overlay">
+                        <span class="chapter-number">Chapter 04</span>
+                        <h3 class="chapter-title">The Convergence</h3>
+                        <p class="chapter-desc">The two worlds begin to bleed into one another. Reality distorts. Safe zones vanish.</p>
+                    </div>
+                </div>
+                <div class="chapter-card reveal">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2000&auto=format&fit=crop" alt="Final Chapter">
+                    <div class="chapter-overlay">
+                        <span class="chapter-number">Final Chapter</span>
+                        <h3 class="chapter-title">The Betweens</h3>
+                        <p class="chapter-desc">The ultimate choice. Will you merge the worlds, sever the tie, or watch one disappear forever? Your previous choices lock the paths available.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="developer" class="developer-section">
+        <div class="container reveal">
+            <div class="dev-container">
+                <div class="dev-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop" alt="Htet Zaw Paing">
+                </div>
+                <div class="dev-info">
+                    <div class="dev-header">
+                        <h2>Htet Zaw Paing</h2>
+                        <p>Lead Developer & Narrative Designer</p>
+                    </div>
+                    <div class="dev-details-list">
+                        <div class="dev-detail-item"><span class="dev-detail-label">Role</span><span class="dev-detail-value">Bachelor Student</span></div>
+                        <div class="dev-detail-item"><span class="dev-detail-label">University</span><span class="dev-detail-value">Edinburgh Napier University, UK</span></div>
+                        <div class="dev-detail-item"><span class="dev-detail-label">Past Education</span><span class="dev-detail-value">Info Myanmar College</span></div>
+                        <div class="dev-detail-item"><span class="dev-detail-label">Age</span><span class="dev-detail-value">21 (Born 10 April, 2004)</span></div>
+                        <div class="dev-detail-item"><span class="dev-detail-label">Email</span><span class="dev-detail-value"><a href="mailto:contact@htetzawpaing.site">contact@htetzawpaing.site</a></span></div>
+                        <div class="dev-detail-item"><span class="dev-detail-label">Phone</span><span class="dev-detail-value">+95 9 4567 51 882</span></div>
+                        <div class="dev-detail-item"><span class="dev-detail-label">Website</span><span class="dev-detail-value"><a href="http://www.htetzawpaing.site" target="_blank">www.htetzawpaing.site</a></span></div>
+                    </div>
+                    <p style="color: var(--text-secondary); line-height: 1.6; font-size: 1.05rem; margin-top: 5px;">
+                        Driven by a passion for interactive storytelling and robust technical architecture, Htet Zaw Paing combines academic excellence from the UK with local roots in Myanmar to bring the fractured realities of "The Betweens" to life.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>The Betweens</h3>
+                    <p>A narrative-driven parallel universe experience. Developed by Htet Zaw Paing. Your choices dictate the reality.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="about.html#game">About Game</a></li>
+                        <li><a href="about.html#characters">Characters</a></li>
+                        <li><a href="about.html#chapters">Chapters</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="home.html#faqs">FAQs</a></li>
+                        <li><a href="home.html#contact">Contact Support</a></li>
+                        <li><a href="#">Patch Notes</a></li>
+                        <li><a href="#">System Requirements</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Developer</h4>
+                    <ul>
+                        <li><a href="about.html#developer">About Htet Zaw Paing</a></li>
+                        <li><a href="http://www.htetzawpaing.site" target="_blank">Portfolio</a></li>
+                        <li><a href="mailto:contact@htetzawpaing.site">Contact Developer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">&copy; 2026 Htet Zaw Paing. All rights reserved. Edinburgh Napier University.</div>
+                <div class="social-icons">
+                    <a href="#" class="social-icon" aria-label="Twitter">
+                        <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.05c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="Discord">
+                        <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24"><path d="M21.582 6.186a2.684 2.684 0 0 0-1.884-1.905C17.953 3.85 12 3.85 12 3.85s-5.953 0-7.698.431A2.684 2.684 0 0 0 2.418 6.186C2 7.955 2 12 2 12s0 4.045.418 5.814a2.684 2.684 0 0 0 1.884 1.905C6.047 20.15 12 20.15 12 20.15s5.953 0 7.698-.431a2.684 2.684 0 0 0 1.884-1.905C22 16.045 22 12 22 12s0-4.045-.418-5.814zM10 15.464V8.536L16 12l-6 3.464z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Water Drop Navigation Highlight
+            const navLinksContainer = document.getElementById('navLinks');
+            const waterDrop = document.createElement('div');
+            waterDrop.className = 'nav-water-drop';
+            navLinksContainer.prepend(waterDrop);
+
+            const navItems = document.querySelectorAll('.nav-link, .btn-play-now');
+            const activeLink = document.querySelector('.nav-link.active');
+
+            const moveWaterDrop = (item) => {
+                if(!item) return;
+                const containerRect = navLinksContainer.getBoundingClientRect();
+                const itemRect = item.getBoundingClientRect();
+                waterDrop.style.width = `${itemRect.width}px`;
+                waterDrop.style.height = `${itemRect.height}px`;
+                waterDrop.style.left = `${itemRect.left - containerRect.left + navLinksContainer.scrollLeft}px`;
+                waterDrop.style.top = `${itemRect.top - containerRect.top + navLinksContainer.scrollTop}px`;
+                waterDrop.style.opacity = '1';
+            };
+
+            navItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    navItems.forEach(i => i.classList.remove('active-drop'));
+                    moveWaterDrop(this);
+                    if(this.classList.contains('nav-link')) {
+                        this.classList.add('active-drop');
+                    }
+                });
+                item.addEventListener('mousedown', () => {
+                    waterDrop.style.transform = 'scale(0.85)';
+                });
+                item.addEventListener('mouseup', () => {
+                    waterDrop.style.transform = 'scale(1)';
+                });
+            });
+
+            navLinksContainer.addEventListener('mouseleave', () => {
+                navItems.forEach(i => i.classList.remove('active-drop'));
+                if (activeLink) {
+                    moveWaterDrop(activeLink);
+                    activeLink.classList.add('active-drop');
+                } else {
+                    waterDrop.style.opacity = '0';
+                }
+            });
+
+            setTimeout(() => {
+                if (activeLink) {
+                    moveWaterDrop(activeLink);
+                    activeLink.classList.add('active-drop');
+                }
+            }, 100);
+
+            window.addEventListener('resize', () => {
+                const currentActive = document.querySelector('.active-drop') || activeLink;
+                if (currentActive) moveWaterDrop(currentActive);
+            });
+
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            const aboutToggle = document.getElementById('aboutDropdownToggle');
+            const dropdown = aboutToggle.parentElement;
+
+            mobileBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('mobile-active');
+                mobileBtn.style.transform = "scale(0.8)";
+                setTimeout(() => mobileBtn.style.transform = "scale(1)", 200);
+            });
+
+            aboutToggle.addEventListener('click', (e) => {
+                if(window.innerWidth <= 768) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                }
+            });
+
+            const reveals = document.querySelectorAll('.reveal');
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                reveals.forEach(reveal => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - 100) {
+                        reveal.classList.add('active');
+                    }
+                });
+            };
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll();
+
+            const btnShowMore = document.getElementById('cardShowMore');
+            const btnShowLess = document.getElementById('cardShowLess');
+            const hiddenChars = document.querySelectorAll('.char-hidden');
+
+            if (btnShowMore && btnShowLess) {
+                btnShowMore.addEventListener('click', () => {
+                    btnShowMore.classList.add('char-hidden');
+                    btnShowMore.classList.remove('reveal', 'active');
+                    
+                    hiddenChars.forEach((card, index) => {
+                        card.classList.remove('char-hidden');
+                        card.classList.add('reveal', 'active');
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0) scale(1)';
+                        }, index * 50);
+                    });
+                    revealOnScroll();
+                });
+
+                btnShowLess.addEventListener('click', () => {
+                    hiddenChars.forEach(card => {
+                        card.classList.add('char-hidden');
+                        card.classList.remove('reveal', 'active');
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(40px) scale(0.95)';
+                    });
+                    
+                    btnShowMore.classList.remove('char-hidden');
+                    btnShowMore.classList.add('reveal', 'active');
+                    btnShowMore.style.opacity = '1';
+                    btnShowMore.style.transform = 'translateY(0) scale(1)';
+                    
+                    document.getElementById('characters').scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
