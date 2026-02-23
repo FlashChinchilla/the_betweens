@@ -9,6 +9,11 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        
+        <!-- MapLibre GL (Free Mapbox Fork - No Token Required, No Watermark) -->
+        <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+        <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+        
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&family=Noto+Sans+Myanmar:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
@@ -191,25 +196,41 @@
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #eab308; border-radius: 4px; }
 
-        /* --- MAP STYLES --- */
-        .map-pin { transition: all 0.2s ease; }
-        .map-pin:hover { transform: scale(1.1); z-index: 100; }
+        /* --- MAP STYLES ENHANCED --- */
+        .map-viewport { position: relative; width: 100%; height: 100%; flex: 1; overflow: hidden; background-color: #f1f5f9; }
+        .map-pin { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .pin-bounce { animation: bounce-pin 2s infinite ease-in-out; }
         .locked-location { filter: grayscale(1); cursor: not-allowed; }
         
-        .google-map-bg { background-color: #a5d6e0; }
-        .geo-shape { position: absolute; z-index: 0; }
-        
-        .road-border { stroke: #d1d5db; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; fill: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1)); }
-        .road-line { stroke: #ffffff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+        /* Hide Mapbox/MapLibre Watermarks */
+        .maplibregl-ctrl-attrib, .maplibregl-ctrl-logo, .mapboxgl-ctrl-attrib, .mapboxgl-ctrl-logo { display: none !important; }
 
         .notification-toast { transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .notification-show { transform: translateX(0%); }
+        .notification-show { transform: translateX(0%) !important; }
         
-        #map-container { cursor: grab; overflow: hidden; background-color: #a5d6e0; }
-        #map-container:active { cursor: grabbing; }
+        /* Dynamic Map Pins */
+        .map-pin-wrapper { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
+        .map-pin-unlocked { z-index: 20; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .map-pin-unlocked:hover { transform: scale(1.15) translateY(-4px); z-index: 100; }
+        .map-pin-locked { z-index: 10; cursor: not-allowed; opacity: 0.8; }
         
-        #map-world { transform-origin: center center; will-change: transform; width: 100%; height: 100%; }
+        .map-player-indicator { position: absolute; top: -3.5rem; z-index: 50; animation: bounce 1.5s infinite; }
+        .map-player-avatar { width: 2.75rem; height: 2.75rem; border-radius: 50%; border: 3px solid #3b82f6; box-shadow: 0 0 15px rgba(59,130,246,0.5); background-color: white; padding: 2px; object-fit: cover; }
+        .map-player-arrow { position: absolute; bottom: -0.3rem; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid #3b82f6; }
+        
+        .map-pin-icon-wrapper { position: relative; padding-bottom: 6px; }
+        .map-pin-shadow { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 2rem; height: 0.5rem; background-color: rgba(0,0,0,0.2); border-radius: 50%; filter: blur(2px); transition: all 0.3s ease; }
+        .map-pin-unlocked:hover .map-pin-shadow { width: 1.5rem; transform: translateX(-50%) translateY(4px); background-color: rgba(0,0,0,0.1); }
+        .map-pin-img { width: 3rem; height: 3rem; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); transition: all 0.3s ease; }
+        
+        .map-pin-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(4px); background-color: rgba(255,255,255,0.95); backdrop-filter: blur(4px); color: #0f172a; font-size: 0.75rem; padding: 0.35rem 0.75rem; font-weight: 700; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; border: 1px solid rgba(226,232,240,0.8); z-index: 50; pointer-events: none; }
+        .map-pin-wrapper:hover .map-pin-label { opacity: 1; transform: translateX(-50%) translateY(8px); }
+        
+        .map-pin-locked-wrap { position: relative; filter: grayscale(50%) opacity(100%); transition: all 0.3s ease; padding-bottom: 6px; }
+        .map-pin-locked:hover .map-pin-locked-wrap { filter: grayscale(0%) opacity(100%); }
+        .map-pin-locked-img { width: 2.75rem; height: 2.75rem; object-fit: contain; }
+        .map-pin-lock-icon { position: absolute; top: -0.25rem; right: -0.25rem; background-color: #ef4444; border-radius: 50%; padding: 0.2rem; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10; width: 1.25rem; height: 1.25rem; color: white; display: flex; justify-content: center; align-items: center; }
+        .map-pin-locked-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(4px); background-color: rgba(241,245,249,0.95); color: #64748b; font-size: 0.75rem; padding: 0.35rem 0.75rem; font-weight: 600; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); white-space: nowrap; border: 1px solid rgba(203,213,225,0.8); z-index: 50; pointer-events: none; opacity: 1; }
 
         /* Phone & Currency Styles */
         .phone-modal-container { perspective: 1000px; }
@@ -286,7 +307,7 @@
         body.gfx-low .world-real { filter: brightness(1.1) !important; }
         body.gfx-low .world-parallel { filter: brightness(0.7) !important; }
         body.gfx-low .world-collapse { animation: none !important; filter: contrast(1.2) grayscale(1) !important; }
-        body.gfx-low #camera-rig { filter: saturate(0.8) blur(0.5px); }
+        body.gfx-low #camera-rig { filter: saturate(0.8) blur(1px); }
         
         body.gfx-med .glass-panel, body.gfx-med .dialogue-box { backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important; }
         body.gfx-med .camera-move { animation-duration: 120s !important; }
@@ -324,7 +345,7 @@
             background: rgba(30, 30, 30, 0.55);
             backdrop-filter: blur(40px) saturate(200%);
             -webkit-backdrop-filter: blur(40px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 0, 0.099);
             box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
             color: rgba(255, 255, 255, 0.9);
         }
@@ -489,55 +510,39 @@
         }
         </style>
     </head>
-    <body
-        class="text-gray-100 h-screen w-screen relative select-none bg-black transition-colors duration-1000">
+    <body class="text-gray-100 h-screen w-screen relative select-none bg-black transition-colors duration-1000">
 
         <!-- Preloader Screen -->
-        <div id="preloader-screen"
-            class="fixed inset-0 z-[200] bg-[#050505] flex flex-col items-center justify-center text-center p-6 transition-opacity duration-1000">
-
+        <div id="preloader-screen" class="fixed inset-0 z-[200] bg-[#050505] flex flex-col items-center justify-center text-center p-6 transition-opacity duration-1000">
+            
             <div class="flex gap-12 mb-10">
-                <div
-                    class="flex flex-col items-center gap-4 transition-transform hover:scale-105">
-                    <img
-                        src="https://us.technics.com/cdn/shop/files/EAH-A800_NonTextCarousels_01_2000x2000_aa2eef2b-7bd7-4800-936b-100d796ceb13_1800x.jpg?v=1745873069"
-                        alt="Headphones Placeholder"
-                        class="w-24 h-24 object-cover rounded-full border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] opacity-1">
-                    <span
-                        class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Headphones</span>
+                <div class="flex flex-col items-center gap-4 transition-transform hover:scale-105">
+                    <img src="https://us.technics.com/cdn/shop/files/EAH-A800_NonTextCarousels_01_2000x2000_aa2eef2b-7bd7-4800-936b-100d796ceb13_1800x.jpg?v=1745873069" alt="Headphones Placeholder" class="w-24 h-24 object-cover rounded-full border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] opacity-1">
+                    <span class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Headphones</span>
                 </div>
             </div>
-
+            
             <div class="max-w-md mb-12">
-                <h2
-                    class="text-xl md:text-2xl font-cinzel font-bold text-gray-200 tracking-widest mb-3 uppercase">USE
-                    HEADPHONES FOR THE BEST EXPERIENCE</h2>
-                <p
-                    class="text-gray-400 text-sm md:text-base leading-relaxed font-lato">
+                <h2 class="text-xl md:text-2xl font-cinzel font-bold text-gray-200 tracking-widest mb-3 uppercase">USE HEADPHONES FOR THE BEST EXPERIENCE</h2>
+                <p class="text-gray-400 text-sm md:text-base leading-relaxed font-lato">
                     Recommended Device - Laptop, Desktop, Tablet
                 </p>
             </div>
 
-            <div
-                class="w-64 h-1 bg-gray-900 rounded-full overflow-hidden shadow-inner relative mb-4">
-                <div id="loading-bar-fill"
-                    class="h-full w-0 loading-shimmer shadow-[0_0_10px_rgba(234,179,8,0.8)] transition-all duration-300"></div>
+            <div class="w-64 h-1 bg-gray-900 rounded-full overflow-hidden shadow-inner relative mb-4">
+                <div id="loading-bar-fill" class="h-full w-0 loading-shimmer shadow-[0_0_10px_rgba(234,179,8,0.8)] transition-all duration-300"></div>
             </div>
-
+            
             <div class="flex items-center gap-3">
-                <i id="loading-spinner" data-lucide="loader-2"
-                    class="w-4 h-4 text-yellow-500 animate-spin"></i>
-                <div id="loading-text"
-                    class="text-xs font-mono text-yellow-500/80 tracking-[0.2em] uppercase">Initializing...
-                    0%</div>
+                <i id="loading-spinner" data-lucide="loader-2" class="w-4 h-4 text-yellow-500 animate-spin"></i>
+                <div id="loading-text" class="text-xs font-mono text-yellow-500/80 tracking-[0.2em] uppercase">Initializing... 0%</div>
             </div>
-
-            <button id="start-btn"
-                class="hidden mt-10 px-10 py-3 bg-transparent border border-yellow-500 text-yellow-500 font-bold tracking-[0.2em] uppercase text-sm rounded hover:bg-yellow-500 hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)]"
-                onclick="game.startFromPreloader()">Play</button>
+            
+            <button id="start-btn" class="hidden mt-10 px-10 py-3 bg-transparent border border-yellow-500 text-yellow-500 font-bold tracking-[0.2em] uppercase text-sm rounded hover:bg-yellow-500 hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)]" onclick="game.startFromPreloader()">Play</button>
         </div>
 
         <div id="game-container" class="relative w-full h-full overflow-hidden">
+            
 
             <!-- Background System -->
             <div id="background-wrapper"
@@ -565,98 +570,74 @@
             <div id="character-layer"
                 class="absolute inset-0 flex items-end justify-center pointer-events-none z-20 pb-0 transition-transform duration-700 translate-y-10 opacity-0">
             </div>
-
+            
             <!-- Map Modal Overlay -->
-            <div id="map-modal"
-                class="hidden absolute inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
-                <div
-                    class="relative w-full max-w-6xl h-[85vh] bg-[#f8f9fa] rounded-xl overflow-hidden shadow-2xl group font-roboto text-gray-800 border-4 border-white/50 flex flex-col">
-
-                    <!-- Search Bar Facade -->
-                    <div
-                        class="absolute top-4 left-4 right-16 md:right-auto md:w-80 bg-white h-12 rounded-lg shadow-md flex items-center px-4 gap-3 z-50">
-                        <i data-lucide="menu" class="text-gray-500 w-5 h-5"></i>
-                        <span
-                            class="text-sm md:text-base text-gray-700 font-medium">Yangon,
-                            Myanmar</span>
-                        <i data-lucide="search"
-                            class="text-blue-500 w-5 h-5 ml-auto"></i>
-                    </div>
-
-                    <!-- Map Controls (Functional Zoom) -->
-                    <div
-                        class="absolute bottom-6 right-4 flex flex-col gap-2 z-50">
-                        <div
-                            class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform"
-                            onclick="game.resetZoom()" title="Reset View"><i
-                                data-lucide="compass" class="w-6 h-6"></i></div>
-                        <div
-                            class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform"
-                            onclick="game.zoomMap(0.25)"><i data-lucide="plus"
-                                class="w-6 h-6"></i></div>
-                        <div
-                            class="bg-white p-2 rounded shadow text-gray-600 hover:text-black cursor-pointer transform active:scale-95 transition-transform"
-                            onclick="game.zoomMap(-0.25)"><i data-lucide="minus"
-                                class="w-6 h-6"></i></div>
-                    </div>
-
-                    <!-- Map Container (Viewport) -->
-                    <div id="map-container" class="w-full h-full relative">
-                        <!-- Map World (Transform Target) -->
-                        <div id="map-world"
-                            class="absolute inset-0 w-full h-full">
-                            <!-- Water Background -->
-                            <div
-                                class="absolute inset-0 google-map-bg opacity-100"></div>
-
-                            <!-- Geography Layer (Land & Parks SVG) -->
-                            <div id="geo-layer"
-                                class="absolute inset-0 w-full h-full pointer-events-none z-0">
-                                <!-- Injected via JS -->
+            <div id="map-modal" class="hidden absolute inset-0 z-[100] bg-slate-900/80 flex items-center justify-center p-4 md:p-6 backdrop-blur-lg transition-all duration-300 opacity-0">
+                <div class="relative w-full max-w-6xl h-[85vh] bg-slate-50 rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/20 group font-roboto text-gray-800 flex flex-col">
+                    
+                    <!-- Search Bar & Menu -->
+                    <div class="absolute top-6 left-6 right-20 md:right-auto md:w-96 z-[60] flex flex-col">
+                        <div class="bg-white/95 backdrop-blur-xl h-14 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-white/60 flex items-center px-5 gap-3 relative z-20 transition-all focus-within:ring-4 focus-within:ring-blue-500/20">
+                            <button onclick="game.toggleMapMenu()" class="focus:outline-none hover:bg-slate-100 p-2 -ml-2 rounded-xl transition-colors">
+                                <i data-lucide="menu" class="text-slate-600 w-5 h-5"></i>
+                            </button>
+                            <input type="text" id="map-search-input" placeholder="Search locations..." class="flex-1 bg-transparent border-none focus:outline-none text-base text-slate-800 font-medium w-full placeholder-slate-400" oninput="game.handleMapSearch(event)">
+                            <div class="bg-blue-50 p-2.5 rounded-xl ml-auto pointer-events-none">
+                                <i data-lucide="search" class="text-blue-600 w-4 h-4"></i>
                             </div>
+                        </div>
+                        
+                        <!-- Search Results Dropdown -->
+                        <div id="map-search-results" class="bg-white/95 backdrop-blur-xl w-full mt-3 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] overflow-hidden max-h-60 overflow-y-auto hidden absolute top-14 z-10 flex-col border border-slate-100/50"></div>
 
-                            <!-- Roads Layer (SVG) -->
-                            <svg id="road-layer"
-                                class="absolute inset-0 w-full h-full pointer-events-none z-5"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <!-- Roads injected via JS -->
-                            </svg>
-
-                            <!-- Pins Container -->
-                            <div id="map-pins" class="absolute inset-0 z-10">
-                                <!-- Pins injected by JS -->
-                            </div>
+                        <!-- Map Menu Dropdown -->
+                        <div id="map-side-menu" class="bg-white/95 backdrop-blur-xl w-56 mt-3 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] overflow-hidden hidden absolute top-14 left-0 z-10 flex-col border border-slate-100/50 transition-all origin-top-left">
+                            <button onclick="game.resetZoom(); game.toggleMapMenu();" class="flex items-center gap-3 px-5 py-4 hover:bg-slate-50 text-left text-sm font-semibold text-slate-700 border-b border-slate-100/50 transition-colors">
+                                <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="compass" class="w-4 h-4"></i></div> Center Map
+                            </button>
+                            <button onclick="game.toggleMapStyle(); game.toggleMapMenu();" class="flex items-center gap-3 px-5 py-4 hover:bg-slate-50 text-left text-sm font-semibold text-slate-700 border-b border-slate-100/50 transition-colors">
+                                <div class="p-1.5 bg-green-50 text-green-600 rounded-lg"><i data-lucide="layers" class="w-4 h-4"></i></div> Toggle Style
+                            </button>
+                            <button onclick="game.toggleMap(); game.toggleMapMenu();" class="flex items-center gap-3 px-5 py-4 hover:bg-red-50 text-left text-sm font-semibold text-red-600 transition-colors">
+                                <div class="p-1.5 bg-red-100 text-red-600 rounded-lg"><i data-lucide="x-circle" class="w-4 h-4"></i></div> Close Map
+                            </button>
                         </div>
                     </div>
 
+                    <!-- Map Controls (Functional Zoom & Style Toggle) -->
+                    <div class="absolute bottom-8 right-6 flex flex-col gap-3 z-50">
+                         <button class="bg-white/90 backdrop-blur-md p-3.5 rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.1)] text-slate-600 hover:text-blue-600 hover:bg-white transform active:scale-95 transition-all border border-white/50" onclick="game.toggleMapStyle()" title="Toggle View"><i data-lucide="layers" class="w-6 h-6"></i></button>
+                         <button class="bg-white/90 backdrop-blur-md p-3.5 rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.1)] text-slate-600 hover:text-blue-600 hover:bg-white transform active:scale-95 transition-all border border-white/50" onclick="game.resetZoom()" title="Reset View"><i data-lucide="compass" class="w-6 h-6"></i></button>
+                         <div class="flex flex-col bg-white/90 backdrop-blur-md rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.1)] overflow-hidden border border-white/50 mt-2">
+                             <button class="p-3.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 transform active:scale-95 transition-all border-b border-slate-100" onclick="game.zoomMap(1)"><i data-lucide="plus" class="w-6 h-6"></i></button>
+                             <button class="p-3.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 transform active:scale-95 transition-all" onclick="game.zoomMap(-1)"><i data-lucide="minus" class="w-6 h-6"></i></button>
+                         </div>
+                    </div>
+
+                    <!-- Map Container (Viewport) -->
+                    <div id="map-container" class="map-viewport">
+                        <!-- MapLibre API Injected Here -->
+                    </div>
+
                     <!-- Close Button -->
-                    <button onclick="game.toggleMap()"
-                        class="absolute top-4 right-4 bg-white hover:bg-gray-100 text-gray-600 p-2 rounded-full shadow-md z-50 transition-colors">
+                    <button onclick="game.toggleMap()" class="absolute top-6 right-6 bg-white/90 backdrop-blur-md hover:bg-white hover:text-red-500 text-slate-600 p-3.5 rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.1)] border border-white/50 z-50 transition-all hover:rotate-90">
                         <i data-lucide="x" class="w-6 h-6"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Phone Modal Overlay -->
-            <div id="phone-modal"
-                class="hidden absolute inset-0 z-[100] bg-black/70 flex items-center justify-center p-4 backdrop-blur-md transition-all duration-300 opacity-0 phone-modal-container">
+            <div id="phone-modal" class="hidden absolute inset-0 z-[100] bg-black/70 flex items-center justify-center p-4 backdrop-blur-md transition-all duration-300 opacity-0 phone-modal-container">
                 <div class="relative group">
                     <!-- Physical Power/Lock Button (Side Button) -->
-                    <div
-                        class="absolute top-24 -right-2 w-2 h-12 bg-gray-700 rounded-r-lg cursor-pointer hover:bg-gray-600 active:bg-gray-800 transition-colors z-0 shadow-xl"
-                        onclick="game.togglePhone()"
-                        title="Power/Lock Button (Close Phone)"></div>
+                    <div class="absolute top-24 -right-2 w-2 h-12 bg-gray-700 rounded-r-lg cursor-pointer hover:bg-gray-600 active:bg-gray-800 transition-colors z-0 shadow-xl" onclick="game.togglePhone()" title="Power/Lock Button (Close Phone)"></div>
                     <!-- Volume Buttons (Visual only) -->
-                    <div
-                        class="absolute top-24 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
-                    <div
-                        class="absolute top-36 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
+                    <div class="absolute top-24 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
+                    <div class="absolute top-36 -left-2 w-1.5 h-8 bg-gray-700 rounded-l-lg z-0"></div>
 
-                    <div
-                        class="relative w-[320px] h-[640px] bg-gray-900 rounded-[3rem] border-8 border-gray-800 shadow-2xl phone-screen overflow-hidden flex flex-col z-10">
+                    <div class="relative w-[320px] h-[640px] bg-gray-900 rounded-[3rem] border-8 border-gray-800 shadow-2xl phone-screen overflow-hidden flex flex-col z-10">
                         <!-- Status Bar -->
-                        <div
-                            class="h-8 bg-black w-full flex justify-between items-center px-6 text-[10px] text-white z-50">
+                        <div class="h-8 bg-black w-full flex justify-between items-center px-6 text-[10px] text-white z-50">
                             <span>09:41</span>
                             <div class="flex gap-1">
                                 <i data-lucide="signal" class="w-3 h-3"></i>
@@ -664,130 +645,78 @@
                                 <i data-lucide="battery" class="w-3 h-3"></i>
                             </div>
                         </div>
-
+                        
                         <!-- Phone Display Area -->
-                        <div id="phone-display"
-                            class="flex-1 bg-gray-900 overflow-hidden relative">
-
+                        <div id="phone-display" class="flex-1 bg-gray-900 overflow-hidden relative">
+                            
                             <!-- Home Screen Wallpaper -->
-                            <div id="phone-home"
-                                class="w-full h-full absolute inset-0 bg-[url('../images/items/iphonewallpaper.png')] bg-cover bg-center p-6 pt-12">
+                            <div id="phone-home" class="w-full h-full absolute inset-0 bg-[url('../images/items/iphonewallpaper.png')] bg-cover bg-center p-6 pt-12">
                                 <!-- App Grid -->
-                                <div
-                                    class="grid grid-cols-4 gap-4 content-start">
+                                <div class="grid grid-cols-4 gap-4 content-start">
                                     <!-- Phone -->
-                                    <div onclick="game.openApp('phone')"
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div
-                                            class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg"><i
-                                                data-lucide="phone"
-                                                class="text-white w-6 h-6"></i></div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">Phone</span>
+                                    <div onclick="game.openApp('phone')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="phone" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Phone</span>
                                     </div>
                                     <!-- Messages -->
-                                    <div onclick="game.openApp('messages')"
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div
-                                            class="w-12 h-12 bg-green-400 rounded-2xl flex items-center justify-center shadow-lg"><i
-                                                data-lucide="message-square"
-                                                class="text-white w-6 h-6"></i></div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">Messages</span>
+                                    <div onclick="game.openApp('messages')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-green-400 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="message-square" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Messages</span>
                                     </div>
                                     <!-- Photos -->
-                                    <div onclick="game.openApp('photos')"
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div
-                                            class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden relative">
-                                            <div
-                                                class="absolute inset-0 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 opacity-80"></div>
-                                            <i data-lucide="image"
-                                                class="text-white w-6 h-6 relative z-10"></i>
+                                    <div onclick="game.openApp('photos')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden relative">
+                                            <div class="absolute inset-0 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 opacity-80"></div>
+                                            <i data-lucide="image" class="text-white w-6 h-6 relative z-10"></i>
                                         </div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">Photos</span>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Photos</span>
                                     </div>
                                     <!-- Camera -->
-                                    <div
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer opacity-80">
-                                        <div
-                                            class="w-12 h-12 bg-gray-400 rounded-2xl flex items-center justify-center shadow-lg"><i
-                                                data-lucide="camera"
-                                                class="text-white w-6 h-6"></i></div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">Camera</span>
+                                    <div class="flex flex-col items-center gap-1 app-icon cursor-pointer opacity-80">
+                                        <div class="w-12 h-12 bg-gray-400 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="camera" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Camera</span>
                                     </div>
                                     <!-- Facebook -->
-                                    <div onclick="game.openApp('facebook')"
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div
-                                            class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg"><i
-                                                data-lucide="facebook"
-                                                class="text-white w-6 h-6"></i></div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">Facebook</span>
+                                    <div onclick="game.openApp('facebook')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="facebook" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Facebook</span>
                                     </div>
                                     <!-- YouTube -->
-                                    <div onclick="game.openApp('youtube')"
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div
-                                            class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg"><i
-                                                data-lucide="youtube"
-                                                class="text-white w-6 h-6"></i></div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">YouTube</span>
+                                    <div onclick="game.openApp('youtube')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="youtube" class="text-white w-6 h-6"></i></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">YouTube</span>
                                     </div>
                                     <!-- Spotify -->
-                                    <div onclick="game.openApp('music')"
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div
-                                            class="w-12 h-12 bg-[#1DB954] rounded-2xl flex items-center justify-center shadow-lg">
-                                            <svg viewBox="0 0 24 24"
-                                                class="w-7 h-7 fill-current text-white"><path
-                                                    d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 4.32-1.38 9.841-.719 13.44 1.5.42.24.6.841.301 1.321zm.12-3.36C15.54 8.46 9.06 8.22 5.34 9.36c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.4-1.02 15.96 1.68.6.359.84 1.14.479 1.74-.359.6-1.14.84-1.74.48z" /></svg>
+                                    <div onclick="game.openApp('music')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-[#1DB954] rounded-2xl flex items-center justify-center shadow-lg">
+                                            <svg viewBox="0 0 24 24" class="w-7 h-7 fill-current text-white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 4.32-1.38 9.841-.719 13.44 1.5.42.24.6.841.301 1.321zm.12-3.36C15.54 8.46 9.06 8.22 5.34 9.36c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.4-1.02 15.96 1.68.6.359.84 1.14.479 1.74-.359.6-1.14.84-1.74.48z"/></svg>
                                         </div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">Spotify</span>
-
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">Spotify</span>
+                                        
                                     </div>
                                     <!-- KBZPay -->
-                                    <div onclick="game.openApp('kbzpay')"
-                                        class="flex flex-col items-center gap-1 app-icon cursor-pointer">
-                                        <div
-                                            class="w-12 h-12 bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white/20"><span
-                                                class="text-white font-black text-xs">KBZ</span></div>
-                                        <span
-                                            class="text-[10px] text-white font-medium drop-shadow-md">KBZPay</span>
+                                    <div onclick="game.openApp('kbzpay')" class="flex flex-col items-center gap-1 app-icon cursor-pointer">
+                                        <div class="w-12 h-12 bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white/20"><span class="text-white font-black text-xs">KBZ</span></div>
+                                        <span class="text-[10px] text-white font-medium drop-shadow-md">KBZPay</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Active App Container -->
-                            <div id="active-app-container"
-                                class="absolute inset-0 bg-white translate-x-full transition-transform duration-300 z-20 flex flex-col">
-                                <div id="app-header-bar"
-                                    class="h-12 bg-gray-100 border-b flex items-center px-4 font-bold text-gray-800 shadow-sm z-30 relative">
-                                    <button onclick="game.phoneHome()"
-                                        class="p-1 -ml-2 rounded-full hover:bg-gray-200 transition-colors"><i
-                                            data-lucide="chevron-left"
-                                            class="w-6 h-6 text-blue-500"></i></button>
-                                    <span id="app-title-text"
-                                        class="ml-2 text-sm">App Name</span>
+                            <div id="active-app-container" class="absolute inset-0 bg-white translate-x-full transition-transform duration-300 z-20 flex flex-col">
+                                <div id="app-header-bar" class="h-12 bg-gray-100 border-b flex items-center px-4 font-bold text-gray-800 shadow-sm z-30 relative">
+                                    <button onclick="game.phoneHome()" class="p-1 -ml-2 rounded-full hover:bg-gray-200 transition-colors"><i data-lucide="chevron-left" class="w-6 h-6 text-blue-500"></i></button>
+                                    <span id="app-title-text" class="ml-2 text-sm">App Name</span>
                                 </div>
-                                <div id="app-content-area"
-                                    class="flex-1 overflow-y-auto custom-scroll relative bg-white">
+                                <div id="app-content-area" class="flex-1 overflow-y-auto custom-scroll relative bg-white">
                                 </div>
                             </div>
 
                         </div>
 
                         <!-- Home Indicator Button -->
-                        <div
-                            class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-full h-8 z-50 flex items-center justify-center cursor-pointer"
-                            onclick="game.phoneHome()">
-                            <div
-                                class="w-32 h-1 bg-white/50 rounded-full hover:bg-white transition-colors shadow-sm"></div>
+                        <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-full h-8 z-50 flex items-center justify-center cursor-pointer" onclick="game.phoneHome()">
+                            <div class="w-32 h-1 bg-white/50 rounded-full hover:bg-white transition-colors shadow-sm"></div>
                         </div>
 
                     </div>
@@ -795,242 +724,147 @@
             </div>
 
             <!-- Settings Modal Overlay -->
-            <div id="settings-modal"
-                class="hidden absolute inset-0 z-[110] bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
-                <div
-                    class="relative w-full max-w-2xl ios-glass rounded-3xl p-6 md:p-8 flex flex-col gap-6 transition-colors">
-
+            <div id="settings-modal" class="hidden absolute inset-0 z-[110] bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 opacity-0">
+                <div class="relative w-full max-w-2xl ios-glass rounded-3xl p-6 md:p-8 flex flex-col gap-6 transition-colors">
+                    
                     <!-- Header -->
-                    <div
-                        class="flex justify-between items-center ios-glass-header pb-4">
-                        <h2 id="st-title"
-                            class="text-2xl font-cinzel font-bold text-yellow-500 tracking-wider">Settings</h2>
-                        <button onclick="game.closeSettings()"
-                            class="p-2 ios-close-btn flex items-center justify-center">
+                    <div class="flex justify-between items-center ios-glass-header pb-4">
+                        <h2 id="st-title" class="text-2xl font-cinzel font-bold text-yellow-500 tracking-wider">Settings</h2>
+                        <button onclick="game.closeSettings()" class="p-2 ios-close-btn flex items-center justify-center">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
                     </div>
-
+                    
                     <!-- Settings Content List -->
-                    <div
-                        class="flex flex-col gap-6 overflow-y-auto custom-scroll max-h-[65vh] pr-2">
+                    <div class="flex flex-col gap-6 overflow-y-auto custom-scroll max-h-[65vh] pr-2">
 
                         <!-- Game Audio Volume Setting -->
-                        <div
-                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
-                            <div
-                                class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="volume-2"
-                                    class="w-5 h-5 opacity-70"></i>
-                                <span id="st-ga-vol"
-                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Game
-                                    Audio Vol</span>
-                                <i data-lucide="help-circle"
-                                    class="w-4 h-4 opacity-50"></i>
-                                <div
-                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
-                                    <span id="st-ga-vol-tip">Adjusts the volume
-                                        of game sound effects.</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="volume-2" class="w-5 h-5 opacity-70"></i>
+                                <span id="st-ga-vol" class="font-bold text-base md:text-lg tracking-wide opacity-90">Game Audio Vol</span>
+                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
+                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-ga-vol-tip">Adjusts the volume of game sound effects.</span>
                                 </div>
                             </div>
-                            <input type="range" id="ga-vol-slider" min="0"
-                                max="1" step="0.1" value="1"
-                                oninput="game.setVolume(this.value)"
-                                class="w-full md:w-56 ios-slider">
+                            <input type="range" id="ga-vol-slider" min="0" max="1" step="0.1" value="1" oninput="game.setVolume(this.value)" class="w-full md:w-56 ios-slider">
                         </div>
 
                         <!-- Theme Music Volume Setting -->
-                        <div
-                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
-                            <div
-                                class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="music"
-                                    class="w-5 h-5 opacity-70"></i>
-                                <span id="st-tm-vol"
-                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme
-                                    Music Vol</span>
-                                <i data-lucide="help-circle"
-                                    class="w-4 h-4 opacity-50"></i>
-                                <div
-                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
-                                    <span id="st-tm-vol-tip">Adjusts the volume
-                                        of the main theme song.</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="music" class="w-5 h-5 opacity-70"></i>
+                                <span id="st-tm-vol" class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme Music Vol</span>
+                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
+                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-tm-vol-tip">Adjusts the volume of the main theme song.</span>
                                 </div>
                             </div>
-                            <input type="range" id="tm-vol-slider" min="0"
-                                max="1" step="0.1" value="0.4"
-                                oninput="game.setThemeVolume(this.value)"
-                                class="w-full md:w-56 ios-slider">
+                            <input type="range" id="tm-vol-slider" min="0" max="1" step="0.1" value="0.4" oninput="game.setThemeVolume(this.value)" class="w-full md:w-56 ios-slider">
                         </div>
 
                         <!-- Game Audio On/Off -->
-                        <div
-                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
-                            <div
-                                class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="speaker"
-                                    class="w-5 h-5 opacity-70"></i>
-                                <span id="st-ga-state"
-                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Game
-                                    Scene Audio</span>
-                                <i data-lucide="help-circle"
-                                    class="w-4 h-4 opacity-50"></i>
-                                <div
-                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
-                                    <span id="st-ga-state-tip">Toggle the scene
-                                        specific sound effects.</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="speaker" class="w-5 h-5 opacity-70"></i>
+                                <span id="st-ga-state" class="font-bold text-base md:text-lg tracking-wide opacity-90">Game Scene Audio</span>
+                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
+                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-ga-state-tip">Toggle the scene specific sound effects.</span>
                                 </div>
                             </div>
-                            <div
-                                class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setGameAudio('on')"
-                                    data-val="on"
-                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-ga st-btn-active">
+                            <div class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setGameAudio('on')" data-val="on" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-ga st-btn-active">
                                     <span id="st-ga-on">On</span>
                                 </button>
-                                <button onclick="game.setGameAudio('off')"
-                                    data-val="off"
-                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-ga">
+                                <button onclick="game.setGameAudio('off')" data-val="off" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-ga">
                                     <span id="st-ga-off">Off</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Font Size Setting -->
-                        <div
-                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
-                            <div
-                                class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="type"
-                                    class="w-5 h-5 opacity-70"></i>
-                                <span id="st-font"
-                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Font
-                                    Size</span>
-                                <i data-lucide="help-circle"
-                                    class="w-4 h-4 opacity-50"></i>
-                                <div
-                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
-                                    <span id="st-font-tip">Changes the size of
-                                        the reading text.</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="type" class="w-5 h-5 opacity-70"></i>
+                                <span id="st-font" class="font-bold text-base md:text-lg tracking-wide opacity-90">Font Size</span>
+                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
+                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-font-tip">Changes the size of the reading text.</span>
                                 </div>
                             </div>
-                            <div
-                                class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setFontSize('small')"
-                                    data-val="small"
-                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
+                            <div class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setFontSize('small')" data-val="small" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
                                     <span id="st-font-sm">Small</span>
                                 </button>
-                                <button onclick="game.setFontSize('medium')"
-                                    data-val="medium"
-                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font st-btn-active">
+                                <button onclick="game.setFontSize('medium')" data-val="medium" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font st-btn-active">
                                     <span id="st-font-md">Medium</span>
                                 </button>
-                                <button onclick="game.setFontSize('large')"
-                                    data-val="large"
-                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
+                                <button onclick="game.setFontSize('large')" data-val="large" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-font">
                                     <span id="st-font-lg">Large</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Graphics Setting -->
-                        <div
-                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
-                            <div
-                                class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="monitor"
-                                    class="w-5 h-5 opacity-70"></i>
-                                <span id="st-gfx"
-                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Graphics
-                                    Quality</span>
-                                <i data-lucide="help-circle"
-                                    class="w-4 h-4 opacity-50"></i>
-                                <div
-                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
-                                    <span id="st-gfx-tip">Lowers visual effects
-                                        for better performance.</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="monitor" class="w-5 h-5 opacity-70"></i>
+                                <span id="st-gfx" class="font-bold text-base md:text-lg tracking-wide opacity-90">Graphics Quality</span>
+                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
+                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-gfx-tip">Lowers visual effects for better performance.</span>
                                 </div>
                             </div>
-                            <div
-                                class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setGraphics('low')"
-                                    data-val="low"
-                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
+                            <div class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setGraphics('low')" data-val="low" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
                                     <span id="st-gfx-low">Low</span>
                                 </button>
-                                <button onclick="game.setGraphics('medium')"
-                                    data-val="medium"
-                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
+                                <button onclick="game.setGraphics('medium')" data-val="medium" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx">
                                     <span id="st-gfx-med">Medium</span>
                                 </button>
-                                <button onclick="game.setGraphics('high')"
-                                    data-val="high"
-                                    class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx st-btn-active">
+                                <button onclick="game.setGraphics('high')" data-val="high" class="flex-1 md:flex-none px-5 py-2 text-sm transition st-btn ios-segment-btn st-btn-gfx st-btn-active">
                                     <span id="st-gfx-high">High</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Language Setting -->
-                        <div
-                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
-                            <div
-                                class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="globe"
-                                    class="w-5 h-5 opacity-70"></i>
-                                <span id="st-lang"
-                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Language</span>
-                                <i data-lucide="help-circle"
-                                    class="w-4 h-4 opacity-50"></i>
-                                <div
-                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
-                                    <span id="st-lang-tip">Switch between
-                                        English and Burmese.</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="globe" class="w-5 h-5 opacity-70"></i>
+                                <span id="st-lang" class="font-bold text-base md:text-lg tracking-wide opacity-90">Language</span>
+                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
+                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-lang-tip">Switch between English and Burmese.</span>
                                 </div>
                             </div>
-                            <div
-                                class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setLanguage('en')"
-                                    data-val="en"
-                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang">
+                            <div class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setLanguage('en')" data-val="en" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang">
                                     English
                                 </button>
-                                <button onclick="game.setLanguage('mm')"
-                                    data-val="mm"
-                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang st-btn-active">
+                                <button onclick="game.setLanguage('mm')" data-val="mm" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-lang st-btn-active">
                                     မြန်မာ
                                 </button>
                             </div>
                         </div>
 
                         <!-- Theme Setting -->
-                        <div
-                            class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
-                            <div
-                                class="flex items-center gap-2 relative group cursor-help w-fit">
-                                <i data-lucide="sun-moon"
-                                    class="w-5 h-5 opacity-70"></i>
-                                <span id="st-theme"
-                                    class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme</span>
-                                <i data-lucide="help-circle"
-                                    class="w-4 h-4 opacity-50"></i>
-                                <div
-                                    class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
-                                    <span id="st-theme-tip">Toggle between Dark
-                                        and Light mode.</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 ios-setting-row relative z-10 hover:z-[60]">
+                            <div class="flex items-center gap-2 relative group cursor-help w-fit">
+                                <i data-lucide="sun-moon" class="w-5 h-5 opacity-70"></i>
+                                <span id="st-theme" class="font-bold text-base md:text-lg tracking-wide opacity-90">Theme</span>
+                                <i data-lucide="help-circle" class="w-4 h-4 opacity-50"></i>
+                                <div class="absolute left-0 top-full mt-2 w-48 p-3 rounded-xl shadow-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tooltip-content">
+                                    <span id="st-theme-tip">Toggle between Dark and Light mode.</span>
                                 </div>
                             </div>
-                            <div
-                                class="flex ios-segmented-control w-full md:w-auto">
-                                <button onclick="game.setTheme('dark')"
-                                    data-val="dark"
-                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme st-btn-active">
+                            <div class="flex ios-segmented-control w-full md:w-auto">
+                                <button onclick="game.setTheme('dark')" data-val="dark" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme st-btn-active">
                                     <span id="st-theme-dark">Dark</span>
                                 </button>
-                                <button onclick="game.setTheme('light')"
-                                    data-val="light"
-                                    class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme">
+                                <button onclick="game.setTheme('light')" data-val="light" class="flex-1 md:flex-none px-8 py-2 text-sm transition st-btn ios-segment-btn st-btn-theme">
                                     <span id="st-theme-light">Light</span>
                                 </button>
                             </div>
@@ -1071,117 +905,87 @@
                     </div>
 
                     <!-- Right: Modern Tool Menu -->
-                    <div
-                        class="flex flex-col items-end gap-3 pointer-events-auto relative">
-
+                    <div class="flex flex-col items-end gap-3 pointer-events-auto relative">
+                        
                         <!-- Notification Area -->
-                        <div id="unlock-notification"
-                            class="absolute top-12 right-0 notification-toast bg-white border-l-4 border-green-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60] mb-2">
-                            <div
-                                class="bg-green-100 p-1.5 rounded-full text-green-600">
+                        <div id="unlock-notification" class="absolute top-12 right-0 notification-toast bg-white border-l-4 border-green-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60] mb-2">
+                            <div class="bg-green-100 p-1.5 rounded-full text-green-600">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i>
                             </div>
                             <div>
-                                <div
-                                    class="text-[10px] uppercase text-gray-500 font-bold tracking-wider">New
-                                    Location</div>
-                                <div id="unlock-text"
-                                    class="text-sm font-bold text-gray-800 leading-tight">Home</div>
+                                <div class="text-[10px] uppercase text-gray-500 font-bold tracking-wider">New Location</div>
+                                <div id="unlock-text" class="text-sm font-bold text-gray-800 leading-tight">Home</div>
                             </div>
                         </div>
-
+                        
                         <!-- Currency Notification -->
-                        <div id="currency-notification"
-                            class="absolute top-28 right-0 notification-toast bg-gray-900 border-l-4 border-yellow-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60]">
-                            <div
-                                class="bg-gray-800 p-1.5 rounded-full text-yellow-400">
+                        <div id="currency-notification" class="absolute top-28 right-0 notification-toast bg-gray-900 border-l-4 border-yellow-500 shadow-xl rounded-l-md p-3 flex items-center gap-3 w-64 pointer-events-none z-[60]">
+                            <div class="bg-gray-800 p-1.5 rounded-full text-yellow-400">
                                 <i data-lucide="coins" class="w-4 h-4"></i>
                             </div>
                             <div>
-                                <div
-                                    class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Transaction</div>
-                                <div id="currency-text"
-                                    class="text-sm font-bold text-white leading-tight font-mono">0
-                                    MMK</div>
+                                <div class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Transaction</div>
+                                <div id="currency-text" class="text-sm font-bold text-white leading-tight font-mono">0 MMK</div>
                             </div>
                         </div>
 
                         <!-- Action Bar Container -->
-                        <div
-                            class="glass-panel p-2 rounded-2xl flex flex-row flex-wrap justify-end gap-2 shadow-2xl border-white/10">
-
-                            <button onclick="game.togglePhone()" class="hud-btn"
-                                aria-label="Phone">
+                        <div class="glass-panel p-2 rounded-2xl flex flex-row flex-wrap justify-end gap-2 shadow-2xl border-white/10">
+                            
+                            <button onclick="game.togglePhone()" class="hud-btn" aria-label="Phone">
                                 <i data-lucide="smartphone" class="w-5 h-5"></i>
                                 <span class="tooltip">Phone</span>
                             </button>
-
-                            <button onclick="game.toggleMap()" class="hud-btn"
-                                aria-label="Map">
+                            
+                            <button onclick="game.toggleMap()" class="hud-btn" aria-label="Map">
                                 <i data-lucide="map" class="w-5 h-5"></i>
                                 <span class="tooltip">Map</span>
                             </button>
-
-                            <button onclick="game.saveGameManual()"
-                                class="hud-btn" aria-label="Save">
+                            
+                            <button onclick="game.saveGameManual()" class="hud-btn" aria-label="Save">
                                 <i data-lucide="save" class="w-5 h-5"></i>
                                 <span class="tooltip">Save</span>
                             </button>
-
-                            <button onclick="game.openSettings()"
-                                class="hud-btn" aria-label="Settings">
+                            
+                            <button onclick="game.openSettings()" class="hud-btn" aria-label="Settings">
                                 <i data-lucide="settings" class="w-5 h-5"></i>
-                                <span class="tooltip"
-                                    id="hud-st-tip">Settings</span>
+                                <span class="tooltip" id="hud-st-tip">Settings</span>
                             </button>
 
-                            <div
-                                class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+                            <div class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
 
-                            <button onclick="game.toggleLang()"
-                                class="hud-btn w-16" aria-label="Language">
-                                <span id="lang-btn"
-                                    class="font-bold text-[10px]">မြန်မာ</span>
+                            <button onclick="game.toggleLang()" class="hud-btn w-16" aria-label="Language">
+                                <span id="lang-btn" class="font-bold text-[10px]">မြန်မာ</span>
                             </button>
 
-                            <button onclick="game.toggleAuto()" id="auto-btn"
-                                class="hud-btn" aria-label="Auto Play">
-                                <i data-lucide="play-circle"
-                                    class="w-5 h-5"></i>
+                            <button onclick="game.toggleAuto()" id="auto-btn" class="hud-btn" aria-label="Auto Play">
+                                <i data-lucide="play-circle" class="w-5 h-5"></i>
                                 <span class="tooltip">Auto</span>
                             </button>
 
-                            <div
-                                class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+                            <div class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
 
-                            <button onclick="game.toggleImmersive()"
-                                class="hud-btn" aria-label="Immersive Mode">
+                            <button onclick="game.toggleImmersive()" class="hud-btn" aria-label="Immersive Mode">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                                 <span class="tooltip">Hide UI</span>
                             </button>
-
-                            <button onclick="game.takeScreenshot()"
-                                class="hud-btn" aria-label="Screenshot">
+                            
+                            <button onclick="game.takeScreenshot()" class="hud-btn" aria-label="Screenshot">
                                 <i data-lucide="camera" class="w-5 h-5"></i>
                                 <span class="tooltip">Snap</span>
                             </button>
-
-                            <button onclick="game.toggleFullscreen()"
-                                id="fs-btn" class="hud-btn"
-                                aria-label="Fullscreen">
+                            
+                            <button onclick="game.toggleFullscreen()" id="fs-btn" class="hud-btn" aria-label="Fullscreen">
                                 <i data-lucide="maximize" class="w-5 h-5"></i>
                                 <span class="tooltip">Full</span>
                             </button>
 
-                            <div
-                                class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
+                            <div class="w-[1px] h-8 bg-white/10 mx-1 self-center"></div>
 
                             <!-- QUIT BUTTON -->
-                            <button onclick="game.quitToMenu()" class="hud-btn"
-                                aria-label="Menu">
+                            <button onclick="game.quitToMenu()" class="hud-btn" aria-label="Menu">
                                 <i data-lucide="home" class="w-5 h-5"></i>
-                                <span class="tooltip"
-                                    id="hud-quit-tip">Menu</span>
+                                <span class="tooltip" id="hud-quit-tip">Menu</span>
                             </button>
                         </div>
                     </div>
@@ -1221,132 +1025,89 @@
             </div>
 
             <!-- Start Screen (Main Menu) -->
-            <div id="start-screen"
-                class="absolute inset-0 z-[80] flex bg-black overflow-hidden transition-colors">
-
+            <div id="start-screen" class="absolute inset-0 z-[80] flex bg-black overflow-hidden transition-colors">
+                
                 <!-- Background Video -->
-                <video id="main-menu-video" loop muted playsinline
-                    class="absolute inset-0 w-full h-full object-cover opacity-100 z-0 ">
-                    <source src="https://www.pexels.com/download/video/6205145/"
-                        type="video/mp4">
+                <video id="main-menu-video" loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-100 z-0 ">
+                    <source src="https://www.pexels.com/download/video/6205145/" type="video/mp4">
                 </video>
-
+                
                 <!-- Film Grain / Atmosphere Layer -->
                 <div class="menu-grain z-10 transition-opacity"></div>
                 <!-- Dark Gradient Overlay -->
-                <div
-                    class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30 z-10 transition-colors"></div>
-
+                <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30 z-10 transition-colors"></div>
+                
                 <!-- Main Layout Container -->
-                <div
-                    class="relative z-20 w-full h-full flex flex-col md:flex-row p-8 md:p-16 lg:p-24 items-center md:items-stretch">
-
+                <div class="relative z-20 w-full h-full flex flex-col md:flex-row p-8 md:p-16 lg:p-24 items-center md:items-stretch">
+                    
                     <!-- Left Column: Title & Mood -->
-                    <div
-                        class="flex-1 flex flex-col justify-center items-start space-y-8 max-w-3xl">
-
-                        <div class="animate-slide-up"
-                            style="animation-delay: 0.1s;">
-                            <div
-                                class="inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg">
-                                <div
-                                    class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
-                                <div
-                                    class="text-gray-300 tracking-[0.3em] text-[10px] md:text-xs uppercase font-semibold">
+                    <div class="flex-1 flex flex-col justify-center items-start space-y-8 max-w-3xl">
+                        
+                        <div class="animate-slide-up" style="animation-delay: 0.1s;">
+                            <div class="inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg">
+                                <div class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                                <div class="text-gray-300 tracking-[0.3em] text-[10px] md:text-xs uppercase font-semibold">
                                     Enterprise Edition
                                 </div>
                             </div>
                         </div>
 
-                        <div class="animate-slide-up"
-                            style="animation-delay: 0.2s;">
-                            <h1
-                                class="text-6xl md:text-8xl lg:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-500 title-font drop-shadow-2xl leading-[0.9] tracking-tighter">
+                        <div class="animate-slide-up" style="animation-delay: 0.2s;">
+                            <h1 class="text-6xl md:text-8xl lg:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-500 title-font drop-shadow-2xl leading-[0.9] tracking-tighter">
                                 THE<br>
-                                <span
-                                    class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400 transition-colors">BETWEENS</span>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400 transition-colors">BETWEENS</span>
                             </h1>
                         </div>
 
-                        <div
-                            class="animate-slide-up space-y-4 border-l-2 border-white/30 pl-6"
-                            style="animation-delay: 0.3s;">
-                            <p
-                                class="text-gray-300 text-lg md:text-2xl font-light tracking-wide opacity-90 max-w-xl transition-colors">
+                        <div class="animate-slide-up space-y-4 border-l-2 border-white/30 pl-6" style="animation-delay: 0.3s;">
+                            <p class="text-gray-300 text-lg md:text-2xl font-light tracking-wide opacity-90 max-w-xl transition-colors">
                                 Two worlds. One reality.
                             </p>
-                            <p
-                                class="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed font-sans opacity-80 transition-colors">
-                                Navigate the fractured timelines of Yangon.
-                                Uncover the truth hidden in the echoes of the
-                                city. Your choices define the reality you wake
-                                up in.
+                            <p class="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed font-sans opacity-80 transition-colors">
+                                Navigate the fractured timelines of Yangon. Uncover the truth hidden in the echoes of the city. Your choices define the reality you wake up in.
                             </p>
                         </div>
                     </div>
 
                     <!-- Right Column: Interactive Menu -->
-                    <div
-                        class="w-full md:w-[400px] flex flex-col justify-center items-start pl-0 md:pl-16 mt-12 md:mt-0 relative animate-slide-up"
-                        style="animation-delay: 0.5s;">
+                    <div class="w-full md:w-[400px] flex flex-col justify-center items-start pl-0 md:pl-16 mt-12 md:mt-0 relative animate-slide-up" style="animation-delay: 0.5s;">
+                         
+                         <!-- Divider Line (Mobile/Desktop adaptive) -->
+                         <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-[60%] bg-gradient-to-b from-transparent via-white/20 to-transparent hidden md:block"></div>
 
-                        <!-- Divider Line (Mobile/Desktop adaptive) -->
-                        <div
-                            class="absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-[60%] bg-gradient-to-b from-transparent via-white/20 to-transparent hidden md:block"></div>
-
-                        <div class="flex flex-col w-full space-y-2">
-                            <button onclick="game.init()"
-                                class="menu-item primary">
-                                <div class="icon-box"><i data-lucide="play"
-                                        class="w-6 h-6 fill-current"></i></div>
+                         <div class="flex flex-col w-full space-y-2">
+                            <button onclick="game.init()" class="menu-item primary">
+                                <div class="icon-box"><i data-lucide="play" class="w-6 h-6 fill-current"></i></div>
                                 <span id="st-menu-new">NEW GAME</span>
                             </button>
-
-                            <button onclick="game.loadGame()" id="load-btn"
-                                class="menu-item hidden">
-                                <div class="icon-box"><i
-                                        data-lucide="rotate-ccw"
-                                        class="w-5 h-5"></i></div>
+                            
+                            <button onclick="game.loadGame()" id="load-btn" class="menu-item hidden">
+                                <div class="icon-box"><i data-lucide="rotate-ccw" class="w-5 h-5"></i></div>
                                 <span id="st-menu-load">RESUME JOURNEY</span>
                             </button>
-
-                            <button
-                                onclick="alert('Feature coming in next update')"
-                                class="menu-item">
-                                <div class="icon-box"><i data-lucide="image"
-                                        class="w-5 h-5"></i></div>
+                            
+                            <button onclick="alert('Feature coming in next update')" class="menu-item">
+                                <div class="icon-box"><i data-lucide="image" class="w-5 h-5"></i></div>
                                 <span id="st-menu-gallery">SCENE GALLERY</span>
                             </button>
-
-                            <button onclick="game.openSettings()"
-                                class="menu-item">
-                                <div class="icon-box"><i data-lucide="settings"
-                                        class="w-5 h-5"></i></div>
+                            
+                            <button onclick="game.openSettings()" class="menu-item">
+                                <div class="icon-box"><i data-lucide="settings" class="w-5 h-5"></i></div>
                                 <span id="st-menu-set">SETTINGS</span>
                             </button>
-
-                            <button
-                                onclick="alert('Standard Terms & Conditions Apply')"
-                                class="menu-item">
-                                <div class="icon-box"><i data-lucide="file-text"
-                                        class="w-5 h-5"></i></div>
-                                <span id="st-menu-terms">TERMS AND
-                                    CONDITIONS</span>
+                            
+                            <button onclick="alert('Standard Terms & Conditions Apply')" class="menu-item">
+                                <div class="icon-box"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                                <span id="st-menu-terms">TERMS AND CONDITIONS</span>
                             </button>
-
-                            <button onclick="alert('Created by Gemini & User')"
-                                class="menu-item">
-                                <div class="icon-box"><i data-lucide="users"
-                                        class="w-5 h-5"></i></div>
+                            
+                            <button onclick="alert('Created by Gemini & User')" class="menu-item">
+                                <div class="icon-box"><i data-lucide="users" class="w-5 h-5"></i></div>
                                 <span id="st-menu-credits">CREDITS</span>
                             </button>
-
-                            <button onclick="location.reload()"
-                                class="menu-item"
-                                style="color: #ef4444; border-bottom-color: rgba(239, 68, 68, 0.2);">
-                                <div class="icon-box" style="color: #ef4444;"><i
-                                        data-lucide="power"
-                                        class="w-5 h-5"></i></div>
+                            
+                            <button onclick="location.href='index.html'" class="menu-item" style="color: #ef4444; border-bottom-color: rgba(239, 68, 68, 0.2);">
+                                <div class="icon-box" style="color: #ef4444;"><i data-lucide="power" class="w-5 h-5"></i></div>
                                 <span id="st-menu-quit">QUIT</span>
                             </button>
                         </div>
@@ -1395,27 +1156,20 @@
 
     // --- LOCATION DATABASE ---
     const LOCATIONS = [
-        { id: 'imc', type: 'school', terrain: 'land', name: { en: "Info Myanmar College", mm: "Info Myanmar College" }, x: 30, y: 35, scene: 'school_imc' },
-        { id: 'naung_gyi', type: 'home', terrain: 'land', name: { en: "Naung Gyi's House", mm: "နောင်ကြီး အိမ်" }, x: 95, y: 30, scene: 'home_naunggyi' },
-        { id: 'home', type: 'home', terrain: 'land', name: { en: "Tayza's House", mm: "တေဇ အိမ်" }, x: 80, y: 20, scene: 'intro-tayza' },
-        { id: 'shwedagon', type: 'shwedagon_pagoda', terrain: 'land', name: { en: "Shwedagon Pagoda", mm: "ရွှေတိဂုံဘုရား" }, x: 40, y: 55, scene: 'shwedagon_arrival' },
-        { id: 'kantawgyi', type: 'park', terrain: 'water', name: { en: "Kandawgyi Lake", mm: "ကန်တော်ကြီး" }, x: 60, y: 62, scene: 'place_kantawgyi' },
-        { id: 'inyalake', type: 'park', terrain: 'water', name: { en: "Inya Lake", mm: "အင်းယားကန်" }, x: 50, y: 35, scene: 'place_inya' },
-        { id: 'mmplaza', type: 'mmplaza', terrain: 'land', name: { en: "Myanmar Plaza", mm: "မြန်မာပလာဇာ" }, x: 55, y: 25, scene: 'place_mmplaza' },
-        { id: 'junction_city', type: 'mall', terrain: 'land', name: { en: "Junction City", mm: "Junction City" }, x: 43, y: 70, scene: 'mall_jc' },
-        { id: 'hmone_gyi', type: 'tea_shop', terrain: 'land', name: { en: "Hmone Gyi Tea Shop", mm: "မှုန်ကြီးလက်ဖက်ရည်ဆိုင်" }, x: 20, y: 20, scene: 'tea_hmonegyi' },
-        { id: 'sule', type: 'sule_pagoda', terrain: 'land', name: { en: "Sule Pagoda", mm: "ဆူးလေဘုရား" }, x: 60, y: 80, scene: 'place_sule' },
-        { id: 'downtown', type: 'city', terrain: 'land', name: { en: "Downtown", mm: "မြို့လယ်ခေါင်" }, x: 50, y: 88, scene: 'place_downtown' },
-        { id: 'alwan_cafe', type: 'cafe_shop', terrain: 'land', name: { en: "A Lwan Café", mm: "အလွမ်းကဖေး" }, x: 70, y: 50, scene: 'cafe_alwan' },
+        { id: 'imc', type: 'school', lat: 16.823366, lng: 96.130645, name: { en: "Info Myanmar College", mm: "Info Myanmar College" }, scene: 'school_imc' },
+        { id: 'naung_gyi', type: 'home', lat: 16.849836, lng: 96.157178, name: { en: "Naung Gyi's House", mm: "နောင်ကြီး အိမ်" }, scene: 'home_naunggyi' },
+        { id: 'home', type: 'home', lat: 16.880386, lng: 96.156378, name: { en: "Tayza's House", mm: "တေဇ အိမ်" }, scene: 'intro-tayza' },
+        { id: 'shwedagon', type: 'shwedagon_pagoda', lat: 16.7984, lng: 96.1496, name: { en: "Shwedagon Pagoda", mm: "ရွှေတိဂုံဘုရား" }, scene: 'shwedagon_arrival' },
+        { id: 'kantawgyi', type: 'park', lat: 16.795, lng: 96.166, name: { en: "Kandawgyi Lake", mm: "ကန်တော်ကြီး" }, scene: 'place_kantawgyi' },
+        { id: 'inyalake', type: 'park', lat: 16.837, lng: 96.143, name: { en: "Inya Lake", mm: "အင်းယားကန်" }, scene: 'place_inya' },
+        { id: 'mmplaza', type: 'mmplaza', lat: 16.827439, lng: 96.154957, name: { en: "Myanmar Plaza", mm: "မြန်မာပလာဇာ" }, scene: 'place_mmplaza' },
+        { id: 'junction_city', type: 'mall', lat: 16.7792557, lng: 96.1544072, name: { en: "Junction City", mm: "Junction City" }, scene: 'mall_jc' },
+        { id: 'hmone_gyi', type: 'tea_shop', lat: 16.785, lng: 96.145, name: { en: "Hmone Gyi Tea Shop", mm: "မှုန်ကြီးလက်ဖက်ရည်ဆိုင်" }, scene: 'tea_hmonegyi' },
+        { id: 'sule', type: 'sule_pagoda', lat: 16.7744, lng: 96.1586, name: { en: "Sule Pagoda", mm: "ဆူးလေဘုရား" }, scene: 'place_sule' },
+        { id: 'downtown', type: 'city', lat: 16.775327, lng: 96.151123, name: { en: "Downtown", mm: "မြို့လယ်ခေါင်" }, scene: 'place_downtown' },
+        { id: 'alwan_cafe', type: 'cafe_shop', lat: 16.780, lng: 96.150, name: { en: "A Lwan Café", mm: "အလွမ်းကဖေး" }, scene: 'cafe_alwan' },
     ];
-
-    const ROADS = [
-        ['home', 'naung_gyi'], ['naung_gyi', 'imc'], ['imc', 'shwedagon'],
-        ['shwedagon', 'kantawgyi'], ['shwedagon', 'junction_city'], ['junction_city', 'downtown'],
-        ['downtown', 'sule'], ['downtown', 'alwan_cafe'], ['sule', 'hmone_gyi'],
-        ['home', 'shwedagon'], ['naung_gyi', 'shwedagon'] 
-    ];
-
+    
     // --- ASSETS DATABASE ---
     const ASSETS = {
         bg: {
@@ -1456,19 +1210,19 @@
             creepy_drone: "../audios/creepy_drone.mp3"
         },
         icons: {
-            home: "../images/places/icon-house.png",
-            shwedagon_pagoda: "../images/places/icon-shwedagon-pagoda.png",
-            sule_pagoda: "../images/places/icon-sule-pagoda.png",
-            tea_shop: "../images/places/icon-tea-shop.png",
-            cafe_shop: "../images/places/icon-cafe.png",
-            school: "../images/places/icon-info.png",
-            mall: "../images/places/icon-mall.png",
-            park: "../images/places/icon-kantawg.png",
-            city: "../images/places/icon-downtown.png",
-            player: "../images/places/icon-current.png", 
-            tree: "../images/places/icon-tree.png",
-            inyalake: "../images/places/icon-inyalake.png",
-            mmplaza: "../images/places/icon-mmplaza.png",
+            home: "../images/places/home.gif",
+            shwedagon_pagoda: "../images/places/pagoda.gif",
+            sule_pagoda: "../images/places/pagoda.gif",
+            tea_shop: "../images/places/cafe-tea.gif",
+            cafe_shop: "../images/places/cafe-tea.gif",
+            school: "../images/places/school.gif",
+            mall: "../images/places/mall.gif",
+            park: "../images/places/lake.gif",
+            city: "../images/places/city.gif",
+            player: "../images/places/current.gif", 
+            tree: "../images/places/tree.gif",
+            inyalake: "../images/places/lake.gif",
+            mmplaza: "../images/places/mall.gif",
         }
     };
 
@@ -1482,14 +1236,7 @@
                 day: 1,
                 sceneId: 'start',
                 lang: 'mm',
-                settings: {
-                    volume: 1.0,
-                    themeVolume: 0.4,
-                    gameAudio: 'on',
-                    fontSize: 'medium',
-                    graphics: 'high',
-                    theme: 'dark'
-                }
+                settings: { volume: 1.0, themeVolume: 0.4, gameAudio: 'on', fontSize: 'medium', graphics: 'high', theme: 'dark' }
             };
             this.typingSpeed = 20;
             this.isTyping = false;
@@ -1499,7 +1246,6 @@
             this.sceneData = null;
             this.dialogueIndex = 0;
             this.audio = new AudioController();
-            
             this.activeLayer = 1; 
             this.currentBgKey = null; 
             this.immersiveMode = false;
@@ -1508,31 +1254,46 @@
             this.settingsOpen = false;
             this.phoneApp = null;
             
-            this.mapZoom = 1; 
-            this.panX = 0;
-            this.panY = 0;
-            this.isDragging = false;
-            this.startX = 0;
-            this.startY = 0;
+            // MapLibre properties
+            this.map = null;
+            this.markers = [];
+            this.currentMapStyle = 'normal';
+            this.mapStyles = {
+                normal: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+                satellite: {
+                    "version": 8,
+                    "sources": {
+                        "esri-satellite": {
+                            "type": "raster",
+                            "tiles": ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+                            "tileSize": 256,
+                            "attribution": "Tiles &copy; Esri"
+                        }
+                    },
+                    "layers": [{
+                        "id": "satellite",
+                        "type": "raster",
+                        "source": "esri-satellite",
+                        "minzoom": 0,
+                        "maxzoom": 19
+                    }]
+                }
+            };
 
             if(localStorage.getItem('ringGameSave_V5')) {
-                document.getElementById('load-btn').classList.remove('hidden');
-                document.getElementById('load-btn').classList.add('flex');
+                const btn = document.getElementById('load-btn');
+                btn.classList.remove('hidden');
+                btn.classList.add('flex');
             }
             
-            // Apply loaded settings directly to maintain global state early
             const saveStr = localStorage.getItem('ringGameSave_V5');
             if(saveStr) {
                 const parsed = JSON.parse(saveStr);
-                if(parsed.settings) {
-                    this.state.settings = parsed.settings;
-                }
+                if(parsed.settings) this.state.settings = parsed.settings;
             }
-            // Ensure defaults for new settings
             if (this.state.settings.themeVolume === undefined) this.state.settings.themeVolume = 0.4;
             if (this.state.settings.gameAudio === undefined) this.state.settings.gameAudio = 'on';
             
-            // Run global UI apply
             this.applySettings();
             this.renderSettingsText();
             this.initPreloader();
@@ -1540,7 +1301,6 @@
 
         initPreloader() {
             const allAssets = [];
-            
             if (ASSETS.bg) Object.values(ASSETS.bg).forEach(url => allAssets.push({type: 'image', url}));
             if (ASSETS.icons) Object.values(ASSETS.icons).forEach(url => allAssets.push({type: 'image', url}));
             if (ASSETS.audio) Object.values(ASSETS.audio).forEach(url => allAssets.push({type: 'audio', url}));
@@ -1553,14 +1313,12 @@
             const startBtn = document.getElementById('start-btn');
             const loadSpinner = document.getElementById('loading-spinner');
 
-            // Add background audio play intent
             const playPreloaderAudio = () => {
                 if (this.audio && this.audio.themeMusic && this.audio.themeMusic.paused) {
                     this.audio.themeMusic.volume = this.state.settings.themeVolume !== undefined ? this.state.settings.themeVolume : 0.4;
-                    this.audio.themeMusic.play().catch(e => console.log("Autoplay blocked, waiting for click."));
+                    this.audio.themeMusic.play().catch(e => console.log("Autoplay blocked."));
                 }
             };
-            
             playPreloaderAudio();
             document.addEventListener('click', playPreloaderAudio, { once: true });
 
@@ -1569,7 +1327,6 @@
                 let percent = Math.floor((loadedCount / totalAssets) * 100);
                 if(barFill) barFill.style.width = percent + '%';
                 if(loadText) loadText.innerText = `Loading Assets... ${percent}%`;
-                
                 if (loadedCount >= totalAssets && loadText && loadText.innerText !== "Ready to go") {
                     if(loadText) loadText.innerText = "Ready to go";
                     if(startBtn) startBtn.classList.remove('hidden');
@@ -1578,54 +1335,26 @@
                 }
             };
 
-            if (totalAssets === 0) {
-                updateProgress();
-                return;
-            }
+            if (totalAssets === 0) { updateProgress(); return; }
 
             allAssets.forEach(asset => {
-                if (asset.type === 'image') {
-                    const img = new Image();
-                    img.onload = updateProgress;
-                    img.onerror = updateProgress;
-                    img.src = asset.url;
-                } else if (asset.type === 'audio') {
-                    const aud = new Audio();
-                    aud.addEventListener('canplaythrough', updateProgress, { once: true });
-                    aud.addEventListener('error', updateProgress, { once: true });
-                    aud.src = asset.url;
-                    aud.load();
-                } else if (asset.type === 'video') {
-                    const vid = document.createElement('video');
-                    vid.addEventListener('canplaythrough', updateProgress, { once: true });
-                    vid.addEventListener('error', updateProgress, { once: true });
-                    vid.src = asset.url;
-                    vid.load();
-                }
+                if (asset.type === 'image') { const img = new Image(); img.onload = updateProgress; img.onerror = updateProgress; img.src = asset.url; }
+                else if (asset.type === 'audio') { const aud = new Audio(); aud.addEventListener('canplaythrough', updateProgress, { once: true }); aud.addEventListener('error', updateProgress, { once: true }); aud.src = asset.url; aud.load(); }
+                else if (asset.type === 'video') { const vid = document.createElement('video'); vid.addEventListener('canplaythrough', updateProgress, { once: true }); vid.addEventListener('error', updateProgress, { once: true }); vid.src = asset.url; vid.load(); }
             });
 
-            // Fallback timeout to ensure players aren't stuck if an asset 404s or network hangs
             setTimeout(() => {
-                if (loadedCount < totalAssets) {
-                    console.warn("Preloader timeout fallback triggered. Forcing start access.");
-                    loadedCount = totalAssets - 1; 
-                    updateProgress(); // Force to 100%
-                }
-            }, 12000); // 12 seconds max loading time wait
+                if (loadedCount < totalAssets) { loadedCount = totalAssets - 1; updateProgress(); }
+            }, 12000); 
         }
 
         startFromPreloader() {
             const preloader = document.getElementById('preloader-screen');
             if (preloader) {
                 preloader.classList.add('opacity-0');
-                
-                // Allow the background video to play smoothly
                 const bgVideo = document.getElementById('main-menu-video');
                 if(bgVideo) bgVideo.play().catch(e => console.log(e));
-
-                setTimeout(() => {
-                    preloader.classList.add('hidden');
-                }, 1000);
+                setTimeout(() => { preloader.classList.add('hidden'); }, 1000);
             }
         }
 
@@ -1642,55 +1371,27 @@
         quitToMenu() {
             document.getElementById('ui-layer').classList.add('hidden');
             document.getElementById('ui-layer').classList.remove('flex');
-            
             const startScreen = document.getElementById('start-screen');
             startScreen.classList.remove('hidden');
             startScreen.classList.remove('opacity-0');
-            
-            document.getElementById('load-btn').classList.remove('hidden');
-            document.getElementById('load-btn').classList.add('flex');
+            const loadBtn = document.getElementById('load-btn');
+            loadBtn.classList.remove('hidden');
+            loadBtn.classList.add('flex');
             
             this.isTyping = false;
             if(this.typingTimer) clearTimeout(this.typingTimer);
             if(this.autoPlayTimer) clearTimeout(this.autoPlayTimer);
-            
-            if (this.audio && this.audio.bgMusic) {
-                this.audio.bgMusic.pause();
-            }
+            if (this.audio && this.audio.bgMusic) this.audio.bgMusic.pause();
             this.saveGameManual();
         }
         
         setupMapInteractions() {
-            const container = document.getElementById('map-container');
-            container.addEventListener('mousedown', (e) => this.startDrag(e));
-            document.addEventListener('mousemove', (e) => this.drag(e));
-            document.addEventListener('mouseup', () => this.endDrag());
-            container.addEventListener('touchstart', (e) => this.startDrag(e.touches[0]));
-            document.addEventListener('touchmove', (e) => this.drag(e.touches[0]));
-            document.addEventListener('touchend', () => this.endDrag());
+            // Replaced by native MapLibre interactions
         }
 
-        startDrag(e) {
-            if (!this.mapOpen) return;
-            this.isDragging = true;
-            this.startX = e.clientX - this.panX;
-            this.startY = e.clientY - this.panY;
-            document.getElementById('map-container').style.cursor = 'grabbing';
-        }
-
-        drag(e) {
-            if (!this.isDragging || !this.mapOpen) return;
-            e.preventDefault ? e.preventDefault() : null;
-            this.panX = e.clientX - this.startX;
-            this.panY = e.clientY - this.startY;
-            this.updateMapTransform();
-        }
-
-        endDrag() {
-            this.isDragging = false;
-            const container = document.getElementById('map-container');
-            if(container) container.style.cursor = 'grab';
-        }
+        startDrag(e) { }
+        drag(e) { }
+        endDrag() { }
 
         toggleMap() {
             const modal = document.getElementById('map-modal');
@@ -1698,23 +1399,97 @@
                 modal.classList.add('opacity-0');
                 setTimeout(() => modal.classList.add('hidden'), 300);
             } else {
-                this.renderMap();
-                this.mapZoom = 1; this.panX = 0; this.panY = 0; this.updateMapTransform();
                 modal.classList.remove('hidden');
                 void modal.offsetWidth; 
                 modal.classList.remove('opacity-0');
+                
+                this.renderMap();
+                
+                // IMPORTANT FIX FOR MAPLIBRE: Map container size is 0 when hidden, need to resize after showing
+                setTimeout(() => {
+                    if (this.map) {
+                        this.map.resize();
+                    }
+                }, 50);
+                setTimeout(() => {
+                    if (this.map) {
+                        this.map.resize();
+                    }
+                }, 350); // After modal transition completes
             }
             this.mapOpen = !this.mapOpen;
+        }
+
+        toggleMapMenu() {
+            const menu = document.getElementById('map-side-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex');
+                document.getElementById('map-search-results').classList.add('hidden');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+            }
+        }
+
+        handleMapSearch(e) {
+            const query = e.target.value.toLowerCase();
+            const resultsContainer = document.getElementById('map-search-results');
+            document.getElementById('map-side-menu').classList.add('hidden'); 
+            
+            if (!query) {
+                resultsContainer.classList.add('hidden');
+                resultsContainer.classList.remove('flex');
+                return;
+            }
+            
+            const matches = LOCATIONS.filter(loc => {
+                const nameEn = (loc.name.en || '').toLowerCase();
+                const nameMm = (loc.name.mm || '').toLowerCase();
+                return nameEn.includes(query) || nameMm.includes(query);
+            });
+            
+            if (matches.length > 0) {
+                resultsContainer.innerHTML = '';
+                matches.forEach(loc => {
+                    const btn = document.createElement('button');
+                    btn.className = "flex items-center gap-4 px-5 py-4 hover:bg-blue-50/50 text-left w-full border-b border-slate-50 transition-colors group";
+                    const iconUrl = ASSETS.icons[loc.type] || ASSETS.icons.city;
+                    const dispName = loc.name[this.state.lang] || loc.name.en;
+                    btn.innerHTML = `
+                        <div class="bg-slate-100 p-2 rounded-xl group-hover:bg-white group-hover:shadow-sm transition-all text-slate-500 group-hover:text-blue-500">
+                            <img src="${iconUrl}" class="w-5 h-5 object-contain">
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">${dispName}</span>
+                    `;
+                    btn.onclick = () => {
+                        if(this.map) this.map.flyTo({ center: [loc.lng, loc.lat], zoom: 16 });
+                        resultsContainer.classList.add('hidden');
+                        resultsContainer.classList.remove('flex');
+                        document.getElementById('map-search-input').value = dispName;
+                    };
+                    resultsContainer.appendChild(btn);
+                });
+                resultsContainer.classList.remove('hidden');
+                resultsContainer.classList.add('flex');
+            } else {
+                resultsContainer.innerHTML = '<div class="p-4 text-sm text-slate-500 text-center font-medium">No locations found.</div>';
+                resultsContainer.classList.remove('hidden');
+                resultsContainer.classList.add('flex');
+            }
+        }
+
+        toggleMapStyle() {
+            if (!this.map) return;
+            this.currentMapStyle = this.currentMapStyle === 'normal' ? 'satellite' : 'normal';
+            this.map.setStyle(this.mapStyles[this.currentMapStyle]);
         }
 
         togglePhone() {
             const modal = document.getElementById('phone-modal');
             if (this.phoneOpen) {
                 modal.classList.add('opacity-0');
-                setTimeout(() => { 
-                    modal.classList.add('hidden'); 
-                    this.phoneHome(); 
-                }, 300);
+                setTimeout(() => { modal.classList.add('hidden'); this.phoneHome(); }, 300);
             } else {
                 modal.classList.remove('hidden');
                 void modal.offsetWidth; 
@@ -1730,23 +1505,12 @@
             this.phoneApp = null;
         }
 
-        // --- MUSIC PLAYER LOGIC ---
         toggleMusic() {
             const audio = document.getElementById('music-player-audio');
             const icon = document.getElementById('music-play-icon');
             if (!audio) return;
-            
-            if (audio.paused) {
-                audio.play();
-                // Change Play Icon to Pause
-                icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="pause" class="w-6 h-6 fill-current ml-1"></i>';
-                lucide.createIcons();
-            } else {
-                audio.pause();
-                // Change Pause Icon to Play
-                icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="play" class="w-6 h-6 fill-current ml-1"></i>';
-                lucide.createIcons();
-            }
+            if (audio.paused) { audio.play(); icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="pause" class="w-6 h-6 fill-current ml-1"></i>'; lucide.createIcons(); } 
+            else { audio.pause(); icon.parentElement.innerHTML = '<i id="music-play-icon" data-lucide="play" class="w-6 h-6 fill-current ml-1"></i>'; lucide.createIcons(); }
         }
 
         updateMusicProgress() {
@@ -1754,15 +1518,11 @@
             const progress = document.getElementById('music-progress');
             const thumb = document.getElementById('music-thumb');
             const current = document.getElementById('music-current-time');
-            
             if (audio && progress) {
                 const percent = (audio.currentTime / audio.duration) * 100;
                 progress.style.width = `${percent}%`;
                 if(thumb) thumb.style.left = `${percent}%`;
-                
-                // Format time
-                const mins = Math.floor(audio.currentTime / 60);
-                const secs = Math.floor(audio.currentTime % 60);
+                const mins = Math.floor(audio.currentTime / 60); const secs = Math.floor(audio.currentTime % 60);
                 current.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             }
         }
@@ -1771,8 +1531,7 @@
             const audio = document.getElementById('music-player-audio');
             const total = document.getElementById('music-duration');
             if (audio && total) {
-                const mins = Math.floor(audio.duration / 60);
-                const secs = Math.floor(audio.duration % 60);
+                const mins = Math.floor(audio.duration / 60); const secs = Math.floor(audio.duration % 60);
                 total.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             }
         }
@@ -1784,16 +1543,12 @@
             const title = document.getElementById('app-title-text');
             const header = document.getElementById('app-header-bar');
 
-            // Reset Styles
             header.style.display = 'flex';
-            header.className = "h-12 border-b flex items-center px-4 font-bold shadow-sm z-30 relative transition-colors";
-            
-            // Build Content
+            header.className = "h-12 border-b flex items-center px-4 font-bold shadow-sm z-30 relative transition-colors bg-white text-gray-800";
             let html = '';
             
             if (appName === 'phone') {
                 title.innerText = "Phone";
-                header.classList.add('bg-white', 'text-gray-800');
                 html = `
                     <div class="h-full flex flex-col">
                         <div class="flex-1 flex flex-col items-center justify-center p-6">
@@ -1825,7 +1580,6 @@
                 `;
             } else if (appName === 'messages') {
                 title.innerText = "Messages";
-                header.classList.add('bg-white', 'text-gray-800');
                 html = `
                     <div class="p-4 space-y-4">
                         <div class="flex gap-3 items-center border-b border-gray-100 pb-3">
@@ -1860,7 +1614,7 @@
                 `;
             } else if (appName === 'facebook') {
                 title.innerText = "Facebook";
-                header.classList.add('bg-blue-600', 'text-white');
+                header.className = "h-12 border-b flex items-center px-4 font-bold shadow-sm z-30 relative transition-colors bg-blue-600 text-white";
                 html = `
                     <div class="bg-gray-200 min-h-full">
                         <div class="bg-white p-3 mb-2">
@@ -1905,7 +1659,6 @@
                 `;
             } else if (appName === 'youtube') {
                 title.innerText = "YouTube";
-                header.classList.add('bg-white', 'text-gray-800');
                 html = `
                     <div class="bg-black text-white min-h-full">
                         <div class="p-2 border-b border-gray-800">
@@ -1936,7 +1689,6 @@
                 `;
             } else if (appName === 'photos') {
                 title.innerText = "Photos";
-                header.classList.add('bg-white', 'text-gray-800');
                 html = `
                     <div class="p-1 grid grid-cols-3 gap-1">
                         <div class="aspect-square bg-gray-200 bg-[url('https://images.unsplash.com/photo-1572508589584-94d778209071?q=80&w=200&auto=format&fit=crop')] bg-cover"></div>
@@ -1949,25 +1701,19 @@
                 `;
             } else if (appName === 'music') {
                 title.innerText = "Spotify"; 
-                header.style.display = 'none'; // Hide default header for full screen UI
-                
+                header.style.display = 'none';
                 html = `
                     <div class="h-full flex flex-col bg-gradient-to-b from-gray-900 to-black text-white relative">
-                         <!-- Custom Header -->
                          <div class="flex justify-between items-center p-4 pt-6 z-10">
                             <button onclick="game.phoneHome()" class="text-white hover:bg-white/10 p-1 rounded-full"><i data-lucide="chevron-down" class="w-6 h-6"></i></button>
                             <span class="text-xs font-bold tracking-widest uppercase text-gray-300">Now Playing</span>
                             <button class="text-white"><i data-lucide="more-horizontal" class="w-6 h-6"></i></button>
                          </div>
-                         
-                         <!-- Album Art -->
                          <div class="flex-1 flex items-center justify-center p-6 z-10">
                             <div class="w-full aspect-square bg-gray-800 shadow-2xl rounded-md overflow-hidden relative">
                                 <img src="../images/items/song.png" class="w-full h-full object-cover">
                             </div>
                          </div>
-                         
-                         <!-- Info & Controls -->
                          <div class="px-6 pb-8 z-10 bg-gradient-to-t from-black via-black/50 to-transparent">
                              <div class="flex justify-between items-end mb-6">
                                  <div>
@@ -1976,8 +1722,6 @@
                                  </div>
                                  <button class="text-green-500"><i data-lucide="heart" class="w-6 h-6 fill-current"></i></button>
                              </div>
-                             
-                             <!-- Progress -->
                              <div class="mb-2">
                                  <div class="w-full h-1 bg-gray-600 rounded-full relative cursor-pointer group">
                                      <div id="music-progress" class="absolute left-0 top-0 h-full bg-white rounded-full w-0 transition-all duration-300"></div>
@@ -1988,31 +1732,24 @@
                                  <span id="music-current-time">0:00</span>
                                  <span id="music-duration">0:00</span>
                              </div>
-                             
-                             <!-- Buttons -->
                              <div class="flex justify-between items-center">
                                  <button class="text-gray-400 hover:text-white"><i data-lucide="shuffle" class="w-5 h-5"></i></button>
                                  <button class="text-white hover:scale-110 transition-transform"><i data-lucide="skip-back" class="w-8 h-8 fill-current"></i></button>
-                                 
                                  <button onclick="game.toggleMusic()" class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform shadow-lg shadow-green-500/20">
                                      <i id="music-play-icon" data-lucide="play" class="w-6 h-6 fill-black ml-1"></i>
                                  </button>
-                                 
                                  <button class="text-white hover:scale-110 transition-transform"><i data-lucide="skip-forward" class="w-8 h-8 fill-current"></i></button>
                                  <button class="text-gray-400 hover:text-white"><i data-lucide="repeat" class="w-5 h-5"></i></button>
                              </div>
                          </div>
-                         
-                         <!-- Audio Element (Real Audio) -->
                          <audio id="music-player-audio" src="../audios/tejano-blue.mp3" ontimeupdate="game.updateMusicProgress()" onloadedmetadata="game.initMusicDuration()"></audio>
                     </div>
                 `;
             } else if (appName === 'kbzpay') {
                 title.innerText = "KBZPay";
-                header.classList.add('bg-blue-700', 'text-white');
+                header.className = "h-12 border-b flex items-center px-4 font-bold shadow-sm z-30 relative transition-colors bg-blue-700 text-white";
                 html = `
                     <div class="flex-1 bg-gray-100 flex flex-col items-center pt-6 relative min-h-full">
-                        <!-- Balance Card -->
                         <div class="w-11/12 bg-blue-600 rounded-xl p-5 shadow-lg mb-6 text-white relative overflow-hidden">
                             <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
                             <span class="text-xs text-blue-100 uppercase tracking-widest">Total Balance</span>
@@ -2027,13 +1764,9 @@
                                 <div class="flex flex-col items-center gap-1 cursor-pointer"><div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></div><span class="text-[10px]">History</span></div>
                             </div>
                         </div>
-
-                        <!-- Transaction History (Mock) -->
                         <div class="w-11/12">
                             <div class="text-xs text-gray-500 mb-2 uppercase font-bold px-1">Recent Activity</div>
-                            <div class="space-y-2" id="kbz-history">
-                                <!-- Injected JS -->
-                            </div>
+                            <div class="space-y-2" id="kbz-history"></div>
                         </div>
                     </div>
                 `;
@@ -2043,7 +1776,6 @@
             activeApp.classList.remove('translate-x-full');
             activeApp.classList.add('app-screen-active');
             
-            // Re-render KBZ History if needed
             if (appName === 'kbzpay') {
                 this.renderKBZHistory();
             }
@@ -2051,11 +1783,19 @@
             lucide.createIcons();
         }
 
-        updateCurrency(amount) {
+        updateCurrency(amount, transactionId = null) {
             if (amount === 0 && this.state.currency === 0) {
                  const bal = document.getElementById('kbz-balance');
                  if(bal) bal.innerText = "0";
                  return;
+            }
+
+            // Centralized Robust Transaction Check
+            if (transactionId) {
+                if (this.state.flags[`tx_${transactionId}`]) {
+                    return; // Prevent duplicate transactions if looping back to same scene/step/choice
+                }
+                this.state.flags[`tx_${transactionId}`] = true;
             }
 
             this.state.currency += amount;
@@ -2116,117 +1856,58 @@
             lucide.createIcons();
         }
 
-        zoomMap(delta) {
-            this.mapZoom = Math.max(0.25, Math.min(6, this.mapZoom + delta));
-            this.updateMapTransform();
-        }
-
-        resetZoom() {
-            this.mapZoom = 1;
-            this.panX = 0;
-            this.panY = 0;
-            this.updateMapTransform();
-        }
-
-        updateMapTransform() {
-            const world = document.getElementById('map-world');
-            if (world) {
-                world.style.transform = `translate(${this.panX}px, ${this.panY}px) scale(${this.mapZoom})`;
+        zoomMap(delta) { 
+            if (this.map) {
+                const currentZoom = this.map.getZoom();
+                this.map.zoomTo(Math.max(10, Math.min(18, currentZoom + (delta > 0 ? 1 : -1))));
             }
         }
 
-        renderMap() {
-            const container = document.getElementById('map-pins');
-            const geoContainer = document.getElementById('geo-layer');
-            const roadLayer = document.getElementById('road-layer');
+        resetZoom() { 
+            if (this.map) {
+                this.map.flyTo({ center: [96.146480,16.830225], zoom: 12.2 });
+            }
+        }
+
+        updateMapTransform() { 
+            // Handled natively by MapLibre API
+        }
+
+        async renderMap() {
+            const container = document.getElementById('map-container');
             
-            container.innerHTML = '';
-            geoContainer.innerHTML = '';
-            roadLayer.innerHTML = '';
+            if(!this.map) {
+                this.map = new maplibregl.Map({
+                    container: 'map-container',
+                    style: this.mapStyles[this.currentMapStyle], // Free clean base map without token needed
+                    center: [96.1496, 16.7984],
+                    zoom: 13,
+                    attributionControl: false
+                });
+            }
+
+            if (this.markers) {
+                this.markers.forEach(m => m.remove());
+            }
+            this.markers = [];
 
             const currentLoc = LOCATIONS.find(l => l.scene === this.state.sceneId);
 
-            geoContainer.innerHTML = `
-                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <defs>
-                        <filter id="land-glow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur stdDeviation="1" result="blur"/>
-                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                        </filter>
-                    </defs>
-                    <path d="M -10 0 L 110 0 L 110 60 Q 90 55 80 70 L 70 85 L 60 92 L 50 95 L 40 92 L 30 85 L 20 70 Q 10 55 -10 60 Z" fill="#F0F2F5" stroke="#E5E7EB" stroke-width="0.5" filter="url(#land-glow)"/>
-                    <path d="M -10 100 L 45 100 L 35 110 L -10 110 Z" fill="#E8EAED" />
-                    <path d="M 65 100 L 110 100 L 110 110 L 75 110 Z" fill="#E8EAED" />
-                    <path d="M 40 25 Q 45 20 50 25 T 60 30 Q 55 40 45 35 T 40 25 Z" fill="#A5D6E0" stroke="#8AC0D0" stroke-width="0.5" />
-                    <path d="M 52 55 Q 58 52 62 55 T 65 62 Q 60 65 55 62 T 52 55 Z" fill="#A5D6E0" stroke="#8AC0D0" stroke-width="0.5" />
-                </svg>
-            `;
-
-            ROADS.forEach(([startId, endId]) => {
-                const start = LOCATIONS.find(l => l.id === startId);
-                const end = LOCATIONS.find(l => l.id === endId);
-                if (start && end) {
-                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    const midX = (start.x + end.x) / 2;
-                    const midY = (start.y + end.y) / 2;
-                    const offset = 5; 
-                    const cpX = midX + (start.y > end.y ? offset : -offset); 
-                    const cpY = midY + (start.x < end.x ? offset : -offset);
-
-                    const d = `M ${start.x} ${start.y} Q ${cpX} ${cpY} ${end.x} ${end.y}`;
-                    path.setAttribute("d", d);
-                    path.setAttribute("class", "road-border");
-                    roadLayer.appendChild(path);
-                }
-            });
-
-            ROADS.forEach(([startId, endId]) => {
-                const start = LOCATIONS.find(l => l.id === startId);
-                const end = LOCATIONS.find(l => l.id === endId);
-                if (start && end) {
-                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    const midX = (start.x + end.x) / 2;
-                    const midY = (start.y + end.y) / 2;
-                    const offset = 5; 
-                    const cpX = midX + (start.y > end.y ? offset : -offset); 
-                    const cpY = midY + (start.x < end.x ? offset : -offset);
-
-                    const d = `M ${start.x} ${start.y} Q ${cpX} ${cpY} ${end.x} ${end.y}`;
-                    path.setAttribute("d", d);
-                    path.setAttribute("class", "road-line");
-                    roadLayer.appendChild(path);
-                }
-            });
-
             LOCATIONS.forEach(loc => {
+                if (!loc.lat || !loc.lng) return;
+                
                 const isUnlocked = this.state.flags[`${loc.id}_unlocked`];
                 const isCurrent = currentLoc && currentLoc.id === loc.id;
                 
                 const pin = document.createElement('div');
-                pin.className = `absolute flex flex-col items-center group ${isUnlocked ? 'z-20 cursor-pointer' : 'z-10 cursor-not-allowed'}`;
-                pin.style.left = `${loc.x}%`;
-                pin.style.top = `${loc.y}%`;
-                pin.style.transform = "translate(-50%, -100%)";
+                pin.className = `map-pin-wrapper map-pin ${isUnlocked ? 'map-pin-unlocked' : 'map-pin-locked'}`;
 
                 const iconUrl = ASSETS.icons[loc.type] || ASSETS.icons.city;
 
-                if (loc.terrain === 'land') {
-                     for(let i=0; i<5; i++) {
-                         const tree = document.createElement('img');
-                         tree.src = ASSETS.icons.tree;
-                         tree.className = 'absolute w-4 h-4 z-0 opacity-90';
-                         const tx = (Math.random() * 8) - 4; 
-                         const ty = (Math.random() * 6);
-                         tree.style.left = `${loc.x + tx}%`;
-                         tree.style.top = `${loc.y + ty}%`;
-                         container.appendChild(tree);
-                     }
-                }
-
                 const playerHtml = isCurrent ? `
-                    <div class="absolute -top-12 z-50 animate-bounce">
-                        <img src="${ASSETS.icons.player}" class="w-10 h-10 rounded-full border-2 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)] bg-white">
-                        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-yellow-400"></div>
+                    <div class="map-player-indicator">
+                        <img src="${ASSETS.icons.player}" class="map-player-avatar">
+                        <div class="map-player-arrow"></div>
                     </div>
                 ` : '';
 
@@ -2234,69 +1915,54 @@
                     pin.onclick = (e) => { e.stopPropagation(); this.travelTo(loc); };
                     pin.innerHTML = `
                         ${playerHtml}
-                        <div class="relative pin-bounce">
-                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-6 h-2 bg-black/30 rounded-full blur-[2px]"></div>
-                            <img src="${iconUrl}" class="w-10 h-10 object-contain drop-shadow-lg" alt="${loc.name.en}">
-                        </div>
-                        <div class="mt-1 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 font-bold rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-200 z-50 relative">
-                            ${loc.name[this.state.lang] || loc.name.en}
+                        <div class="map-pin-icon-wrapper">
+                            <div class="map-pin-shadow"></div>
+                            <img src="${iconUrl}" class="map-pin-img" alt="${loc.name.en}">
+                            <div class="map-pin-label">
+                                ${loc.name[this.state.lang] || loc.name.en}
+                            </div>
                         </div>
                     `;
                 } else {
                     pin.innerHTML = `
-                        <div class="relative grayscale opacity-80">
-                            <img src="${iconUrl}" class="w-10 h-10 object-contain opacity-60" alt="${loc.name.en}">
-                            <div class="absolute -top-1 -right-1 bg-red-600/90 rounded-full p-0.5 border border-white shadow-sm z-10">
-                                <i data-lucide="lock" class="w-3 h-3 text-white"></i>
+                        <div class="map-pin-locked-wrap">
+                            <img src="${iconUrl}" class="map-pin-locked-img" alt="${loc.name.en}">
+                            <div class="map-pin-lock-icon"><i data-lucide="lock" class="w-3 h-3"></i></div>
+                            <div class="map-pin-locked-label">
+                                ${loc.name[this.state.lang] || loc.name.en}
                             </div>
-                        </div>
-                        <div class="mt-1 bg-gray-200 text-gray-500 text-[10px] md:text-xs px-2 py-1 font-bold rounded shadow-sm whitespace-nowrap border border-gray-300 z-50 relative">
-                            ${loc.name[this.state.lang] || loc.name.en}
                         </div>
                     `;
                 }
+
+                const marker = new maplibregl.Marker({ element: pin, anchor: 'bottom' })
+                    .setLngLat([loc.lng, loc.lat])
+                    .addTo(this.map);
                 
-                container.appendChild(pin);
+                this.markers.push(marker);
             });
             
-            this.updateMapTransform();
             lucide.createIcons();
         }
 
         travelTo(loc) {
-            if(this.isDragging) return;
             this.toggleMap();
-            if (SCENES[loc.scene]) {
-                this.loadScene(loc.scene);
-            } else {
-                alert(`Development Mode: Scene for ${loc.name.en} is not yet implemented.`);
-            }
+            if (SCENES[loc.scene]) { this.loadScene(loc.scene); } else { alert(`Development Mode: Scene for ${loc.name.en} is not yet implemented.`); }
         }
 
         showUnlockNotification(locId) {
             const loc = LOCATIONS.find(l => l.id === locId);
             if (!loc) return;
-            
             const notif = document.getElementById('unlock-notification');
             const text = document.getElementById('unlock-text');
-            
             text.innerText = loc.name[this.state.lang] || loc.name.en;
             notif.classList.add('notification-show');
-            setTimeout(() => {
-                notif.classList.remove('notification-show');
-            }, 4000);
+            setTimeout(() => { notif.classList.remove('notification-show'); }, 4000);
         }
 
         toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error: ${err.message}`);
-                });
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            }
+            if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => { console.log(`Error: ${err.message}`); }); } 
+            else { if (document.exitFullscreen) { document.exitFullscreen(); } }
         }
         
         toggleImmersive() {
@@ -2305,25 +1971,13 @@
             const cam = document.getElementById('camera-rig');
             
             if (this.immersiveMode) {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen().catch(err => console.log(err));
-                }
+                if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(err => console.log(err)); }
                 ui.classList.add('hidden');
                 cam.classList.add('static-cam');
-                
-                const exitHandler = (e) => {
-                    e.stopPropagation();
-                    this.toggleImmersive();
-                    document.removeEventListener('click', exitHandler, true);
-                };
-                setTimeout(() => {
-                    document.addEventListener('click', exitHandler, true);
-                }, 50);
-                
+                const exitHandler = (e) => { e.stopPropagation(); this.toggleImmersive(); document.removeEventListener('click', exitHandler, true); };
+                setTimeout(() => { document.addEventListener('click', exitHandler, true); }, 50);
             } else {
-                if (document.exitFullscreen && document.fullscreenElement) {
-                    document.exitFullscreen().catch(err => console.log(err));
-                }
+                if (document.exitFullscreen && document.fullscreenElement) { document.exitFullscreen().catch(err => console.log(err)); }
                 ui.classList.remove('hidden');
                 cam.classList.remove('static-cam');
             }
@@ -2333,28 +1987,15 @@
             const ui = document.getElementById('ui-layer');
             const cam = document.getElementById('camera-rig');
             const container = document.getElementById('game-container');
-
             ui.classList.add('hidden');
             cam.classList.add('static-cam');
-
             setTimeout(() => {
-                html2canvas(container, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: null
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `yangon_scene_${Date.now()}.png`;
-                    link.href = canvas.toDataURL();
-                    link.click();
-
+                html2canvas(container, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
+                    const link = document.createElement('a'); link.download = `yangon_scene_${Date.now()}.png`; link.href = canvas.toDataURL(); link.click();
                     ui.classList.remove('hidden');
-                    if (!this.immersiveMode) {
-                        cam.classList.remove('static-cam');
-                    }
+                    if (!this.immersiveMode) { cam.classList.remove('static-cam'); }
                 }).catch(err => {
-                    console.error("Screenshot failed:", err);
-                    alert("Couldn't take screenshot due to browser security restrictions.");
+                    console.error("Screenshot failed:", err); alert("Couldn't take screenshot due to browser security restrictions.");
                     ui.classList.remove('hidden');
                     if (!this.immersiveMode) cam.classList.remove('static-cam');
                 });
@@ -2378,7 +2019,6 @@
                 this.state = JSON.parse(save);
                 if (this.state.currency === undefined) this.state.currency = 0;
                 if (!this.state.settings) this.state.settings = { volume: 1.0, themeVolume: 0.4, gameAudio: 'on', fontSize: 'medium', graphics: 'high', theme: 'dark' };
-                
                 this.applySettings();
                 document.getElementById('start-screen').classList.add('hidden');
                 document.getElementById('ui-layer').classList.remove('hidden');
@@ -2388,18 +2028,14 @@
             }
         }
 
-        toggleLang() {
-            this.setLanguage(this.state.lang === 'mm' ? 'en' : 'mm');
-        }
+        toggleLang() { this.setLanguage(this.state.lang === 'mm' ? 'en' : 'mm'); }
         
         toggleAuto() {
             this.autoPlay = !this.autoPlay;
             const btn = document.getElementById('auto-btn');
             if (this.autoPlay) {
                 btn.classList.add('active-mode');
-                if (!this.isTyping && !this.isLastStep()) {
-                     this.next();
-                }
+                if (!this.isTyping && !this.isLastStep()) { this.next(); }
             } else {
                 btn.classList.remove('active-mode');
                 if (this.autoPlayTimer) clearTimeout(this.autoPlayTimer);
@@ -2407,12 +2043,10 @@
             lucide.createIcons();
         }
 
-        // --- GLOBAL SETTINGS FUNCTIONS ---
         openSettings() {
             const modal = document.getElementById('settings-modal');
             this.renderSettingsText();
             this.syncSettingsUI();
-            
             modal.classList.remove('hidden');
             void modal.offsetWidth; 
             modal.classList.remove('opacity-0');
@@ -2451,82 +2085,32 @@
         updateBtnGroup(group, val) {
             const btns = document.querySelectorAll(`.st-btn-${group}`);
             btns.forEach(btn => {
-                if (btn.dataset.val === val) {
-                    btn.classList.add('st-btn-active');
-                } else {
-                    btn.classList.remove('st-btn-active');
-                }
+                if (btn.dataset.val === val) { btn.classList.add('st-btn-active'); } 
+                else { btn.classList.remove('st-btn-active'); }
             });
         }
 
         renderSettingsText() {
             const lang = this.state.lang;
             document.getElementById('lang-btn').innerText = lang === 'mm' ? "မြန်မာ" : "EN";
-            
-            const updateText = (id, key) => {
-                const el = document.getElementById(id);
-                if (el && SETTINGS_DICT[key]) el.innerText = SETTINGS_DICT[key][lang];
-            };
-
-            // Main Menu
-            updateText('st-menu-new', 'menu_new');
-            updateText('st-menu-load', 'menu_load');
-            updateText('st-menu-gallery', 'menu_gallery');
-            updateText('st-menu-set', 'menu_set');
-            updateText('st-menu-quit', 'menu_quit');
-            updateText('st-menu-credits', 'menu_credits');
-            updateText('st-menu-terms', 'menu_terms');
-            
-            // HUD Tooltips
-            updateText('hud-st-tip', 'menu_set');
-            updateText('hud-quit-tip', 'hud_quit');
-
-            // Modal Titles
-            updateText('st-title', 'title');
-            updateText('st-ga-vol', 'ga_vol');
-            updateText('st-ga-vol-tip', 'ga_vol_tip');
-            updateText('st-tm-vol', 'tm_vol');
-            updateText('st-tm-vol-tip', 'tm_vol_tip');
-            updateText('st-ga-state', 'ga_state');
-            updateText('st-ga-state-tip', 'ga_state_tip');
-            updateText('st-ga-on', 'ga_on');
-            updateText('st-ga-off', 'ga_off');
-            updateText('st-font', 'font_size');
-            updateText('st-font-tip', 'font_tip');
-            updateText('st-font-sm', 'font_sm');
-            updateText('st-font-md', 'font_md');
-            updateText('st-font-lg', 'font_lg');
-            updateText('st-gfx', 'graphics');
-            updateText('st-gfx-tip', 'gfx_tip');
-            updateText('st-gfx-low', 'gfx_low');
-            updateText('st-gfx-med', 'gfx_med');
-            updateText('st-gfx-high', 'gfx_high');
-            updateText('st-lang', 'language');
-            updateText('st-lang-tip', 'lang_tip');
-            updateText('st-theme', 'theme');
-            updateText('st-theme-tip', 'theme_tip');
-            updateText('st-theme-dark', 'theme_dark');
+            const updateText = (id, key) => { const el = document.getElementById(id); if (el && SETTINGS_DICT[key]) el.innerText = SETTINGS_DICT[key][lang]; };
+            updateText('st-menu-new', 'menu_new'); updateText('st-menu-load', 'menu_load'); updateText('st-menu-gallery', 'menu_gallery');
+            updateText('st-menu-set', 'menu_set'); updateText('st-menu-quit', 'menu_quit'); updateText('st-menu-credits', 'menu_credits');
+            updateText('st-menu-terms', 'menu_terms'); updateText('hud-st-tip', 'menu_set'); updateText('hud-quit-tip', 'hud_quit');
+            updateText('st-title', 'title'); updateText('st-ga-vol', 'ga_vol'); updateText('st-ga-vol-tip', 'ga_vol_tip');
+            updateText('st-tm-vol', 'tm_vol'); updateText('st-tm-vol-tip', 'tm_vol_tip'); updateText('st-ga-state', 'ga_state');
+            updateText('st-ga-state-tip', 'ga_state_tip'); updateText('st-ga-on', 'ga_on'); updateText('st-ga-off', 'ga_off');
+            updateText('st-font', 'font_size'); updateText('st-font-tip', 'font_tip'); updateText('st-font-sm', 'font_sm');
+            updateText('st-font-md', 'font_md'); updateText('st-font-lg', 'font_lg'); updateText('st-gfx', 'graphics');
+            updateText('st-gfx-tip', 'gfx_tip'); updateText('st-gfx-low', 'gfx_low'); updateText('st-gfx-med', 'gfx_med');
+            updateText('st-gfx-high', 'gfx_high'); updateText('st-lang', 'language'); updateText('st-lang-tip', 'lang_tip');
+            updateText('st-theme', 'theme'); updateText('st-theme-tip', 'theme_tip'); updateText('st-theme-dark', 'theme_dark');
             updateText('st-theme-light', 'theme_light');
         }
 
-        setVolume(val, sync = true) {
-            this.state.settings.volume = parseFloat(val);
-            this.audio.setVolume(this.state.settings.volume);
-            if(sync) this.syncSettingsUI();
-        }
-
-        setThemeVolume(val, sync = true) {
-            this.state.settings.themeVolume = parseFloat(val);
-            this.audio.setThemeVolume(this.state.settings.themeVolume);
-            if(sync) this.syncSettingsUI();
-        }
-
-        setGameAudio(state, sync = true) {
-            this.state.settings.gameAudio = state;
-            this.audio.setGameAudio(state);
-            if(sync) this.syncSettingsUI();
-        }
-
+        setVolume(val, sync = true) { this.state.settings.volume = parseFloat(val); this.audio.setVolume(this.state.settings.volume); if(sync) this.syncSettingsUI(); }
+        setThemeVolume(val, sync = true) { this.state.settings.themeVolume = parseFloat(val); this.audio.setThemeVolume(this.state.settings.themeVolume); if(sync) this.syncSettingsUI(); }
+        setGameAudio(state, sync = true) { this.state.settings.gameAudio = state; this.audio.setGameAudio(state); if(sync) this.syncSettingsUI(); }
         setFontSize(size, sync = true) {
             this.state.settings.fontSize = size;
             document.body.classList.remove('font-sm', 'font-lg');
@@ -2534,7 +2118,6 @@
             if (size === 'large') document.body.classList.add('font-lg');
             if(sync) this.syncSettingsUI();
         }
-
         setGraphics(level, sync = true) {
             this.state.settings.graphics = level;
             document.body.classList.remove('gfx-low', 'gfx-med', 'gfx-high');
@@ -2543,40 +2126,26 @@
             if (level === 'high') document.body.classList.add('gfx-high');
             if(sync) this.syncSettingsUI();
         }
-
         setTheme(mode, sync = true) {
             this.state.settings.theme = mode;
             document.body.classList.remove('theme-light');
-            if (mode === 'light') {
-                document.body.classList.add('theme-light');
-            }
+            if (mode === 'light') { document.body.classList.add('theme-light'); }
             if(sync) this.syncSettingsUI();
         }
-
-        setLanguage(lang) {
-            this.state.lang = lang;
-            this.renderSettingsText();
-            this.syncSettingsUI();
-            if (!this.isTyping && this.sceneData) this.renderStep(true);
-        }
-
-        // --- END SETTINGS ---
+        setLanguage(lang) { this.state.lang = lang; this.renderSettingsText(); this.syncSettingsUI(); if (!this.isTyping && this.sceneData) this.renderStep(true); }
 
         changeBackground(bgKey, darken) {
             const url = ASSETS.bg[bgKey];
             if (!url) return;
             if (this.currentBgKey === bgKey) return;
-
             if (!this.activeLayer) this.activeLayer = 1;
             const nextLayerIdx = this.activeLayer === 1 ? 2 : 1;
             const currentEl = document.getElementById(`bg-layer-${this.activeLayer}`);
             const nextEl = document.getElementById(`bg-layer-${nextLayerIdx}`);
             const targetOpacity = darken ? '0.3' : '0.6';
-
             nextEl.style.backgroundImage = `url('${url}')`;
             nextEl.style.opacity = targetOpacity;
             currentEl.style.opacity = '0';
-
             this.activeLayer = nextLayerIdx;
             this.currentBgKey = bgKey; 
         }
@@ -2589,7 +2158,6 @@
         }
 
         loadScene(id) {
-            console.log("Loading Scene:", id);
             this.state.sceneId = id;
             this.sceneData = SCENES[id];
             this.dialogueIndex = 0;
@@ -2597,8 +2165,7 @@
             this.changeBackground(this.sceneData.bg, this.sceneData.darken);
             this.handleAudio(this.sceneData.audio);
 
-            // Reapply base classes safely without stripping setting classes
-            const baseClasses = "text-white h-screen w-screen relative select-none bg-black transition-colors duration-1000";
+            const baseClasses = "text-gray-100 h-screen w-screen relative select-none bg-black transition-colors duration-1000";
             const settingsClasses = [];
             if(this.state.settings.fontSize === 'small') settingsClasses.push('font-sm');
             if(this.state.settings.fontSize === 'large') settingsClasses.push('font-lg');
@@ -2608,9 +2175,7 @@
             if(this.state.settings.theme === 'light') settingsClasses.push('theme-light');
             
             document.body.className = `${baseClasses} ${settingsClasses.join(' ')}`;
-            
             if (this.sceneData.world) document.body.classList.add(`world-${this.sceneData.world}`);
-
             if (this.sceneData.location) {
                 document.getElementById('location-text').innerText = this.sceneData.location.en; 
                 document.getElementById('time-text').innerText = `DAY ${this.state.day} - ${this.sceneData.time || 'UNKNOWN'}`;
@@ -2637,17 +2202,14 @@
                 });
             }
 
+            // Enhanced Centralized Currency System trigger
             if (step.currency) {
-                 this.updateCurrency(step.currency);
+                const txId = `currency_${this.state.sceneId}_step_${this.dialogueIndex}`;
+                this.updateCurrency(step.currency, txId);
             }
-
-            if (step.bg) {
-                this.changeBackground(step.bg, this.sceneData.darken);
-            }
-
-            if (step.audio) {
-                this.handleAudio(step.audio);
-            }
+            
+            if (step.bg) { this.changeBackground(step.bg, this.sceneData.darken); }
+            if (step.audio) { this.handleAudio(step.audio); }
 
             const speakerBox = document.getElementById('speaker-box');
             const speakerName = document.getElementById('speaker-name');
@@ -2656,14 +2218,8 @@
             if (spk) {
                 speakerBox.classList.remove('hidden');
                 speakerName.innerText = spk;
-                const baseSpkClass = `px-4 md:px-6 py-1 md:py-1.5 text-xs md:text-sm font-bold tracking-widest text-white uppercase transform skew-x-[-12deg] shadow-lg border-l-4 transition-colors duration-300`;
-                const spkColorClass = step.speaker.color || 'bg-slate-700 border-gray-400';
-                speakerBox.className = `${baseSpkClass} ${spkColorClass}`;
-                
-                // Light theme speaker logic handled primarily via CSS overriding bg-colors
-                if(this.state.settings.theme === 'light') {
-                     // CSS handles general #speaker-box styling overrides
-                }
+                const spkColorClass = step.speaker.color || 'speaker-color-default';
+                speakerBox.className = `bg-gray-900 px-6 py-1.5 text-xs md:text-sm font-bold tracking-[0.2em] text-yellow-500 uppercase transform skew-x-[-12deg] shadow-[0_5px_20px_rgba(0,0,0,0.5)] border border-yellow-500/50 transition-colors ${spkColorClass}`;
             } else {
                 speakerBox.classList.add('hidden');
             }
@@ -2708,7 +2264,6 @@
 
             const tick = () => {
                 if (!this.isTyping) return; 
-
                 if (i < text.length) {
                     textBox.innerText += text.charAt(i);
                     i++;
@@ -2731,9 +2286,7 @@
             tick();
         }
 
-        isLastStep() {
-            return this.dialogueIndex === this.sceneData.steps.length - 1 && this.sceneData.choices;
-        }
+        isLastStep() { return this.dialogueIndex === this.sceneData.steps.length - 1 && this.sceneData.choices; }
 
         renderChoices() {
             const container = document.getElementById('choices-container');
@@ -2741,65 +2294,47 @@
 
             this.sceneData.choices.forEach(c => {
                 if (c.req && !c.req(this.state)) return; 
-
                 const btn = document.createElement('button');
                 btn.className = "choice-btn w-full max-w-3xl p-3 md:p-4 text-left rounded-r-lg mb-2 relative overflow-hidden group transition-all duration-300";
-                
                 const txt = c.text[this.state.lang] || c.text.en;
-                
                 btn.innerHTML = `
-                    <div class="relative z-10 flex justify-between items-center">
-                        <span class="font-noto font-bold text-xs md:text-sm lg:text-base">${txt}</span>
-                        ${c.type === 'danger' ? '<i data-lucide="alert-triangle" class="text-red-500 w-3 h-3 md:w-4 md:h-4"></i>' : '<i data-lucide="arrow-right" class="opacity-0 group-hover:opacity-100 transition-opacity w-3 h-3 md:w-4 md:h-4 text-yellow-500"></i>'}
+                    <div style="position:relative; z-index:10; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-family:'Noto Sans Myanmar', sans-serif; font-weight:bold;">${txt}</span>
+                        ${c.type === 'danger' ? '<i data-lucide="alert-triangle" style="color:#ef4444; width:1rem; height:1rem;"></i>' : '<i data-lucide="arrow-right" style="color:#eab308; width:1rem; height:1rem; opacity:0; transition:opacity 0.3s;" class="choice-arrow"></i>'}
                     </div>
                 `;
-
                 if (c.type === 'danger') btn.style.borderLeftColor = '#ef4444';
+                
+                // Add hover style simulation for arrow
+                btn.addEventListener('mouseenter', () => { const icon = btn.querySelector('.choice-arrow'); if(icon) icon.style.opacity = '1'; });
+                btn.addEventListener('mouseleave', () => { const icon = btn.querySelector('.choice-arrow'); if(icon) icon.style.opacity = '0'; });
 
-                btn.onclick = (e) => {
-                    e.stopPropagation();
-                    this.makeChoice(c);
-                };
+                btn.onclick = (e) => { e.stopPropagation(); this.makeChoice(c); };
                 container.appendChild(btn);
             });
             lucide.createIcons();
         }
 
         next() {
-            if (this.isTyping) {
-                this.renderStep(true);
-                return;
-            }
+            if (this.isTyping) { this.renderStep(true); return; }
             if (document.getElementById('choices-container').children.length > 0) return;
-
-            if (this.dialogueIndex < this.sceneData.steps.length - 1) {
-                this.dialogueIndex++;
-                this.renderStep();
-            } else if (this.sceneData.nextScene) {
-                this.loadScene(this.sceneData.nextScene);
-            }
+            if (this.dialogueIndex < this.sceneData.steps.length - 1) { this.dialogueIndex++; this.renderStep(); } 
+            else if (this.sceneData.nextScene) { this.loadScene(this.sceneData.nextScene); }
         }
 
         makeChoice(choice) {
             if (choice.unlock) {
                 const locationsToUnlock = Array.isArray(choice.unlock) ? choice.unlock : [choice.unlock];
                 locationsToUnlock.forEach(locId => {
-                    if (!this.state.flags[`${locId}_unlocked`]) {
-                         this.state.flags[`${locId}_unlocked`] = true;
-                         this.showUnlockNotification(locId);
-                    }
+                    if (!this.state.flags[`${locId}_unlocked`]) { this.state.flags[`${locId}_unlocked`] = true; this.showUnlockNotification(locId); }
                 });
             }
-
+            // Enhanced Centralized Currency System trigger for choices
             if (choice.currency) {
-                this.updateCurrency(choice.currency);
+                const txId = `currency_${this.state.sceneId}_choice_${this.sceneData.choices.indexOf(choice)}`;
+                this.updateCurrency(choice.currency, txId);
             }
-
-            if (choice.effect) {
-                for (const [k, v] of Object.entries(choice.effect)) {
-                    this.state.stats[k] = Math.max(0, Math.min(100, this.state.stats[k] + v));
-                }
-            }
+            if (choice.effect) { for (const [k, v] of Object.entries(choice.effect)) { this.state.stats[k] = Math.max(0, Math.min(100, this.state.stats[k] + v)); } }
             if (choice.flag) this.state.flags[choice.flag] = true;
             if (choice.next) this.loadScene(choice.next);
         }
@@ -2813,10 +2348,10 @@
 
         getCharHTML(type) {
             const maps = {
-                naychi: `<div class="relative w-full h-full flex justify-center items-end animate-[float_4s_ease-in-out_infinite]"><div class="w-64 h-[600px] bg-gradient-to-t from-blue-500/20 to-transparent blur-xl"></div><div class="absolute bottom-0 w-48 h-[500px] border-2 border-blue-400/30 rounded-t-full bg-black/50 backdrop-blur-sm"></div></div>`,
-                faceless: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-72 h-[700px] bg-black blur-md"></div><div class="absolute top-40 w-32 h-40 bg-gray-900 rounded-full animate-pulse"></div></div>`,
-                faceless_mom: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-72 h-[700px] bg-gray-900 blur-sm"></div><div class="absolute top-32 w-40 h-40 bg-gray-800 rounded-full animate-pulse filter blur-sm"></div></div>`,
-                monk: `<div class="relative w-full h-full flex justify-center items-end"><div class="w-64 h-[600px] bg-gradient-to-t from-orange-800/80 to-transparent"></div></div>`
+                naychi: `<div class="char-naychi-wrapper"><div class="char-naychi-glow"></div><div class="char-naychi-body"></div></div>`,
+                faceless: `<div class="char-faceless-wrapper"><div class="char-faceless-body"></div><div class="char-faceless-head"></div></div>`,
+                faceless_mom: `<div class="char-mom-wrapper"><div class="char-mom-body"></div><div class="char-mom-head"></div></div>`,
+                monk: `<div class="char-monk-wrapper"><div class="char-monk-body"></div></div>`
             };
             return maps[type] || '';
         }
@@ -2824,73 +2359,42 @@
 
     class AudioController {
         constructor() { 
-            this.active = true; 
-            this.current = null; 
-            this.volume = 1.0;
-            this.themeVolume = 0.4;
-            this.gameAudioActive = true;
-            this.themeMusic = new Audio(ASSETS.audio.main_theme || "../audios/theme.mp3");
-            this.themeMusic.loop = true;
+            this.active = true; this.current = null; this.volume = 1.0; this.themeVolume = 0.4; this.gameAudioActive = true;
+            this.themeMusic = new Audio(ASSETS.audio.main_theme || "../audios/theme.mp3"); this.themeMusic.loop = true;
         } 
-        
-        setVolume(v) {
-            this.volume = v;
-            if(this.bgMusic) this.bgMusic.volume = this.volume;
-        }
-
+        setVolume(v) { this.volume = v; if(this.bgMusic) this.bgMusic.volume = this.volume; }
         setThemeVolume(v) {
-            this.themeVolume = v;
-            if(this.themeMusic) this.themeMusic.volume = this.themeVolume;
-            
-            if (this.themeVolume > 0 && this.themeMusic.paused && this.active) {
-                this.themeMusic.play().catch(e => console.log("Audio autoplay blocked by browser"));
-            } else if (this.themeVolume == 0 && !this.themeMusic.paused) {
-                this.themeMusic.pause();
-            }
+            this.themeVolume = v; if(this.themeMusic) this.themeMusic.volume = this.themeVolume;
+            if (this.themeVolume > 0 && this.themeMusic.paused && this.active) { this.themeMusic.play().catch(e => console.log("Audio autoplay blocked by browser")); } 
+            else if (this.themeVolume == 0 && !this.themeMusic.paused) { this.themeMusic.pause(); }
         }
-
         setGameAudio(state) {
             this.gameAudioActive = (state === 'on');
-            if (this.gameAudioActive && this.active && this.bgMusic && this.bgMusic.paused) {
-                this.bgMusic.play().catch(e => console.log("Audio autoplay blocked by browser"));
-            } else if (!this.gameAudioActive && this.bgMusic) {
-                this.bgMusic.pause();
-            }
+            if (this.gameAudioActive && this.active && this.bgMusic && this.bgMusic.paused) { this.bgMusic.play().catch(e => console.log("Audio autoplay blocked by browser")); } 
+            else if (!this.gameAudioActive && this.bgMusic) { this.bgMusic.pause(); }
         }
-
         toggle() {
             this.active = !this.active;
             const icon = document.getElementById('audio-icon');
             if (this.active) {
-                icon.setAttribute('data-lucide', 'volume-2');
-                icon.classList.add('text-yellow-400'); 
+                icon.setAttribute('data-lucide', 'volume-2'); icon.style.color = '#facc15'; 
                 if(this.current && this.bgMusic && this.gameAudioActive) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
                 if(this.themeMusic && this.themeVolume > 0) this.themeMusic.play().catch(e => console.log("Audio autoplay blocked"));
             } else {
-                icon.setAttribute('data-lucide', 'volume-x');
-                icon.classList.remove('text-yellow-400');
-                if(this.bgMusic) this.bgMusic.pause();
-                if(this.themeMusic) this.themeMusic.pause();
+                icon.setAttribute('data-lucide', 'volume-x'); icon.style.color = 'inherit';
+                if(this.bgMusic) this.bgMusic.pause(); if(this.themeMusic) this.themeMusic.pause();
             }
             lucide.createIcons();
         }
-        
         play(id, loop = true) {
-            if (!this.bgMusic) {
-                this.bgMusic = new Audio();
-            }
-            
-            this.bgMusic.loop = loop;
-            this.bgMusic.volume = this.volume;
-            
+            if (!this.bgMusic) { this.bgMusic = new Audio(); }
+            this.bgMusic.loop = loop; this.bgMusic.volume = this.volume;
             if (this.current !== id) {
-                 this.bgMusic.src = ASSETS.audio[id];
-                 this.current = id;
+                 this.bgMusic.src = ASSETS.audio[id]; this.current = id;
                  if (this.active && this.gameAudioActive) this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
             } else {
                  if (this.active && this.gameAudioActive && this.bgMusic.paused) {
-                     this.bgMusic.currentTime = 0;
-                     this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
+                     this.bgMusic.currentTime = 0; this.bgMusic.play().catch(e => console.log("Audio autoplay blocked"));
                  }
             }
         }
@@ -2910,7 +2414,6 @@
         monk: { en: "Sayadaw", mm: "ဆရာတော်", color: "bg-orange-900 border-yellow-500" },
         librarian: { en: "Librarian", mm: "စာကြည့်တိုက်မှူး", color: "bg-indigo-900 border-indigo-500" }
     };
-
     const SCENES = {
         'yangon_intro': {
             bg: 'downtown',
@@ -3040,6 +2543,7 @@
             steps: [
             {
                 bg: 'missedcall',
+                currency: 5000,
                 speaker: SPEAKERS.unknown, text: {en: "I check my phone. 14 missed calls from 'Mom'. She is in the kitchen downstairs. This is how our house works.", mm: "ဖုန်းကို စစ်ကြည့်လိုက်တယ်။ အမေဆီက Missed Call ၁၄ ခု။ အမေက အိမ်အောက်ထပ် မီးဖိုချောင်မှာ ရှိနေတာကိုတောင် ဖုန်းဆက်နေတုန်းပဲ။"},
             },
             {
@@ -3492,11 +2996,11 @@
         'parallel_home_door': {
             bg: 'home_tayza',
             world: 'parallel',
-            location: { en: 'Home', mm: 'အိမ်' },
+            location: { en: 'Home', mm: 'Home' },
             time: 'UNKNOWN',
             steps: [
                 {
-                    audio: 'kitchen', /* Distorted slightly by world effect */
+                    audio: 'kitchen',
                     text: { en: "The door creaks open.", mm: "တံခါး ကျွီကနဲ ပွင့်လာတယ်။" }
                 },
                 {
@@ -3546,11 +3050,10 @@
                 }
             ],
             choices: [
-                { text: { en: "To Be Continued...", mm: "ဆက်ရန်..." }, next: 'start' } /* Loops back for now */
+                { text: { en: "To Be Continued...", mm: "ဆက်ရန်..." }, next: 'start' }
             ]
         },
     };
-
     // --- BOOTSTRAP ---
     const game = new GameEngine();
     

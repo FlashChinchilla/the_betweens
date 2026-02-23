@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Betweens | Knowledge Base</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        :root {
+            --bg-base: #000000;
+            --bg-surface: #030303;
+            --bg-surface-elevated: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-tertiary: #444444;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --border-light: rgba(255, 255, 255, 0.06);
+            
+            --glass-bg: rgba(0, 0, 0, 0.85);
+            --glass-blur: blur(32px) saturate(120%);
+            
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --nav-height: 72px;
+            --section-padding: 160px;
+            --container-width: 1000px; 
+            
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+            --transition-fast: 0.2s var(--ease-out-expo);
+            --transition-medium: 0.6s var(--ease-out-expo);
+            --transition-slow: 1.2s var(--ease-in-out-expo);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            font-size: 16px;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overscroll-behavior: none;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            background-color: var(--bg-base);
+            position: relative;
+        }
+
+        body.loading {
+            overflow: hidden;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-base);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s var(--ease-out-expo), visibility 0.8s;
+        }
+
+        .preloader-line {
+            width: 0%;
+            height: 1px;
+            background-color: var(--text-primary);
+            animation: expandLine 2s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+        }
+
+        .preloader-text {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+            margin-top: 24px;
+            opacity: 0;
+            animation: fadeText 1.5s var(--ease-out-expo) 0.5s infinite alternate;
+        }
+
+        @keyframes expandLine {
+            0% { width: 0%; }
+            100% { width: 40%; }
+        }
+
+        @keyframes fadeText {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* Structural Grid Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(var(--border-light) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+            background-size: 120px 120px;
+            background-position: center center;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        ::selection {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--text-tertiary); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        a { text-decoration: none; color: inherit; transition: color var(--transition-fast); }
+        button, input, textarea { font-family: inherit; border: none; outline: none; background: none; }
+        ul { list-style: none; }
+        img, video { max-width: 100%; display: block; object-fit: cover; }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 4vw;
+            width: 100%;
+        }
+
+        h1, h2, h3, h4 { letter-spacing: -0.05em; font-weight: 400; margin: 0; }
+
+        .section-header {
+            margin-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            background: var(--text-primary);
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 500;
+            line-height: 1.1;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+        }
+
+        .section-subtitle {
+            margin-top: 24px;
+            font-size: clamp(1rem, 1.2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* --- NAVBAR & MEGA MENU --- */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: var(--nav-height);
+            background: transparent;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            transition: background var(--transition-medium), border var(--transition-medium);
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 4vw;
+            position: relative;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .nav-logo { 
+            font-family: var(--font-mono);
+            font-size: 1rem; 
+            font-weight: 700; 
+            letter-spacing: -0.02em; 
+            color: var(--text-primary);
+            text-transform: uppercase;
+            z-index: 1002;
+        }
+
+        .nav-links { 
+            display: flex; 
+            align-items: center; 
+            gap: 40px; 
+            height: var(--nav-height);
+        }
+        
+        .nav-item-has-mega {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link:hover, .nav-link.active { color: var(--text-primary); }
+
+        .dropdown-icon {
+            width: 14px; height: 14px;
+            margin-left: 6px;
+            transition: transform var(--transition-fast);
+        }
+
+        .nav-item-has-mega:hover .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .mega-menu {
+            position: absolute;
+            top: 100%; left: 0;
+            width: 100vw;
+            background: rgba(3, 3, 3, 0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-bottom: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 999;
+        }
+
+        .nav-item-has-mega:hover .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mega-menu-inner {
+            display: flex;
+            gap: 48px;
+            padding: 32px 4vw;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .mega-link {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mega-link:hover { color: var(--text-primary); }
+
+        .btn-play-now {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+            padding: 10px 24px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all var(--transition-fast);
+            border: 1px solid var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .btn-play-now:hover { 
+            background-color: transparent; 
+            color: var(--text-primary);
+        }
+
+        .mobile-menu-btn { 
+            display: none; 
+            width: 24px; 
+            height: 14px; 
+            position: relative; 
+            cursor: pointer; 
+            z-index: 1002; 
+        }
+        
+        .mobile-menu-btn span { 
+            position: absolute; 
+            left: 0; 
+            width: 100%; 
+            height: 1.5px; 
+            background: var(--text-primary); 
+            transition: all var(--transition-fast); 
+        }
+        
+        .mobile-menu-btn span:nth-child(1) { top: 0; }
+        .mobile-menu-btn span:nth-child(2) { bottom: 0; }
+        
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: translateY(6.25px) rotate(45deg);
+        }
+        
+        .mobile-menu-btn.active span:nth-child(2) {
+            transform: translateY(-6.25px) rotate(-45deg);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            position: relative;
+            padding: calc(var(--nav-height) + 120px) 0 80px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative; 
+            z-index: 3; 
+            opacity: 0; 
+            transform: translateY(20px);
+        }
+        
+        .hero.loaded .hero-content {
+            animation: heroFadeIn 1.5s var(--ease-out-expo) 0.2s forwards;
+        }
+
+        @keyframes heroFadeIn { 
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); } 
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 6rem);
+            font-weight: 500;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .hero-desc {
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 1.2vw, 1rem);
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 600px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- ADVANCED SEARCH UI --- */
+        .search-container {
+            width: 100%;
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 50;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 0 24px;
+            transition: border-color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .search-box:focus-within {
+            background: var(--bg-surface-elevated);
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-tertiary);
+            flex-shrink: 0;
+            transition: color var(--transition-fast);
+        }
+
+        .search-box:focus-within .search-icon {
+            color: var(--text-primary);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 24px 20px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.85rem;
+        }
+
+        .search-line {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--text-primary);
+            transform: scaleX(0);
+            transition: transform 0.6s var(--ease-out-expo);
+            z-index: 2;
+        }
+
+        .search-box:focus-within .search-line {
+            transform: scaleX(1);
+        }
+
+        .search-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 100%;
+            background: rgba(3, 3, 3, 0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--border-color);
+            max-height: 400px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            z-index: 100;
+        }
+
+        .search-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .search-dropdown::-webkit-scrollbar { width: 4px; }
+        .search-dropdown::-webkit-scrollbar-track { background: transparent; }
+        .search-dropdown::-webkit-scrollbar-thumb { background: var(--text-tertiary); }
+
+        .search-result-item {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--bg-surface-elevated);
+        }
+
+        .search-result-title {
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-result-title::before {
+            content: '';
+            width: 4px; height: 4px;
+            background: var(--text-primary);
+            border-radius: 50%;
+        }
+
+        .search-result-snippet {
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-left: 16px;
+        }
+
+        .search-no-results {
+            padding: 32px 24px;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+
+        /* Highlight animation for matched FAQ */
+        @keyframes highlightFaq {
+            0% { background: rgba(255, 255, 255, 0.1); }
+            100% { background: transparent; }
+        }
+
+        .faq-details.highlighted {
+            animation: highlightFaq 2s var(--ease-out-expo) forwards;
+        }
+
+        /* --- FAQ MAIN SECTION --- */
+        .faq-page-section {
+            padding: 40px 0 var(--section-padding);
+            background: transparent;
+            z-index: 1;
+            position: relative;
+        }
+
+        .faq-block {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq-details {
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .faq-details::before {
+            content: '';
+            position: absolute;
+            left: 0; bottom: -1px; 
+            width: 100%; height: 1px;
+            background: var(--text-primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.6s var(--ease-out-expo);
+            z-index: 2;
+        }
+
+        .faq-details:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .faq-details summary {
+            padding: 40px 0;
+            cursor: pointer;
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 400;
+            transition: color var(--transition-fast);
+        }
+
+        .faq-details:hover summary, .faq-details[open] summary {
+            color: var(--text-primary);
+        }
+
+        .faq-details summary::-webkit-details-marker { display: none; }
+
+        .faq-icon {
+            position: relative;
+            width: 24px; height: 24px;
+            flex-shrink: 0;
+            margin-left: 24px;
+        }
+
+        .faq-icon::before, .faq-icon::after {
+            content: '';
+            position: absolute;
+            background: currentColor;
+            transition: transform 0.4s var(--ease-out-expo);
+        }
+
+        .faq-icon::before { top: 11px; left: 0; width: 24px; height: 2px; }
+        .faq-icon::after { top: 0; left: 11px; width: 2px; height: 24px; }
+
+        .faq-details[open] .faq-icon::after { transform: rotate(90deg) scale(0); }
+        .faq-details[open] .faq-icon::before { transform: rotate(180deg); }
+
+        .faq-content {
+            padding-bottom: 40px;
+            padding-right: 10%;
+        }
+
+        .faq-text {
+            color: var(--text-secondary);
+            font-size: clamp(1rem, 1.2vw, 1.15rem);
+            line-height: 1.8;
+            font-weight: 300;
+            animation: slideDown 0.5s var(--ease-out-expo) forwards;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .faq-text strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .faq-list-items {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-list-item {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            line-height: 1.5;
+        }
+
+        .faq-list-item::before {
+            content: '';
+            width: 4px; height: 4px;
+            flex-shrink: 0;
+            background: var(--text-tertiary);
+            border-radius: 50%;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- FOOTER --- */
+        .footer { 
+            background: var(--bg-surface); 
+            padding: 80px 0 40px; 
+            border-top: 1px solid var(--border-color); 
+            z-index: 1;
+            position: relative;
+        }
+        
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr 1fr 1fr; 
+            gap: 40px; 
+            margin-bottom: 80px; 
+            max-width: 1440px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 4vw;
+        }
+        
+        .footer-brand { display: flex; flex-direction: column; gap: 12px; }
+        .footer-brand h3 { 
+            font-family: var(--font-mono);
+            font-size: 0.9rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: -0.02em; 
+            color: var(--text-primary);
+        }
+        .footer-brand p { color: var(--text-secondary); font-size: 0.85rem; max-width: 300px; line-height: 1.6; }
+        
+        .footer-links h4 { 
+            font-family: var(--font-mono);
+            font-size: 0.65rem; 
+            color: var(--text-tertiary); 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.15em; 
+        }
+        .footer-links ul { display: flex; flex-direction: column; gap: 12px; }
+        .footer-links a { 
+            color: var(--text-secondary); 
+            font-size: 0.85rem; 
+            transition: color var(--transition-fast); 
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+        
+        .footer-bottom { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding-top: 32px; 
+            border-top: 1px solid var(--border-color); 
+            max-width: 1440px;
+            margin: 0 auto;
+            padding-left: 4vw;
+            padding-right: 4vw;
+        }
+        
+        .copyright { color: var(--text-tertiary); font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .social-icons { display: flex; gap: 20px; }
+        .social-icon { color: var(--text-tertiary); transition: color var(--transition-fast); }
+        .social-icon:hover { color: var(--text-primary); }
+        .social-icon svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 60px; }
+            :root { --section-padding: 120px; }
+        }
+
+        @media (max-width: 768px) {
+            :root { --section-padding: 80px; --nav-height: 64px; }
+            html { font-size: 14px; }
+            
+            .nav-links {
+                position: fixed; top: var(--nav-height); left: 0; width: 100%; height: calc(100vh - var(--nav-height));
+                background: var(--bg-surface); flex-direction: column; align-items: flex-start;
+                padding: 32px 4vw; gap: 8px; transform: translateY(-10px); opacity: 0; visibility: hidden; transition: all var(--transition-medium);
+                border-top: 1px solid var(--border-color);
+                overflow-y: auto;
+            }
+            .nav-links.mobile-active { transform: translateY(0); opacity: 1; visibility: visible; }
+            
+            .nav-item-has-mega { width: 100%; flex-direction: column; align-items: flex-start; height: auto; }
+            .nav-link { width: 100%; justify-content: space-between; padding: 16px 0; height: auto; }
+            
+            .nav-item-has-mega:hover .dropdown-icon { transform: rotate(0deg); }
+            .nav-item-has-mega.active .dropdown-icon { transform: rotate(180deg); }
+            
+            .mega-menu {
+                position: static; opacity: 1; visibility: visible; transform: none; background: transparent; backdrop-filter: none; border: none; display: none;
+            }
+            .nav-item-has-mega.active .mega-menu { display: block; width: 100%; }
+            .mega-menu-inner { flex-direction: column; gap: 20px; padding: 16px 0 16px 16px; margin-left: 8px; border-left: 1px solid var(--border-color); width: auto; }
+            
+            .mobile-menu-btn { display: block; }
+
+            .hero-title { font-size: 3rem; }
+            .faq-details summary { padding: 32px 0; }
+            .faq-content { padding-right: 0; }
+            
+            .search-input { padding: 20px 16px; }
+            .search-box { padding: 0 16px; }
+            
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column-reverse; gap: 32px; align-items: flex-start; }
+        }
+
+        /* --- REVEAL ANIMATIONS --- */
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: all 1.2s var(--ease-out-expo); 
+            will-change: opacity, transform;
+        }
+        .reveal.active { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+    </style>
+</head>
+<body class="loading">
+
+    <div id="preloader">
+        <div class="preloader-line"></div>
+        <div class="preloader-text">Fetching System Directives...</div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">The Betweens</a>
+
+            <div class="nav-links" id="navLinks">
+                <div class="nav-item-has-mega">
+                    <a href="index.html" class="nav-link overview-toggle">
+                        Overview
+                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                    </a>
+                    <div class="mega-menu">
+                        <div class="mega-menu-inner">
+                            <a href="index.html#carousel" class="mega-link">Environments</a>
+                            <a href="index.html#mechanics" class="mega-link">Systems</a>
+                            <a href="index.html#entities" class="mega-link">Entities</a>
+                            <a href="index.html#gallery" class="mega-link">Visual Archives</a>
+                            <a href="index.html#lore" class="mega-link">Archive</a>
+                            <a href="index.html#resonance" class="mega-link">Resonance</a>
+                            <a href="index.html#contact" class="mega-link">Comms</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-item-has-mega">
+                    <a href="#hero" class="nav-link active origin-toggle">
+                        Origin
+                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                    </a>
+                    <div class="mega-menu">
+                        <div class="mega-menu-inner">
+                            <a href="../origin/#game" class="mega-link">The Game</a>
+                            <a href="../origin/#characters" class="mega-link">Characters</a>
+                            <a href="../origin/#chapters" class="mega-link">Chapters</a>
+                            <a href="../origin/#developer" class="mega-link">Developer</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="../knowledge-base" class="nav-link">Knowledge Base</a>
+                <a href="../directives" class="nav-link">Directives</a>
+            </div>
+
+            <div class="nav-actions" style="display: flex; gap: 24px; align-items: center;">
+                <a href="../game" class="btn-play-now" style="display: none;">Play Now</a>
+                <div class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="section-label" style="justify-content: center; margin-bottom: 24px;">00 // Global Data</span>
+                <h1 class="hero-title">Knowledge Base</h1>
+                <p class="hero-desc">System inquiries and architectural parameters. Access classified operational protocols.</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="faq-page-section">
+        <div class="container">
+            
+            <!-- ADVANCED SEARCH -->
+            <div class="search-container reveal">
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="faqSearch" class="search-input" placeholder="Query the database..." autocomplete="off">
+                    <div class="search-line"></div>
+                </div>
+                <div class="search-dropdown" id="searchDropdown">
+                    <!-- Dynamic Search Results -->
+                </div>
+            </div>
+
+            <div class="faq-block reveal delay-1" id="faqBlock">
+                
+                <details class="faq-details" id="faq-1" open>
+                    <summary>What constitutes the core experience of "The Betweens"? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            "The Betweens" is a cinematic narrative experience set against the backdrop of Yangon, Myanmar. You navigate the journey of Tayza, an IT student who uncovers a dimensional fracture via a mysterious artifact. Your navigational choices dictate the stability of both realities, intertwining deeply personal family dynamics with high-stakes urban fantasy.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-2">
+                    <summary>Who serves as the primary anchor in this narrative? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            <strong>Tayza.</strong> A 21-year-old IT student at Info Myanmar University. He operates with calculated logic but remains emotionally guarded. As the central protagonist, the entire causal nexus of the simulation revolves around his systemic decisions.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-3">
+                    <summary>What other entities populate the simulation? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">The architecture includes several critical variables:</p>
+                        <div class="faq-list-items">
+                            <div class="faq-list-item">Nay Chi – Architecture student & emotional guide in the Echo dimension</div>
+                            <div class="faq-list-item">Daw Mya Thandar – The caring, traditional matriarch</div>
+                            <div class="faq-list-item">U Aung Myint – The responsible and proud patriarch</div>
+                            <div class="faq-list-item">Ko Thiha – Tayza’s highly protective, sarcastic older brother</div>
+                            <div class="faq-list-item">The Collector – A severe anomalous threat seeking the artifact</div>
+                            <div class="faq-list-item">Ko Min & Sayadaw Htein – Peripheral entities providing critical guidance</div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-4">
+                    <summary>What is the function of the Catalyst (The Ring)? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            The artifact acts as a quantum bridge between the Prime reality and the parallel "Echo" dimension. It is highly reactive to Tayza’s emotional state, functioning as a conduit to manipulate both planes of existence. Improper utilization dictates fatal structural outcomes.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-5">
+                    <summary>How many divergence endpoints exist within the architecture? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">The system currently tracks three primary resolution states:</p>
+                        <div class="faq-list-items">
+                            <div class="faq-list-item">Stabilized (Happy) – Balance restored; the core family unit is protected.</div>
+                            <div class="faq-list-item">Collapse (Sad) – Systemic failure driven by fear, resulting in the dissolution of the parallel world.</div>
+                            <div class="faq-list-item">Classified (Secret) – Unlocked via uncovering hidden artifact lore, leading to absolute sacrifice.</div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-6">
+                    <summary>What are the primary geographical coordinates? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            The simulation maps directly to Yangon, Myanmar. Key rendered nodes include Sule Pagoda, Shwedagon Pagoda, Kandawgyi Lake, and the downtown sectors. The parallel Echo dimension mirrors these coordinates but features severe architectural distortions, eerie atmospheric lighting, and anomalous entities.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-7">
+                    <summary>Does the system permit user intervention? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            <strong>Affirmative.</strong> The architecture is entirely choice-driven. Your decisions act as input variables that actively manipulate the environment, the survival of associated entities, and the final structural endpoint you inherit.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-8">
+                    <summary>What is the aesthetic and atmospheric frequency? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            The experience synthesizes high-stakes urban fantasy with profound emotional family drama. The atmospheric tone shifts dynamically—maintaining warm, nostalgic frequencies in the Prime dimension while transitioning to severe, tension-heavy resonance in the Echo world. It utilizes cinematic visual storytelling and introspective light novel-style narration.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-9">
+                    <summary>What is the significance of the entity 'Nay Chi'? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            She functions as the primary emotional anchor within the Echo dimension. Her presence is critical for stabilizing the dual-world architecture. Without her guidance, the probability of Tayza making irreversible systemic mistakes increases exponentially.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-10">
+                    <summary>Is the architecture optimized for cinematic extraction? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            <strong>Yes.</strong> The narrative framework is engineered for high-fidelity visual adaptation. It incorporates parameters for deep vocal sequences, dual-language (Myanmar/English) integration, epic acoustic scores, and a precise sequence built for cinematic visual storytelling.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-11">
+                    <summary>What core thematic algorithms drive the narrative? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">The engine calculates variables based on:</p>
+                        <div class="faq-list-items">
+                            <div class="faq-list-item">Internal conviction versus systemic fear</div>
+                            <div class="faq-list-item">The resilience of familial bonds</div>
+                            <div class="faq-list-item">Emotional maturation and systemic responsibility</div>
+                            <div class="faq-list-item">The heavy burden of absolute consequence</div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="faq-details" id="faq-12">
+                    <summary>Is there a textual archive of the narrative? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        <p class="faq-text">
+                            <strong>Affirmative.</strong> The overarching sequence is documented utilizing a light novel format. This archive focuses on deep introspective logs, detailed topographical descriptions, and fantasy event records, perfectly structured for adaptation into a digital or cinematic medium.
+                        </p>
+                    </div>
+                </details>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>The Betweens</h3>
+                <p>A narrative-driven parallel universe experience. Your choices dictate the reality.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Index</h4>
+                <ul>
+                    <li><a href="index.html#hero">Overview</a></li>
+                    <li><a href="index.html#carousel">Environments</a></li>
+                    <li><a href="index.html#mechanics">Systems</a></li>
+                    <li><a href="index.html#entities">Entities</a></li>
+                    <li><a href="index.html#lore">Archive</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Operations</h4>
+                <ul>
+                    <li><a href="index.html#roadmap">Roadmap</a></li>
+                    <li><a href="faqs.html">Knowledge Base</a></li>
+                    <li><a href="index.html#specs">Requirements</a></li>
+                    <li><a href="index.html#contact">Comms</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Legal & Protocol</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="cookies.html">Cookie Directive</a></li>
+                    <li><a href="http://www.htetzawpaing.site" target="_blank">Developer Portfolio</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="copyright">
+                © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH NAPIER UNIVERSITY.
+            </div>
+            <div class="social-icons">
+                <a href="#" aria-label="Discord" class="social-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+                </a>
+                <a href="#" aria-label="Telegram" class="social-icon">
+                    <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                </a>
+                <a href="http://www.htetzawpaing.site" target="_blank" aria-label="Website" class="social-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    document.body.classList.remove('loading');
+                    document.getElementById('hero').classList.add('loaded');
+                }, 800);
+            }, 500);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.getElementById('navbar');
+            const navLinksContainer = document.getElementById('navLinks');
+            const links = navLinksContainer.querySelectorAll('a.nav-link, a.mega-link');
+            const playNavBtn = document.querySelector('.navbar .btn-play-now');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                    if(playNavBtn) playNavBtn.style.display = 'block';
+                } else {
+                    navbar.classList.remove('scrolled');
+                    if (window.innerWidth > 768 && playNavBtn) {
+                        playNavBtn.style.display = 'none';
+                    }
+                }
+            });
+
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const megaItems = document.querySelectorAll('.nav-item-has-mega');
+            
+            if(mobileBtn) {
+                mobileBtn.addEventListener('click', () => {
+                    navLinksContainer.classList.toggle('mobile-active');
+                    mobileBtn.classList.toggle('active');
+                    if(!navLinksContainer.classList.contains('mobile-active')) {
+                        megaItems.forEach(item => item.classList.remove('active'));
+                    }
+                });
+            }
+
+            megaItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if(window.innerWidth <= 768) {
+                        if(e.target.closest('.overview-toggle') || e.target.closest('.origin-toggle')) {
+                            e.preventDefault();
+                            megaItems.forEach(other => { if(other !== item) other.classList.remove('active'); });
+                            item.classList.toggle('active');
+                        }
+                    }
+                });
+            });
+
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768 && (!link.classList.contains('nav-link') || link.getAttribute('href').startsWith('#'))) {
+                        navLinksContainer.classList.remove('mobile-active');
+                        megaItems.forEach(item => item.classList.remove('active'));
+                        if(mobileBtn) mobileBtn.classList.remove('active');
+                    }
+                });
+            });
+
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                });
+            }, revealOptions);
+
+            document.querySelectorAll('.reveal').forEach(reveal => {
+                revealObserver.observe(reveal);
+            });
+            
+            // Accordion Logic
+            const detailsElements = document.querySelectorAll('details.faq-details');
+            detailsElements.forEach(targetDetail => {
+                targetDetail.addEventListener('click', () => {
+                    detailsElements.forEach(detail => {
+                        if (detail !== targetDetail) {
+                            detail.removeAttribute('open');
+                        }
+                    });
+                });
+            });
+
+            // Advanced Robust Search Logic
+            const searchInput = document.getElementById('faqSearch');
+            const searchDropdown = document.getElementById('searchDropdown');
+            
+            // Extract FAQ Data
+            const faqData = Array.from(detailsElements).map(detail => {
+                return {
+                    id: detail.getAttribute('id'),
+                    element: detail,
+                    question: detail.querySelector('summary').innerText.replace('+', '').trim(), // clean text
+                    content: detail.querySelector('.faq-content').innerText.trim()
+                };
+            });
+
+            // Fuzzy string similarity function (Sørensen–Dice coefficient logic)
+            function getBigrams(str) {
+                str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+                let bigrams = [];
+                for(let i = 0; i < str.length - 1; i++) {
+                    bigrams.push(str.slice(i, i+2));
+                }
+                return bigrams;
+            }
+
+            function stringSimilarity(str1, str2) {
+                if(str1.length < 2 || str2.length < 2) return str1.toLowerCase() === str2.toLowerCase() ? 1 : 0;
+                let pairs1 = getBigrams(str1);
+                let pairs2 = getBigrams(str2);
+                let intersection = 0;
+                let union = pairs1.length + pairs2.length;
+                for(let i = 0; i < pairs1.length; i++) {
+                    for(let j = 0; j < pairs2.length; j++) {
+                        if(pairs1[i] === pairs2[j]) {
+                            intersection++;
+                            pairs2[j] = null;
+                            break;
+                        }
+                    }
+                }
+                return (2.0 * intersection) / union;
+            }
+
+            function wordFuzzyMatch(query, target) {
+                const qWords = query.toLowerCase().trim().split(/\s+/);
+                const tWords = target.toLowerCase().trim().split(/\s+/);
+                
+                let totalScore = 0;
+                for (let qw of qWords) {
+                    if (qw.length < 2) continue;
+                    let bestMatch = 0;
+                    for (let tw of tWords) {
+                        if (tw.includes(qw) || qw.includes(tw)) {
+                            bestMatch = 1;
+                            break;
+                        }
+                        let sim = stringSimilarity(qw, tw);
+                        if (sim > bestMatch) bestMatch = sim;
+                    }
+                    totalScore += bestMatch;
+                }
+                return totalScore / Math.max(qWords.length, 1);
+            }
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                
+                if (query.length < 2) {
+                    searchDropdown.classList.remove('active');
+                    searchDropdown.innerHTML = '';
+                    return;
+                }
+
+                let results = faqData.map(faq => {
+                    const exactMatchQ = faq.question.toLowerCase().includes(query.toLowerCase()) ? 1.5 : 0;
+                    const exactMatchC = faq.content.toLowerCase().includes(query.toLowerCase()) ? 1.0 : 0;
+                    const fuzzyScoreQ = wordFuzzyMatch(query, faq.question);
+                    const fuzzyScoreC = wordFuzzyMatch(query, faq.content) * 0.8; 
+                    
+                    const finalScore = Math.max(exactMatchQ, exactMatchC, fuzzyScoreQ, fuzzyScoreC);
+                    return { ...faq, score: finalScore };
+                });
+
+                results = results.filter(r => r.score > 0.4).sort((a, b) => b.score - a.score);
+
+                renderDropdown(results, query);
+            });
+
+            // Close dropdown on outside click
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-container')) {
+                    searchDropdown.classList.remove('active');
+                }
+            });
+
+            // Show dropdown again if focused and has value
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.length >= 2 && searchDropdown.innerHTML !== '') {
+                    searchDropdown.classList.add('active');
+                }
+            });
+
+            function renderDropdown(results, query) {
+                searchDropdown.innerHTML = '';
+                
+                if (results.length === 0) {
+                    const noRes = document.createElement('div');
+                    noRes.className = 'search-no-results';
+                    noRes.innerText = 'No corresponding records found.';
+                    searchDropdown.appendChild(noRes);
+                } else {
+                    results.slice(0, 5).forEach(res => {
+                        const item = document.createElement('div');
+                        item.className = 'search-result-item';
+                        
+                        // Extract a snippet from content
+                        const words = res.content.split(' ');
+                        const snippet = words.slice(0, 12).join(' ') + '...';
+
+                        item.innerHTML = `
+                            <span class="search-result-title">${res.question}</span>
+                            <span class="search-result-snippet">${snippet}</span>
+                        `;
+
+                        item.addEventListener('click', () => {
+                            searchDropdown.classList.remove('active');
+                            searchInput.value = ''; // clear
+                            
+                            // Scroll to FAQ
+                            const targetEl = document.getElementById(res.id);
+                            
+                            // Close others, open target
+                            detailsElements.forEach(d => d.removeAttribute('open'));
+                            targetEl.setAttribute('open', '');
+                            
+                            // Scroll calculation
+                            const yOffset = -100; 
+                            const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                            window.scrollTo({top: y, behavior: 'smooth'});
+
+                            // Highlight effect
+                            targetEl.classList.remove('highlighted');
+                            void targetEl.offsetWidth; // trigger reflow
+                            targetEl.classList.add('highlighted');
+                        });
+
+                        searchDropdown.appendChild(item);
+                    });
+                }
+                searchDropdown.classList.add('active');
+            }
+
+        });
+    </script>
+</body>
+</html>
