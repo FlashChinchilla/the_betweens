@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Betweens | Official Database</title>
+    <link rel="icon" href="./images/items/favicon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -389,7 +390,7 @@
             opacity: 0.3;
             transform: scale(1.05); 
             transition: transform 10s var(--ease-out-expo);
-            filter: brightness(125%) saturate(180%) contrast(120%);
+            filter: brightness(110%) saturate(130%) contrast(110%);
         }
         
         .hero.loaded .hero-video { transform: scale(1); }
@@ -1463,7 +1464,7 @@
 
             <div class="nav-links" id="navLinks">
                 <div class="nav-item-has-mega">
-                    <a href="https://htet-zaw-paing.github.io/the_betweens/" class="nav-link overview-toggle">
+                    <a href="https://htet-zaw-paing.github.io/the_betweens/" class="nav-link active">
                         Overview
                         <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
                     </a>
@@ -1480,7 +1481,7 @@
                     </div>
                 </div>
                 <div class="nav-item-has-mega">
-                    <a href="./origin/" class="nav-link active origin-toggle">
+                    <a href="./origin/" class="nav-link">
                         Origin
                         <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
                     </a>
@@ -1493,12 +1494,12 @@
                         </div>
                     </div>
                 </div>
-                <a href="../knowledge-base" class="nav-link">Knowledge Base</a>
-                <a href="../privacy-policy" class="nav-link">Directives</a>
+                <a href="./knowledge-base" class="nav-link">Knowledge Base</a>
+                <a href="./privacy-policy" class="nav-link">Directives</a>
             </div>
 
             <div class="nav-actions" style="display: flex; gap: 24px; align-items: center;">
-                <a href="../game" class="btn-play-now" style="display: none;">Play Now</a>
+                <a href="./game" class="btn-play-now" style="display: none;">Play Now</a>
                 <div class="mobile-menu-btn" id="mobileMenuBtn">
                     <span></span><span></span>
                 </div>
@@ -1509,7 +1510,7 @@
     <header class="hero" id="hero">
         <div class="hero-video-container">
             <video class="hero-video" id="heroVideo" autoplay loop muted playsinline>
-                <source src="./videos/hero-video3.mp4" type="video/mp4">
+                <source src="./videos/hero-video4.mp4" type="video/mp4">
             </video>
         </div>
         <div class="hero-overlay"></div>
@@ -1519,7 +1520,7 @@
             
             <div class="hero-cta-group">
                 <a href="./game" class="hero-cta">Play Now</a>
-                <a href="#trailer" class="hero-cta-secondary">
+                <a href="./trailer" class="hero-cta-secondary">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     Watch Trailer
                 </a>
@@ -2061,22 +2062,6 @@
                         playNavBtn.style.display = 'none';
                     }
                 }
-
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
-                    if (scrollY >= (sectionTop - sectionHeight / 3)) {
-                        current = section.getAttribute('id');
-                    }
-                });
-
-                links.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${current}`) {
-                        link.classList.add('active');
-                    }
-                });
             });
 
             if (window.innerWidth <= 768) {
