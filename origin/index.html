@@ -390,7 +390,7 @@
             opacity: 0.3;
             transform: scale(1.05); 
             transition: transform 10s var(--ease-out-expo);
-            filter: brightness(210%) saturate(210%);
+            filter: brightness(150%) saturate(150%);
         }
         
         .hero.loaded .hero-video { transform: scale(1); }
@@ -399,7 +399,7 @@
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, var(--bg-base) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.20) 50%, var(--bg-base) 100%);
             z-index: 2; 
             backdrop-filter: blur(8px);
         }
@@ -758,7 +758,6 @@
         .dev-image-container img {
             width: 100%; height: 100%;
             object-fit: cover;
-            filter: grayscale(100%) contrast(1.1);
         }
 
         .dev-content {
@@ -989,46 +988,46 @@
 
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">The Betweens</a>
+            <a href="/the_betweens/" class="nav-logo">The Betweens</a>
 
             <div class="nav-links" id="navLinks">
                 <div class="nav-item-has-mega">
-                    <a href="index.html" class="nav-link overview-toggle">
+                    <a href="/the_betweens/" class="nav-link overview-toggle">
                         Overview
                         <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
                     </a>
                     <div class="mega-menu">
                         <div class="mega-menu-inner">
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#carousel" class="mega-link">Environments</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#mechanics" class="mega-link">Systems</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#entities" class="mega-link">Entities</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#gallery" class="mega-link">Visual Archives</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#lore" class="mega-link">Archive</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#resonance" class="mega-link">Resonance</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#contact" class="mega-link">Comms</a>
+                            <a href="/the_betweens/#carousel" class="mega-link">Environments</a>
+                            <a href="/the_betweens/#mechanics" class="mega-link">Systems</a>
+                            <a href="/the_betweens/#entities" class="mega-link">Entities</a>
+                            <a href="/the_betweens/#gallery" class="mega-link">Visual Archives</a>
+                            <a href="/the_betweens/#lore" class="mega-link">Archive</a>
+                            <a href="/the_betweens/#resonance" class="mega-link">Resonance</a>
+                            <a href="/the_betweens/#contact" class="mega-link">Comms</a>
                         </div>
                     </div>
                 </div>
                 <div class="nav-item-has-mega">
-                    <a href="../origin" class="nav-link active origin-toggle">
+                    <a href="/the_betweens/origin" class="nav-link active origin-toggle">
                         Origin
                         <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
                     </a>
                     <div class="mega-menu">
                         <div class="mega-menu-inner">
-                            <a href="../origin/#game" class="mega-link">The Game</a>
-                            <a href="../origin/#characters" class="mega-link">Characters</a>
-                            <a href="../origin/#chapters" class="mega-link">Chapters</a>
-                            <a href="../origin/#developer" class="mega-link">Developer</a>
+                            <a href="/the_betweens/origin/#game" class="mega-link">The Game</a>
+                            <a href="/the_betweens/origin/#characters" class="mega-link">Characters</a>
+                            <a href="/the_betweens/origin/#chapters" class="mega-link">Chapters</a>
+                            <a href="/the_betweens/origin/#developer" class="mega-link">Developer</a>
                         </div>
                     </div>
                 </div>
-                <a href="../knowledge-base" class="nav-link">Knowledge Base</a>
-                <a href="../directives" class="nav-link">Directives</a>
+                <a href="/the_betweens/knowledge-base" class="nav-link">Knowledge Base</a>
+                <a href="/the_betweens/directives" class="nav-link">Directives</a>
             </div>
 
             <div class="nav-actions" style="display: flex; gap: 24px; align-items: center;">
-                <a href="../game" class="btn-play-now" style="display: none;">Play Now</a>
+                <a href="/the_betweens/game" class="btn-play-now" style="display: none;">Play Now</a>
                 <div class="mobile-menu-btn" id="mobileMenuBtn">
                     <span></span><span></span>
                 </div>
@@ -1039,7 +1038,7 @@
     <header class="hero" id="hero">
         <div class="hero-video-container">
             <video class="hero-video" id="heroVideo" autoplay loop muted playsinline>
-                <source src="../videos/hero-video10.mp4" type="video/mp4">
+                <source src="../videos/hero-video3.mp4" type="video/mp4">
             </video>
         </div>
         <div class="hero-overlay"></div>
@@ -1183,7 +1182,7 @@
 
             <div class="chapters-grid reveal delay-1">
                 <div class="chapter-card">
-                    <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1000&auto=format&fit=crop" alt="Chapter 1" class="chapter-img">
+                    <img src="../images/places/chp1.png" alt="Chapter 1" class="chapter-img">
                     <div class="chapter-overlay">
                         <span class="chapter-number">Chapter 01</span>
                         <h3 class="chapter-title">The Familiar Streets</h3>
@@ -1191,7 +1190,7 @@
                     </div>
                 </div>
                 <div class="chapter-card">
-                    <img src="https://images.unsplash.com/photo-1519999482648-25049ddd37b1?q=80&w=1000&auto=format&fit=crop" alt="Chapter 2" class="chapter-img">
+                    <img src="../images/places/chp2.png" alt="Chapter 2" class="chapter-img">
                     <div class="chapter-overlay">
                         <span class="chapter-number">Chapter 02</span>
                         <h3 class="chapter-title">The First Echo</h3>
@@ -1199,7 +1198,7 @@
                     </div>
                 </div>
                 <div class="chapter-card">
-                    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" alt="Chapter 3" class="chapter-img">
+                    <img src="../images/places/chp3.png" alt="Chapter 3" class="chapter-img">
                     <div class="chapter-overlay">
                         <span class="chapter-number">Chapter 03</span>
                         <h3 class="chapter-title">Consequence</h3>
@@ -1207,7 +1206,7 @@
                     </div>
                 </div>
                 <div class="chapter-card">
-                    <img src="https://images.unsplash.com/photo-1505506874110-6a7a4c9891fb?q=80&w=1000&auto=format&fit=crop" alt="Chapter 4" class="chapter-img">
+                    <img src="../images/places/chp4.png" alt="Chapter 4" class="chapter-img">
                     <div class="chapter-overlay">
                         <span class="chapter-number">Chapter 04</span>
                         <h3 class="chapter-title">Shattered Glass</h3>
@@ -1215,7 +1214,7 @@
                     </div>
                 </div>
                 <div class="chapter-card">
-                    <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2000&auto=format&fit=crop" alt="Final Chapter" class="chapter-img">
+                    <img src="../images/places/chp2.png" alt="Final Chapter" class="chapter-img">
                     <div class="chapter-overlay">
                         <span class="chapter-number">Final Chapter</span>
                         <h3 class="chapter-title">Singularity</h3>
@@ -1235,7 +1234,7 @@
             
             <div class="developer-wrapper reveal delay-1">
                 <div class="dev-image-container">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" alt="Htet Zaw Paing">
+                    <img src="../images/person/developer.png" alt="Htet Zaw Paing">
                 </div>
                 <div class="dev-content">
                     <div class="dev-header">
@@ -1282,54 +1281,102 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <h3>The Betweens</h3>
-                    <p>A narrative-driven parallel universe experience. Your choices dictate the reality.</p>
+                    <p>A narrative-driven parallel universe experience. Your
+                        choices dictate the reality.</p>
+                        <a href="mailto:contact@htetzawpaing.site">
+                            contact@htetzawpaing.site
+                        </a>
+                        <a href="tel:+959456751882">
+                            +95 9 4567 51 882
+                        </a>
+                        <a href="http://www.htetzawpaing.site" target="_blank">
+                            www.htetzawpaing.site
+                        </a>
                 </div>
 
                 <div class="footer-links">
                     <h4>Index</h4>
                     <ul>
-                        <li><a href="index.html#hero">Overview</a></li>
-                        <li><a href="index.html#carousel">Environments</a></li>
-                        <li><a href="index.html#mechanics">Systems</a></li>
-                        <li><a href="index.html#entities">Entities</a></li>
-                        <li><a href="index.html#lore">Archive</a></li>
+                        <li><a href="/the-betweens/"
+                                title="The Betweens Overview">Overview</a></li>
+                        <li><a href="/the-betweens/#carousel"
+                                title="The Betweens Environments">Environments</a></li>
+                        <li><a href="/the-betweens/#mechanics"
+                                title="The Betweens Systems">Systems</a></li>
+                        <li><a href="/the-betweens/#entities"
+                                title="The Betweens Entities">Entities</a></li>
+                        <li><a href="/the-betweens/#lore"
+                                title="The Betweens Game Lore">Archive</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-links">
                     <h4>Operations</h4>
                     <ul>
-                        <li><a href="index.html#roadmap">Roadmap</a></li>
-                        <li><a href="faqs.html">Knowledge Base</a></li>
-                        <li><a href="index.html#specs">Requirements</a></li>
-                        <li><a href="index.html#contact">Comms</a></li>
+                        <li><a href="/the-betweens/#roadmap"
+                                title="The Betweens Development Roadmap">Roadmap</a></li>
+                        <li><a href="/the-betweens/knowledge-base/"
+                                title="The Betweens Game FAQs">Knowledge
+                                Base</a></li>
+                        <li><a href="/the-betweens/#specs"
+                                title="The Betweens System Requirements">Requirements</a></li>
+                        <li><a href="/the-betweens/#contact"
+                                title="Contact The Betweens Support">Comms</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-links">
                     <h4>Legal & Protocol</h4>
                     <ul>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Service</a></li>
-                        <li><a href="cookies.html">Cookie Directive</a></li>
-                        <li><a href="http://www.htetzawpaing.site" target="_blank">Developer Portfolio</a></li>
+                        <li><a href="/the-betweens/directives/"
+                                title="The Betweens Privacy Policy">Privacy
+                                Policy</a></li>
+                        <li><a href="/the-betweens/directives/"
+                                title="The Betweens Terms of Service">Terms
+                                of Service</a></li>
+                        <li><a href="/the-betweens/directives/"
+                                title="The Betweens Cookie Directive">Cookie
+                                Directive</a></li>
+                        <li><a href="http://www.htetzawpaing.site"
+                                target="_blank"
+                                title="Developer Portfolio Htet Zaw Paing">Developer
+                                Portfolio</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
                 <div class="copyright">
-                    © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH NAPIER UNIVERSITY.
+                    © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH
+                    NAPIER UNIVERSITY.
                 </div>
                 <div class="social-icons">
-                    <a href="#" aria-label="Discord" class="social-icon">
-                        <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+                    <a href="https://discord.com/users/1110430133707341894" aria-label="Discord for The Betweens"
+                        class="social-icon">
+                        <svg viewBox="0 0 24 24"><path
+                                d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z" /></svg>
                     </a>
-                    <a href="#" aria-label="Telegram" class="social-icon">
-                        <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    <a href="commingsoon" aria-label="Telegram for The Betweens"
+                        class="social-icon">
+                        <svg viewBox="0 0 24 24"><path
+                                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
                     </a>
-                    <a href="http://www.htetzawpaing.site" target="_blank" aria-label="Website" class="social-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <a href="http://www.htetzawpaing.site" target="_blank"
+                        aria-label="Developer Website Htet Zaw Paing"
+                        class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#000000"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <ellipse cx="12" cy="12" rx="6" ry="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                        </svg>
                     </a>
                 </div>
             </div>

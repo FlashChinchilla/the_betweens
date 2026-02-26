@@ -1,11 +1,98 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Betweens | Official Database</title>
-    <link rel="icon" href="./images/items/favicon.png">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>The Betweens - Explore The Betweens</title>
+        <link rel="icon" href="./images/items/favicon.png">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://images.unsplash.com">
+
+        <!-- Organization Meta Tags & Keyword Focus -->
+        <meta name="description"
+            content="Explore The Betweens, an immersive narrative-driven parallel universe game. Navigate shattered dimensions, make timeline-altering choices, and access the game.">
+        <meta name="keywords"
+            content="the betweens, parallel universe game, narrative-driven game, echo dimension, quantum state AI, htetzawpaing">
+        <meta name="author" content="Htet Zaw Paing">
+        <meta name="robots"
+            content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="theme-color" content="#000000">
+
+        <!-- Canonical Strategy -->
+        <link rel="canonical"
+            href="https://htet-zaw-paing.github.io/the_betweens/">
+
+        <!-- Open Graph / Social Meta Tags -->
+        <meta property="og:locale" content="en_US">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="The Betweens - Explore The Betweens">
+        <meta property="og:description"
+            content="Explore The Betweens, an immersive narrative-driven parallel universe game. Navigate shattered dimensions and make timeline-altering choices.">
+        <meta property="og:url"
+            content="https://htet-zaw-paing.github.io/the_betweens/">
+        <meta property="og:site_name" content="The Betweens">
+        <meta property="og:image" content="./images/items/favicon.png">
+        <meta property="og:image:width" content="2000">
+        <meta property="og:image:height" content="1333">
+
+        <!-- Twitter Card Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title"
+            content="The Betweens - Explore The Betweens">
+        <meta name="twitter:description"
+            content="Explore The Betweens, an immersive narrative-driven parallel universe game. Navigate shattered dimensions and make timeline-altering choices.">
+        <meta name="twitter:image" content="./images/items/favicon.png">
+
+        <!-- Structured Data / JSON-LD -->
+        <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://htet-zaw-paing.github.io/the_betweens/",
+          "url": "https://htet-zaw-paing.github.io/the_betweens/",
+          "name": "The Betweens",
+          "description": "Explore The Betweens, an immersive narrative-driven parallel universe game. Navigate shattered dimensions, make timeline-altering choices, and access the game.",
+          "publisher": {
+            "@id": "https://www.htetzawpaing.site/#organization"
+          }
+        },
+        {
+          "@type": "VideoGame",
+          "@id": "https://htet-zaw-paing.github.io/the_betweens/",
+          "name": "The Betweens",
+          "description": "Every choice reshapes reality. Navigate the shattered dimensions of a parallel universe in The Betweens.",
+          "genre": ["Narrative", "Adventure", "Sci-Fi", "Puzzle"],
+          "gamePlatform": ["PC", "Mobile", "Tablet"],
+          "applicationCategory": "Game",
+          "operatingSystem": "Windows, macOS, iOS, Android",
+          "author": {
+            "@type": "Person",
+            "name": "Htet Zaw Paing",
+            "url": "http://www.htetzawpaing.site"
+          },
+          "publisher": {
+            "@id": "https://www.htetzawpaing.site"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://www.htetzawpaing.site/",
+          "name": "Htet Zaw Paing",
+          "url": "http://www.htetzawpaing.site",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.htetzawpaing.site/favicon.png"
+          }
+        }
+      ]
+    }
+    </script>
+
+        <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
         :root {
@@ -216,7 +303,8 @@
             align-items: center;
             width: 100%;
             padding: 0 4vw;
-            position: relative;
+            max-width: 1440px;
+            margin: 0 auto;
         }
 
         .nav-logo { 
@@ -270,7 +358,7 @@
         .mega-menu {
             position: absolute;
             top: 100%; left: 0;
-            width: 100vw;
+            width: 100%;
             background: rgba(3, 3, 3, 0.95);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
@@ -293,8 +381,8 @@
         .mega-menu-inner {
             display: flex;
             gap: 48px;
-            padding: 24px 4vw;
-            max-width: var(--container-width);
+            padding: 32px 4vw;
+            max-width: 1440px;
             margin: 0 auto;
             width: 100%;
             flex-wrap: wrap;
@@ -333,7 +421,6 @@
             color: var(--text-primary);
         }
 
-        /* Perfectly Crossed Hamburger Menu */
         .mobile-menu-btn { 
             display: none; 
             width: 24px; 
@@ -399,7 +486,7 @@
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, var(--bg-base) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.01) 50%, var(--bg-base) 100%);
             z-index: 2; 
         }
         
@@ -743,11 +830,10 @@
 
         .entity-avatar img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: grayscale(100%) contrast(1.2);
             transition: all var(--transition-fast);
         }
 
-        .entity-card:hover .entity-avatar img { filter: grayscale(0%) contrast(1); transform: scale(1.05); }
+        .entity-card:hover .entity-avatar img { filter: saturate(1.05); transform: scale(1.05); }
 
         .entity-name {
             font-size: 1.05rem;
@@ -1450,589 +1536,839 @@
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
     </style>
-</head>
-<body class="loading">
+    </head>
+    <body class="loading">
 
-    <div id="preloader">
-        <div class="preloader-line"></div>
-        <div class="preloader-text">Initializing Database...</div>
-    </div>
+        <div id="preloader">
+            <div class="preloader-line"></div>
+            <div class="preloader-text">Initializing Database...</div>
+        </div>
 
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="https://htet-zaw-paing.github.io/the_betweens/" class="nav-logo">The Betweens</a>
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <a href="/the_betweens/" class="nav-logo"
+                    title="The Betweens Official Database Home">The Betweens</a>
 
-            <div class="nav-links" id="navLinks">
-                <div class="nav-item-has-mega">
-                    <a href="https://htet-zaw-paing.github.io/the_betweens/" class="nav-link active">
-                        Overview
-                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                <div class="nav-links" id="navLinks">
+                    <div class="nav-item-has-mega">
+                        <a href="/the_betweens/" class="nav-link active"
+                            title="The Betweens Overview">
+                            Overview
+                            <svg class="dropdown-icon" viewBox="0 0 24 24"><path
+                                    d="M6 9l6 6 6-6" stroke="currentColor"
+                                    stroke-width="2" fill="none" /></svg>
+                        </a>
+                        <div class="mega-menu">
+                            <div class="mega-menu-inner">
+                                <a href="/the_betweens/#carousel"
+                                    class="mega-link"
+                                    title="The Betweens Game Environments">Environments</a>
+
+                                <a href="/the_betweens/#mechanics"
+                                    class="mega-link"
+                                    title="The Betweens Core Systems">Systems</a>
+
+                                <a href="/the_betweens/#entities"
+                                    class="mega-link"
+                                    title="The Betweens Entities">Entities</a>
+
+                                <a href="/the_betweens/#gallery"
+                                    class="mega-link"
+                                    title="The Betweens Visual Archives">Visual
+                                    Archives</a>
+
+                                <a href="/the_betweens/#lore" class="mega-link"
+                                    title="The Betweens Archive and Lore">Archive</a>
+
+                                <a href="/the_betweens/#resonance"
+                                    class="mega-link"
+                                    title="The Betweens Audio Diagnostics">Resonance</a>
+
+                                <a href="/the_betweens/#specs"
+                                    class="mega-link"
+                                    title="Contact The Betweens Developer">Requirements</a>
+
+                                <a href="/the_betweens/#roadmap"
+                                    class="mega-link"
+                                    title="Contact The Betweens Developer">Roadmap</a>
+
+                                <a href="/the_betweens/#faq"
+                                    class="mega-link"
+                                    title="Contact The Betweens Developer">FAQs</a>
+
+                                <a href="/the_betweens/#waitist"
+                                    class="mega-link"
+                                    title="Contact The Betweens Developer">Access</a>
+
+                                <a href="/the_betweens/#contact"
+                                    class="mega-link"
+                                    title="Contact The Betweens Developer">Link</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-item-has-mega">
+                        <a href="/the_betweens/origin/" class="nav-link"
+                            title="The Betweens Origin Story">
+                            Origin
+                            <svg class="dropdown-icon" viewBox="0 0 24 24"><path
+                                    d="M6 9l6 6 6-6" stroke="currentColor"
+                                    stroke-width="2" fill="none" /></svg>
+                        </a>
+                        <div class="mega-menu">
+                            <div class="mega-menu-inner">
+                                <a href="/the_betweens/origin/#game"
+                                    class="mega-link"
+                                    title="About The Betweens Game">The Game</a>
+                                <a href="/the_betweens/origin/#characters"
+                                    class="mega-link"
+                                    title="The Betweens Characters">Characters</a>
+                                <a href="/the_betweens/origin/#chapters"
+                                    class="mega-link"
+                                    title="The Betweens Chapters">Chapters</a>
+                                <a href="/the_betweens/origin/#developer"
+                                    class="mega-link"
+                                    title="The Betweens Developer Info">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/the_betweens/knowledge-base/" class="nav-link"
+                        title="The Betweens Knowledge Base FAQ">Knowledge
+                        Base</a>
+                    <a href="/the_betweens/directives/" class="nav-link"
+                        title="The Betweens Official Directives">Directives</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; gap: 24px; align-items: center;">
+                    <a href="/the_betweens/game" class="btn-play-now"
+                        style="display: none;"
+                        title="Play The Betweens Now">Play Now</a>
+                    <div class="mobile-menu-btn" id="mobileMenuBtn">
+                        <span></span><span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <header class="hero" id="hero">
+            <div class="hero-video-container">
+                <video class="hero-video" id="heroVideo" autoplay loop muted
+                    playsinline>
+                    <source src="./videos/hero-video4.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">The Betweens</h1>
+                <p class="hero-desc">Every choice reshapes reality. Navigate the
+                    shattered dimensions of a parallel universe.</p>
+
+                <div class="hero-cta-group">
+                    <a href="/the_betweens/game" class="hero-cta"
+                        title="Play The Betweens Game">Play Now</a>
+                    <a href="/the_betweens/trailer/" class="hero-cta-secondary"
+                        title="Watch The Betweens Trailer">
+                        <svg width="16" height="16" viewBox="0 0 24 24"
+                            fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                        Watch Trailer
                     </a>
-                    <div class="mega-menu">
-                        <div class="mega-menu-inner">
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#carousel" class="mega-link">Environments</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#mechanics" class="mega-link">Systems</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#entities" class="mega-link">Entities</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#gallery" class="mega-link">Visual Archives</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#lore" class="mega-link">Archive</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#resonance" class="mega-link">Resonance</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#contact" class="mega-link">Comms</a>
+                </div>
+            </div>
+            <div class="hero-scroll-indicator">
+                <div class="scroll-line"></div>
+            </div>
+        </header>
+
+        <section id="carousel" class="carousel-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">01 // Environments</span>
+                    <h2 class="section-title">Glimpse the Reality.</h2>
+                    <p class="section-subtitle">Navigate through the shattered
+                        dimensions of a city you thought you knew. Observe the
+                        anomalies.</p>
+                </div>
+            </div>
+
+            <div class="carousel-wrapper reveal delay-1">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide active" data-index="0">
+                        <img src="./images/places/sule.png"
+                            alt="Yangon City in The Betweens Prime Dimension"
+                            class="carousel-image">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-content">
+                            <h3>The Familiar Streets</h3>
+                            <p>Yangon as you know it. Bustling, vibrant, and
+                                deceptively safe. But shadows linger where the
+                                light falls short.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide" data-index="1">
+                        <img src="./images/places/echo-city.png"
+                            alt="Parallel City in The Betweens Echo Dimension"
+                            class="carousel-image">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-content">
+                            <h3>The Echo City</h3>
+                            <p>A distorted reflection. Here, the skies bleed red
+                                and silence is heavier than the loudest
+                                noise.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide" data-index="2">
+                        <img src="./images/items/the-ring.png"
+                            alt="The Ring Catalyst in The Betweens Lore"
+                            class="carousel-image">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-content">
+                            <h3>The Ring</h3>
+                            <p>An ancient relic tied to a hidden legacy. It does
+                                not simply reveal another world — it compels you
+                                to choose between them.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide" data-index="3">
+                        <img src="./images/items/touch.png"
+                            alt="Choices and Paths in The Betweens Narrative Game"
+                            class="carousel-image">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-content">
+                            <h3>Fractured Paths</h3>
+                            <p>Every decision is a weight on the scale. Save a
+                                friend here, lose a loved one there. Choose
+                                carefully.</p>
                         </div>
                     </div>
                 </div>
-                <div class="nav-item-has-mega">
-                    <a href="./origin/" class="nav-link">
-                        Origin
-                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-                    </a>
-                    <div class="mega-menu">
-                        <div class="mega-menu-inner">
-                            <a href="/the_betweens/about/#game" class="mega-link">The Game</a>
-                            <a href="/the_betweens/about/#characters" class="mega-link">Characters</a>
-                            <a href="/the_betweens/about/#chapters" class="mega-link">Chapters</a>
-                            <a href="/the_betweens/about/#developer" class="mega-link">Developer</a>
+            </div>
+
+            <div class="carousel-controls reveal delay-2">
+                <button class="carousel-btn prev" id="btnPrev"
+                    aria-label="Previous Slide">
+                    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+                </button>
+                <div class="carousel-pagination" id="carouselPagination"></div>
+                <button class="carousel-btn next" id="btnNext"
+                    aria-label="Next Slide">
+                    <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg>
+                </button>
+            </div>
+        </section>
+
+        <section id="mechanics" class="features-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">02 // Core Systems</span>
+                    <h2 class="section-title">Mechanics.</h2>
+                </div>
+
+                <div class="features-grid reveal delay-1">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24"><path
+                                    d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                        </div>
+                        <h3 class="feature-title">Absolute Consequence</h3>
+                        <p class="feature-desc">There are no save states for
+                            morality. Every action permanently alters the fabric
+                            of both dimensions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12"
+                                    r="10" /><path
+                                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /><path
+                                    d="M2 12h20" /></svg>
+                        </div>
+                        <h3 class="feature-title">Dual Exploration</h3>
+                        <p class="feature-desc">Seamlessly phase between the
+                            Prime and Echo versions of the city to solve puzzles
+                            and bypass obstacles.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24"><path
+                                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline
+                                    points="3.27 6.96 12 12.01 20.73 6.96" /><line
+                                    x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                        </div>
+                        <h3 class="feature-title">Adaptive Relationship
+                            Architecture</h3>
+                        <p class="feature-desc">In both worlds, every choice you
+                            make leaves a mark. Friends may drift, allies may
+                            rise, and enemies</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="entities" class="entities-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">03 // Profiles</span>
+                    <h2 class="section-title">Entities.</h2>
+                    <p class="section-subtitle">Observe the subjects trapped
+                        within the fracture. Hover to view their Echo state
+                        anomalies.</p>
+                </div>
+
+                <div class="entities-grid reveal delay-1">
+                    <div class="entity-card">
+                        <div class="entity-avatar">
+                            <img src="./images/person/tayza.png"
+                                alt="The Betweens Entity - Subject 01 Kaelen">
+                        </div>
+                        <h3 class="entity-name">Tayza</h3>
+                        <span class="entity-role">Ordinary Student</span>
+                    </div>
+                    <div class="entity-card">
+                        <div class="entity-avatar">
+                            <img src="./images/person/naychi.png"
+                                alt="The Betweens Entity - Subject 02 Elara">
+                        </div>
+                        <h3 class="entity-name">Naychi</h3>
+                        <span class="entity-role">Ordinary Student</span>
+                    </div>
+                    <div class="entity-card">
+                        <div class="entity-avatar">
+                            <img src="./images/person/icon-lock.png"
+                                alt="The Betweens Entity - Subject 02 Elara">
+                        </div>
+                        <h3 class="entity-name">Comming Soon</h3>
+                        <span class="entity-role"></span>
+                    </div>
+                    <div class="entity-card">
+                        <div class="entity-avatar">
+                            <img src="./images/person/icon-lock.png"
+                                alt="The Betweens Entity - Subject 02 Elara">
+                        </div>
+                        <h3 class="entity-name">Comming Soon</h3>
+                        <span class="entity-role"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="gallery-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">04 // Visual Archives</span>
+                    <h2 class="section-title">Chronicles.</h2>
+                    <p class="section-subtitle">Captured structural deviations
+                        within the Echo dimension map geometry.</p>
+                </div>
+
+                <div class="gallery-grid reveal delay-1">
+                    <div class="gallery-item">
+                        <img src="./images/places/chp1.png"
+                            alt="The Betweens Gameplay Capture SECTOR Alpha">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">SECTOR Alpha - Point
+                                of Divergence</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./images/places/chp2.png"
+                            alt="The Betweens Gameplay Capture SECTOR Beta">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">SECTOR Beta - Echo
+                                Residue</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./images/places/chp3.png"
+                            alt="The Betweens Gameplay Capture SECTOR Gamma">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">SECTOR Gamma -
+                                Structural Collapse</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./images/places/chp4.png"
+                            alt="The Betweens Gameplay Capture SECTOR Delta">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">SECTOR Delta -
+                                Temporal Rift</span>
                         </div>
                     </div>
                 </div>
-                <a href="./knowledge-base" class="nav-link">Knowledge Base</a>
-                <a href="./privacy-policy" class="nav-link">Directives</a>
             </div>
+        </section>
 
-            <div class="nav-actions" style="display: flex; gap: 24px; align-items: center;">
-                <a href="./game" class="btn-play-now" style="display: none;">Play Now</a>
-                <div class="mobile-menu-btn" id="mobileMenuBtn">
-                    <span></span><span></span>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <header class="hero" id="hero">
-        <div class="hero-video-container">
-            <video class="hero-video" id="heroVideo" autoplay loop muted playsinline>
-                <source src="./videos/hero-video4.mp4" type="video/mp4">
-            </video>
-        </div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">The Betweens</h1>
-            <p class="hero-desc">Every choice reshapes reality. Navigate the shattered dimensions of a parallel universe.</p>
-            
-            <div class="hero-cta-group">
-                <a href="./game" class="hero-cta">Play Now</a>
-                <a href="./trailer" class="hero-cta-secondary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                    Watch Trailer
-                </a>
-            </div>
-        </div>
-        <div class="hero-scroll-indicator">
-            <div class="scroll-line"></div>
-        </div>
-    </header>
-
-    <section id="carousel" class="carousel-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">01 // Environments</span>
-                <h2 class="section-title">Glimpse the Reality.</h2>
-                <p class="section-subtitle">Navigate through the shattered dimensions of a city you thought you knew. Observe the anomalies.</p>
-            </div>
-        </div>
-
-        <div class="carousel-wrapper reveal delay-1">
-            <div class="carousel-track" id="carouselTrack">
-                <div class="carousel-slide active" data-index="0">
-                    <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=2000&auto=format&fit=crop" alt="Yangon City" class="carousel-image">
-                    <div class="carousel-overlay"></div>
-                    <div class="carousel-content">
-                        <h3>The Familiar Streets</h3>
-                        <p>Yangon as you know it. Bustling, vibrant, and deceptively safe. But shadows linger where the light falls short.</p>
-                    </div>
-                </div>
-                <div class="carousel-slide" data-index="1">
-                    <img src="https://images.unsplash.com/photo-1519999482648-25049ddd37b1?q=80&w=2000&auto=format&fit=crop" alt="Parallel City" class="carousel-image">
-                    <div class="carousel-overlay"></div>
-                    <div class="carousel-content">
-                        <h3>The Echo City</h3>
-                        <p>A distorted reflection. Here, the skies bleed red and silence is heavier than the loudest noise.</p>
-                    </div>
-                </div>
-                <div class="carousel-slide" data-index="2">
-                    <img src="https://images.unsplash.com/photo-1505506874110-6a7a4c9891fb?q=80&w=2000&auto=format&fit=crop" alt="The Ring" class="carousel-image">
-                    <div class="carousel-overlay"></div>
-                    <div class="carousel-content">
-                        <h3>The Catalyst</h3>
-                        <p>An ancient artifact bound by forgotten bloodlines. It doesn't just open doors; it forces you to walk through them.</p>
-                    </div>
-                </div>
-                <div class="carousel-slide" data-index="3">
-                    <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2000&auto=format&fit=crop" alt="Choices" class="carousel-image">
-                    <div class="carousel-overlay"></div>
-                    <div class="carousel-content">
-                        <h3>Fractured Paths</h3>
-                        <p>Every decision is a weight on the scale. Save a friend here, lose a loved one there. Choose carefully.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="carousel-controls reveal delay-2">
-            <button class="carousel-btn prev" id="btnPrev" aria-label="Previous Slide">
-                <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
-            </button>
-            <div class="carousel-pagination" id="carouselPagination"></div>
-            <button class="carousel-btn next" id="btnNext" aria-label="Next Slide">
-                <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg>
-            </button>
-        </div>
-    </section>
-
-    <section id="mechanics" class="features-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">02 // Core Systems</span>
-                <h2 class="section-title">Mechanics.</h2>
-            </div>
-            
-            <div class="features-grid reveal delay-1">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <h3 class="feature-title">Absolute Consequence</h3>
-                    <p class="feature-desc">There are no save states for morality. Every action permanently alters the fabric of both dimensions.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
-                    </div>
-                    <h3 class="feature-title">Dual Exploration</h3>
-                    <p class="feature-desc">Seamlessly phase between the Prime and Echo versions of the city to solve puzzles and bypass obstacles.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                    </div>
-                    <h3 class="feature-title">Quantum State AI</h3>
-                    <p class="feature-desc">NPCs remember your timeline choices. Friendships degrade, alliances form, and enemies adapt dynamically.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="entities" class="entities-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">03 // Profiles</span>
-                <h2 class="section-title">Entities.</h2>
-                <p class="section-subtitle">Observe the subjects trapped within the fracture. Hover to view their Echo state anomalies.</p>
-            </div>
-            
-            <div class="entities-grid reveal delay-1">
-                <div class="entity-card">
-                    <div class="entity-avatar">
-                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=500&auto=format&fit=crop" alt="Subject 01">
-                    </div>
-                    <h3 class="entity-name">Kaelen</h3>
-                    <span class="entity-role">The Catalyst</span>
-                </div>
-                <div class="entity-card">
-                    <div class="entity-avatar">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=500&auto=format&fit=crop" alt="Subject 02">
-                    </div>
-                    <h3 class="entity-name">Elara</h3>
-                    <span class="entity-role">Prime Observer</span>
-                </div>
-                <div class="entity-card">
-                    <div class="entity-avatar">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=500&auto=format&fit=crop" alt="Subject 03">
-                    </div>
-                    <h3 class="entity-name">Vane</h3>
-                    <span class="entity-role">Echo Architect</span>
-                </div>
-                <div class="entity-card">
-                    <div class="entity-avatar">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=500&auto=format&fit=crop" alt="Subject 04">
-                    </div>
-                    <h3 class="entity-name">The Silence</h3>
-                    <span class="entity-role">Unknown Variable</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="gallery" class="gallery-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">04 // Visual Archives</span>
-                <h2 class="section-title">Chronicles.</h2>
-                <p class="section-subtitle">Captured structural deviations within the Echo dimension map geometry.</p>
-            </div>
-
-            <div class="gallery-grid reveal delay-1">
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1505506874110-6a7a4c9891fb?q=80&w=1000&auto=format&fit=crop" alt="Capture 01">
-                    <div class="gallery-overlay">
-                        <span class="gallery-caption">SECTOR Alpha - Point of Divergence</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1519999482648-25049ddd37b1?q=80&w=1000&auto=format&fit=crop" alt="Capture 02">
-                    <div class="gallery-overlay">
-                        <span class="gallery-caption">SECTOR Beta - Echo Residue</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" alt="Capture 03">
-                    <div class="gallery-overlay">
-                        <span class="gallery-caption">SECTOR Gamma - Structural Collapse</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1000&auto=format&fit=crop" alt="Capture 04">
-                    <div class="gallery-overlay">
-                        <span class="gallery-caption">SECTOR Delta - Temporal Rift</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="lore" class="lore-section">
-        <div class="container">
-            <div class="lore-wrapper">
-                <div class="lore-content reveal">
-                    <div class="section-header" style="margin-bottom: 24px;">
-                        <span class="section-label">05 // Archive</span>
-                        <h2 class="section-title">Two Worlds.</h2>
-                    </div>
-                    <p>In 2026, an unrecorded anomaly splintered Yangon into two distinct realities. The Prime dimension continued its rapid technological ascent. The Echo dimension fell into silent ruin, governed by archaic forces.</p>
-                    <p>You are the bridge. The artifact you carry binds you to both planes simultaneously. To save one is to doom the other. The calculation is yours to make.</p>
-                </div>
-                <div class="lore-visual reveal delay-1">
-                    <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop" alt="Abstract Data Anomaly">
-                    <div class="lore-data">SYS.ANOMALY.DETECTED</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="resonance" class="resonance-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">06 // Audio Diagnostics</span>
-                <h2 class="section-title">Resonance.</h2>
-                <p class="section-subtitle">Real-time acoustic analysis of the Echo dimension. Play to initialize hardware visualizer analysis.</p>
-            </div>
-
-            <div class="resonance-wrapper reveal delay-1">
-                <div class="track-list" id="trackList">
-                    <div class="track-item active" data-src="./audios/main_theme.mp3">
-                        <div class="track-info">
-                            <span class="track-title">Initiation</span>
-                            <span class="track-act">Act I Theme</span>
+        <section id="lore" class="lore-section">
+            <div class="container">
+                <div class="lore-wrapper">
+                    <div class="lore-content reveal">
+                        <div class="section-header"
+                            style="margin-bottom: 24px;">
+                            <span class="section-label">05 // Archive</span>
+                            <h2 class="section-title">Two Worlds.</h2>
                         </div>
-                        <span class="track-status">Loaded</span>
+                        <p>Beneath the golden spires of Shwedagon, a single
+                            forgotten moment fractured Yangon into two
+                            overlapping realities. In one world, life continues
+                            as it always has — exams, family dinners, and quiet
+                            hopes beneath the morning sun. In the other, the
+                            same city decays in silence, its skies cracked, its
+                            people distorted, ruled by forces that should not
+                            exist.</p>
+                        <p>Tayza stands between them, bound by the mysterious
+                            ring he carries. Every choice he makes tilts the
+                            balance of both worlds. To save one may mean losing
+                            the other. The future of Yangon is no longer written
+                            by destiny — it is decided by him.</p>
                     </div>
-                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/sci_fi_hover.ogg">
-                        <div class="track-info">
-                            <span class="track-title">Divergence</span>
-                            <span class="track-act">Act II Theme</span>
-                        </div>
-                        <span class="track-status">Standby</span>
-                    </div>
-                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/spaceshipturn1.ogg">
-                        <div class="track-info">
-                            <span class="track-title">The Crucible</span>
-                            <span class="track-act">Act III Theme</span>
-                        </div>
-                        <span class="track-status">Standby</span>
-                    </div>
-                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/spaceshipsweep3.ogg">
-                        <div class="track-info">
-                            <span class="track-title">Singularity</span>
-                            <span class="track-act">Act IV Theme</span>
-                        </div>
-                        <span class="track-status">Standby</span>
-                    </div>
-                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/alien_beam.ogg">
-                        <div class="track-info">
-                            <span class="track-title">Echoes</span>
-                            <span class="track-act">Act V Theme</span>
-                        </div>
-                        <span class="track-status">Standby</span>
-                    </div>
-                </div>
-
-                <div class="player-container">
-                    <canvas id="visualizerCanvas"></canvas>
-                    <button class="play-btn-circle" id="playToggleBtn">
-                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    </button>
-                    <audio id="resonanceAudio" crossorigin="anonymous"></audio>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="specs" class="specs-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">07 // System Config</span>
-                <h2 class="section-title">Tech Specs.</h2>
-                <p class="section-subtitle">Scalable architecture supporting mid-tier terminals up to high-end processing units, with seamless integration for mobile and tablet touch interfaces. Laptop or desktop recommended for maximum immersion.</p>
-            </div>
-            
-            <div class="specs-grid reveal delay-1">
-                <div class="spec-col">
-                    <h3>Minimum Requirements</h3>
-                    <div class="spec-item">
-                        <span class="spec-label">Platform Support</span>
-                        <span class="spec-value">Mobile (iOS/Android), Tablet, Low/Mid-tier PC</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Processor</span>
-                        <span class="spec-value">Intel Core i3 / AMD Ryzen 3 / A13 Bionic</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Memory</span>
-                        <span class="spec-value">4 GB RAM</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Graphics</span>
-                        <span class="spec-value">Integrated Graphics / GTX 1050 / RX 560</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Storage</span>
-                        <span class="spec-value">15 GB available space</span>
-                    </div>
-                </div>
-                <div class="spec-col">
-                    <h3>Recommended Configuration</h3>
-                    <div class="spec-item">
-                        <span class="spec-label">Platform Support</span>
-                        <span class="spec-value">Desktop, High-End Laptop, Premium Tablet</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Processor</span>
-                        <span class="spec-value">Intel Core i7 / AMD Ryzen 7 / M2 Chip</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Memory</span>
-                        <span class="spec-value">16 GB RAM</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Graphics</span>
-                        <span class="spec-value">NVIDIA RTX 3060 / AMD RX 6700 XT</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Storage</span>
-                        <span class="spec-value">15 GB available space (NVMe SSD)</span>
+                    <div class="lore-visual reveal delay-1">
+                        <img src="./images/places/two-world.jpg"
+                            alt="Abstract Data Anomaly in The Betweens Universe">
+                        <div class="lore-data">Faith Can Rewrite Fate</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="roadmap" class="roadmap-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">08 // Timeline</span>
-                <h2 class="section-title">Roadmap.</h2>
-            </div>
-
-            <div class="roadmap-container reveal delay-1">
-                <div class="roadmap-item active">
-                    <span class="roadmap-date">Act I - Initiation</span>
-                    <h3 class="roadmap-title">The Anomaly Protocol</h3>
-                    <p class="roadmap-desc">Core dual-reality mechanics implemented. The inciting incident is deployed to early access testers for physics and narrative tree evaluation.</p>
+        <section id="resonance" class="resonance-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">06 // Audio Diagnostics</span>
+                    <h2 class="section-title">Resonance.</h2>
+                    <p class="section-subtitle">Real-time acoustic analysis of
+                        the Echo dimension. Play to initialize hardware
+                        visualizer analysis.</p>
                 </div>
-                <div class="roadmap-item">
-                    <span class="roadmap-date">Act II - Divergence</span>
-                    <h3 class="roadmap-title">Echo Expansion</h3>
-                    <p class="roadmap-desc">Integrating advanced NPC Quantum State AI. Expansion of the Echo dimension map and full implementation of consequence nodes.</p>
-                </div>
-                <div class="roadmap-item">
-                    <span class="roadmap-date">Act III - The Crucible</span>
-                    <h3 class="roadmap-title">Beta Access</h3>
-                    <p class="roadmap-desc">Opening servers to Waitlist members. Server stress testing, bug isolation, and final voice acting implementation mapping the climax choices.</p>
-                </div>
-                <div class="roadmap-item">
-                    <span class="roadmap-date">Act IV - Singularity</span>
-                    <h3 class="roadmap-title">Global Deployment</h3>
-                    <p class="roadmap-desc">Full 1.0 release across all designated platforms. The timelines merge and the final consequences of user choices become permanent.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="faq" class="faq-section">
-        <div class="container">
-            <div class="section-header reveal">
-                <span class="section-label">09 // Knowledge Base</span>
-                <h2 class="section-title">FAQ.</h2>
-            </div>
-
-            <div class="faq-list reveal delay-1">
-                <details class="faq-item" open>
-                    <summary>Is an internet connection required to play? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        No, the core narrative experience is fully playable offline. An internet connection is only required for initial verification, cloud saves, and syncing your anomaly logs to the global leaderboards.
-                    </div>
-                </details>
-                <details class="faq-item">
-                    <summary>Will choices from the Beta carry over? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        Due to the cascading nature of our choice architecture, Beta saves will not be compatible with the final 1.0 release structure. All timelines will be reset upon global deployment.
-                    </div>
-                </details>
-                <details class="faq-item">
-                    <summary>Is there multiplayer or co-op? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        The Betweens is strictly a single-player narrative experience. However, an asynchronous global system will show you the percentage of other players who made the same timeline-altering decisions as you.
-                    </div>
-                </details>
-                <details class="faq-item">
-                    <summary>Will there be mod support? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        Official mod tools are planned post-launch. We intend to give the community access to our node-based narrative engine to create custom Echo dimension scenarios.
-                    </div>
-                </details>
-                <details class="faq-item">
-                    <summary>Can I replay specific chapters to alter the timeline? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        Yes, a "Quantum Rewind" feature unlocks upon your first full playthrough. This allows you to revisit specific pivot points without erasing your core timeline, enabling exploration of alternate consequences.
-                    </div>
-                </details>
-            </div>
-            
-            <div class="reveal delay-2">
-                <a href="faqs.html" class="btn-more-faq">View Full Knowledge Base</a>
-            </div>
-        </div>
-    </section>
-
-    <section id="waitlist" class="waitlist-section">
-        <div class="container">
-            <div class="waitlist-wrapper reveal">
-                <div class="section-header" style="align-items: center; text-align: center; margin-bottom: 24px;">
-                    <span class="section-label" style="justify-content: center;">10 // Access Protocol</span>
-                    <h2 class="section-title">Join the Vanguard.</h2>
-                </div>
-                <p style="color: var(--text-secondary); max-width: 500px; font-size: 1.1rem; line-height: 1.6;">
-                    Secure your position in the Act III Beta rollout. Transmission of credentials will notify our servers of your intent.
-                </p>
-                
-                <form id="waitlistForm" class="waitlist-form">
-                    <input type="email" name="email" class="waitlist-input" placeholder="Enter your email address" required>
-                    <button type="submit" class="waitlist-btn">Request Access</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="contact-wrapper">
-                <div class="contact-info reveal">
-                    <div class="section-header" style="margin-bottom: 40px;">
-                        <span class="section-label">11 // Comms</span>
-                        <h2 class="section-title">Link.</h2>
-                    </div>
-                    <p>Report anomalies, suggest structural changes, or contact the core developer. Submissions open the native client perfectly formatted.</p>
-
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <div class="contact-icon">
-                                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <div class="resonance-wrapper reveal delay-1">
+                    <div class="track-list" id="trackList">
+                        <div class="track-item active"
+                            data-src="./audios/main_theme.mp3">
+                            <div class="track-info">
+                                <span class="track-title">Initiation</span>
+                                <span class="track-act">Act I Theme</span>
                             </div>
-                            <div class="contact-text">
-                                <a href="mailto:contact@htetzawpaing.site">contact@htetzawpaing.site</a>
-                            </div>
+                            <span class="track-status">Loaded</span>
                         </div>
-                        <div class="contact-item">
-                            <div class="contact-icon">
-                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <div class="track-item"
+                            data-src="https://actions.google.com/sounds/v1/science_fiction/sci_fi_hover.ogg">
+                            <div class="track-info">
+                                <span class="track-title">Divergence</span>
+                                <span class="track-act">Act II Theme</span>
                             </div>
-                            <div class="contact-text">
-                                <a href="http://www.htetzawpaing.site" target="_blank">htetzawpaing.site</a>
+                            <span class="track-status">Standby</span>
+                        </div>
+                        <div class="track-item"
+                            data-src="https://actions.google.com/sounds/v1/science_fiction/spaceshipturn1.ogg">
+                            <div class="track-info">
+                                <span class="track-title">The Crucible</span>
+                                <span class="track-act">Act III Theme</span>
                             </div>
+                            <span class="track-status">Standby</span>
+                        </div>
+                        <div class="track-item"
+                            data-src="https://actions.google.com/sounds/v1/science_fiction/spaceshipsweep3.ogg">
+                            <div class="track-info">
+                                <span class="track-title">Singularity</span>
+                                <span class="track-act">Act IV Theme</span>
+                            </div>
+                            <span class="track-status">Standby</span>
+                        </div>
+                        <div class="track-item"
+                            data-src="https://actions.google.com/sounds/v1/science_fiction/alien_beam.ogg">
+                            <div class="track-info">
+                                <span class="track-title">Echoes</span>
+                                <span class="track-act">Act V Theme</span>
+                            </div>
+                            <span class="track-status">Standby</span>
+                        </div>
+                    </div>
+
+                    <div class="player-container">
+                        <canvas id="visualizerCanvas"></canvas>
+                        <button class="play-btn-circle" id="playToggleBtn">
+                            <svg viewBox="0 0 24 24"><path
+                                    d="M8 5v14l11-7z" /></svg>
+                        </button>
+                        <audio id="resonanceAudio"
+                            crossorigin="anonymous"></audio>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="specs" class="specs-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">07 // System Config</span>
+                    <h2 class="section-title">Tech Specs.</h2>
+                    <p class="section-subtitle">Scalable architecture supporting
+                        mid-tier terminals up to high-end processing units, with
+                        seamless integration for mobile and tablet touch
+                        interfaces. Laptop or desktop recommended for maximum
+                        immersion.</p>
+                </div>
+
+                <div class="specs-grid reveal delay-1">
+                    <div class="spec-col">
+                        <h3>Minimum Requirements</h3>
+                        <div class="spec-item">
+                            <span class="spec-label">Platform Support</span>
+                            <span class="spec-value">Mobile (iOS/Android),
+                                Tablet, Low/Mid-tier PC</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Processor</span>
+                            <span class="spec-value">Intel Core i3 / AMD Ryzen 3
+                                / A13 Bionic</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Memory</span>
+                            <span class="spec-value">4 GB RAM</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Graphics</span>
+                            <span class="spec-value">Integrated Graphics / GTX
+                                1050 / RX 560</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Storage</span>
+                            <span class="spec-value">15 GB available
+                                space</span>
+                        </div>
+                    </div>
+                    <div class="spec-col">
+                        <h3>Recommended Configuration</h3>
+                        <div class="spec-item">
+                            <span class="spec-label">Platform Support</span>
+                            <span class="spec-value">Desktop, High-End Laptop,
+                                Premium Tablet</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Processor</span>
+                            <span class="spec-value">Intel Core i7 / AMD Ryzen 7
+                                / M2 Chip</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Memory</span>
+                            <span class="spec-value">16 GB RAM</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Graphics</span>
+                            <span class="spec-value">NVIDIA RTX 3060 / AMD RX
+                                6700 XT</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Storage</span>
+                            <span class="spec-value">15 GB available space (NVMe
+                                SSD)</span>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="reveal delay-1">
-                    <form id="contactForm" class="contact-form">
-                        <input type="text" name="subject" class="form-input" placeholder="Transmission Subject" required>
-                        <textarea name="body" class="form-input" placeholder="Enter log data..." required></textarea>
-                        <button type="submit" class="btn-submit">Transmit Data</button>
+        <section id="roadmap" class="roadmap-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">08 // Timeline</span>
+                    <h2 class="section-title">Roadmap.</h2>
+                </div>
+
+                <div class="roadmap-container reveal delay-1">
+                    <div class="roadmap-item active">
+                        <span class="roadmap-date">Act I - Initiation</span>
+                        <h3 class="roadmap-title">The Anomaly Protocol</h3>
+                        <p class="roadmap-desc">Core dual-reality mechanics
+                            implemented. The inciting incident is deployed to
+                            early access testers for physics and narrative tree
+                            evaluation.</p>
+                    </div>
+                    <div class="roadmap-item">
+                        <span class="roadmap-date">Act II - Divergence</span>
+                        <h3 class="roadmap-title">Echo Expansion</h3>
+                        <p class="roadmap-desc">Integrating advanced NPC Quantum
+                            State AI. Expansion of the Echo dimension map and
+                            full implementation of consequence nodes.</p>
+                    </div>
+                    <div class="roadmap-item">
+                        <span class="roadmap-date">Act III - The Crucible</span>
+                        <h3 class="roadmap-title">Beta Access</h3>
+                        <p class="roadmap-desc">Opening servers to Waitlist
+                            members. Server stress testing, bug isolation, and
+                            final voice acting implementation mapping the climax
+                            choices.</p>
+                    </div>
+                    <div class="roadmap-item">
+                        <span class="roadmap-date">Act IV - Singularity</span>
+                        <h3 class="roadmap-title">Global Deployment</h3>
+                        <p class="roadmap-desc">Full 1.0 release across all
+                            designated platforms. The timelines merge and the
+                            final consequences of user choices become
+                            permanent.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="faq-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-label">09 // Knowledge Base</span>
+                    <h2 class="section-title">FAQ.</h2>
+                </div>
+
+                <div class="faq-list reveal delay-1">
+                    <details class="faq-item" open>
+                        <summary>Is an internet connection required to play?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            No, the core narrative experience is fully playable
+                            offline. An internet connection is only required for
+                            initial verification, cloud saves, and syncing your
+                            anomaly logs to the global leaderboards.
+                        </div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Will choices from the Beta carry over? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            Due to the cascading nature of our choice
+                            architecture, Beta saves will not be compatible with
+                            the final 1.0 release structure. All timelines will
+                            be reset upon global deployment.
+                        </div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Is there multiplayer or co-op? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            The Betweens is strictly a single-player narrative
+                            experience. However, an asynchronous global system
+                            will show you the percentage of other players who
+                            made the same timeline-altering decisions as you.
+                        </div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Will there be mod support? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            Official mod tools are planned post-launch. We
+                            intend to give the community access to our
+                            node-based narrative engine to create custom Echo
+                            dimension scenarios.
+                        </div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Can I replay specific chapters to alter the
+                            timeline? <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            Yes, a "Quantum Rewind" feature unlocks upon your
+                            first full playthrough. This allows you to revisit
+                            specific pivot points without erasing your core
+                            timeline, enabling exploration of alternate
+                            consequences.
+                        </div>
+                    </details>
+                </div>
+
+                <div class="reveal delay-2">
+                    <a href="faqs.html" class="btn-more-faq"
+                        title="View Full The Betweens Knowledge Base">View Full
+                        Knowledge Base</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="waitlist" class="waitlist-section">
+            <div class="container">
+                <div class="waitlist-wrapper reveal">
+                    <div class="section-header"
+                        style="align-items: center; text-align: center; margin-bottom: 24px;">
+                        <span class="section-label"
+                            style="justify-content: center;">10 // Access
+                            Protocol</span>
+                        <h2 class="section-title">Join the Vanguard.</h2>
+                    </div>
+                    <p
+                        style="color: var(--text-secondary); max-width: 500px; font-size: 1.1rem; line-height: 1.6;">
+                        Secure your position in the Act III Beta rollout.
+                        Transmission of credentials will notify our servers of
+                        your intent.
+                    </p>
+
+                    <form id="waitlistForm" class="waitlist-form">
+                        <input type="email" name="email" class="waitlist-input"
+                            placeholder="Enter your email address" required>
+                        <button type="submit" class="waitlist-btn">Request
+                            Access</button>
                     </form>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>The Betweens</h3>
-                    <p>A narrative-driven parallel universe experience. Your choices dictate the reality.</p>
-                </div>
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <div class="contact-wrapper">
+                    <div class="contact-info reveal">
+                        <div class="section-header"
+                            style="margin-bottom: 40px;">
+                            <span class="section-label">11 // Comms</span>
+                            <h2 class="section-title">Link.</h2>
+                        </div>
+                        <p>Report anomalies, suggest structural changes, or
+                            contact the core developer. Submissions open the
+                            native client perfectly formatted.</p>
 
-                <div class="footer-links">
-                    <h4>Index</h4>
-                    <ul>
-                        <li><a href="#hero">Overview</a></li>
-                        <li><a href="#carousel">Environments</a></li>
-                        <li><a href="#mechanics">Systems</a></li>
-                        <li><a href="#entities">Entities</a></li>
-                        <li><a href="#lore">Archive</a></li>
-                    </ul>
-                </div>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24"><path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline
+                                            points="22,6 12,13 2,6" /></svg>
+                                </div>
+                                <div class="contact-text">
+                                    <a href="mailto:contact@htetzawpaing.site"
+                                        title="Email The Betweens Developer">contact@htetzawpaing.site</a>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24"><circle cx="12"
+                                            cy="12" r="10" /><line x1="2"
+                                            y1="12" x2="22" y2="12" /><path
+                                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                                </div>
+                                <div class="contact-text">
+                                    <a href="http://www.htetzawpaing.site"
+                                        target="_blank"
+                                        title="Htet Zaw Paing Developer Site">htetzawpaing.site</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="footer-links">
-                    <h4>Operations</h4>
-                    <ul>
-                        <li><a href="#roadmap">Roadmap</a></li>
-                        <li><a href="faqs.html">Knowledge Base</a></li>
-                        <li><a href="#specs">Requirements</a></li>
-                        <li><a href="#contact">Comms</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-links">
-                    <h4>Legal & Protocol</h4>
-                    <ul>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Service</a></li>
-                        <li><a href="cookies.html">Cookie Directive</a></li>
-                        <li><a href="http://www.htetzawpaing.site" target="_blank">Developer Portfolio</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="copyright">
-                    © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH NAPIER UNIVERSITY.
-                </div>
-                <div class="social-icons">
-                    <a href="#" aria-label="Discord" class="social-icon">
-                        <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
-                    </a>
-                    <a href="#" aria-label="Telegram" class="social-icon">
-                        <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                    </a>
-                    <a href="http://www.htetzawpaing.site" target="_blank" aria-label="Website" class="social-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    </a>
+                    <div class="reveal delay-1">
+                        <form id="contactForm" class="contact-form">
+                            <input type="text" name="subject" class="form-input"
+                                placeholder="Transmission Subject" required>
+                            <textarea name="body" class="form-input"
+                                placeholder="Enter log data..."
+                                required></textarea>
+                            <button type="submit" class="btn-submit">Transmit
+                                Data</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </section>
 
-    <script>
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <h3>The Betweens</h3>
+                        <p>A narrative-driven parallel universe experience. Your
+                            choices dictate the reality.</p>
+                            <a href="mailto:contact@htetzawpaing.site">
+                                contact@htetzawpaing.site
+                            </a>
+                            <a href="tel:+959456751882">
+                                +95 9 4567 51 882
+                            </a>
+                            <a href="http://www.htetzawpaing.site" target="_blank">
+                                www.htetzawpaing.site
+                            </a>
+                    </div>
+    
+                    <div class="footer-links">
+                        <h4>Index</h4>
+                        <ul>
+                            <li><a href="/the-betweens/"
+                                    title="The Betweens Overview">Overview</a></li>
+                            <li><a href="/the-betweens/#carousel"
+                                    title="The Betweens Environments">Environments</a></li>
+                            <li><a href="/the-betweens/#mechanics"
+                                    title="The Betweens Systems">Systems</a></li>
+                            <li><a href="/the-betweens/#entities"
+                                    title="The Betweens Entities">Entities</a></li>
+                            <li><a href="/the-betweens/#lore"
+                                    title="The Betweens Game Lore">Archive</a></li>
+                        </ul>
+                    </div>
+    
+                    <div class="footer-links">
+                        <h4>Operations</h4>
+                        <ul>
+                            <li><a href="/the-betweens/#roadmap"
+                                    title="The Betweens Development Roadmap">Roadmap</a></li>
+                            <li><a href="/the-betweens/knowledge-base/"
+                                    title="The Betweens Game FAQs">Knowledge
+                                    Base</a></li>
+                            <li><a href="/the-betweens/#specs"
+                                    title="The Betweens System Requirements">Requirements</a></li>
+                            <li><a href="/the-betweens/#contact"
+                                    title="Contact The Betweens Support">Comms</a></li>
+                        </ul>
+                    </div>
+    
+                    <div class="footer-links">
+                        <h4>Legal & Protocol</h4>
+                        <ul>
+                            <li><a href="/the-betweens/directives/"
+                                    title="The Betweens Privacy Policy">Privacy
+                                    Policy</a></li>
+                            <li><a href="/the-betweens/directives/"
+                                    title="The Betweens Terms of Service">Terms
+                                    of Service</a></li>
+                            <li><a href="/the-betweens/directives/"
+                                    title="The Betweens Cookie Directive">Cookie
+                                    Directive</a></li>
+                            <li><a href="http://www.htetzawpaing.site"
+                                    target="_blank"
+                                    title="Developer Portfolio Htet Zaw Paing">Developer
+                                    Portfolio</a></li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="footer-bottom">
+                    <div class="copyright">
+                        © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH
+                        NAPIER UNIVERSITY.
+                    </div>
+                    <div class="social-icons">
+                        <a href="https://discord.com/users/1110430133707341894" aria-label="Discord for The Betweens"
+                            class="social-icon">
+                            <svg viewBox="0 0 24 24"><path
+                                    d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z" /></svg>
+                        </a>
+                        <a href="commingsoon" aria-label="Telegram for The Betweens"
+                            class="social-icon">
+                            <svg viewBox="0 0 24 24"><path
+                                    d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
+                        </a>
+                        <a href="http://www.htetzawpaing.site" target="_blank"
+                            aria-label="Developer Website Htet Zaw Paing"
+                            class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#000000"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <ellipse cx="12" cy="12" rx="6" ry="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script>
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
             setTimeout(() => {
@@ -2351,5 +2687,5 @@
             audioEl.src = trackItems[0].dataset.src;
         });
     </script>
-</body>
+    </body>
 </html>

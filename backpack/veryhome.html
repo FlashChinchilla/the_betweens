@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Betweens | Official Database</title>
+    <link rel="icon" href="./images/items/favicon.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        :root {
+            --bg-base: #000000;
+            --bg-surface: #030303;
+            --bg-surface-elevated: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-tertiary: #444444;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --border-light: rgba(255, 255, 255, 0.06);
+            
+            --glass-bg: rgba(0, 0, 0, 0.85);
+            --glass-blur: blur(32px) saturate(120%);
+            
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --nav-height: 72px;
+            --section-padding: 160px;
+            --container-width: 1440px;
+            
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+            --transition-fast: 0.2s var(--ease-out-expo);
+            --transition-medium: 0.6s var(--ease-out-expo);
+            --transition-slow: 1.2s var(--ease-in-out-expo);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            font-size: 16px;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            overscroll-behavior: none;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            background-color: var(--bg-base);
+            position: relative;
+        }
+
+        body.loading {
+            overflow: hidden;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-base);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s var(--ease-out-expo), visibility 0.8s;
+        }
+
+        .preloader-line {
+            width: 0%;
+            height: 1px;
+            background-color: var(--text-primary);
+            animation: expandLine 2s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+        }
+
+        .preloader-text {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+            margin-top: 24px;
+            opacity: 0;
+            animation: fadeText 1.5s var(--ease-out-expo) 0.5s infinite alternate;
+        }
+
+        @keyframes expandLine {
+            0% { width: 0%; }
+            100% { width: 40%; }
+        }
+
+        @keyframes fadeText {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* Structural Grid Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(var(--border-light) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+            background-size: 120px 120px;
+            background-position: center center;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        ::selection {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--text-tertiary); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        a { text-decoration: none; color: inherit; transition: color var(--transition-fast); }
+        button, input, textarea { font-family: inherit; border: none; outline: none; background: none; }
+        ul { list-style: none; }
+        img, video { max-width: 100%; display: block; object-fit: cover; }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 4vw;
+            width: 100%;
+        }
+
+        h1, h2, h3, h4 { letter-spacing: -0.05em; font-weight: 500; margin: 0; }
+
+        .section-header {
+            margin-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: block;
+            width: 32px;
+            height: 1px;
+            background: var(--text-tertiary);
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
+            font-weight: 400;
+            line-height: 1;
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+
+        .section-subtitle {
+            margin-top: 24px;
+            font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+            color: var(--text-secondary);
+            max-width: 500px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* --- NAVBAR & MEGA MENU --- */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: var(--nav-height);
+            background: transparent;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            transition: background var(--transition-medium), border var(--transition-medium);
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 4vw;
+            position: relative;
+        }
+
+        .nav-logo { 
+            font-family: var(--font-mono);
+            font-size: 1rem; 
+            font-weight: 700; 
+            letter-spacing: -0.02em; 
+            color: var(--text-primary);
+            text-transform: uppercase;
+            z-index: 1002;
+        }
+
+        .nav-links { 
+            display: flex; 
+            align-items: center; 
+            gap: 40px; 
+            height: var(--nav-height);
+        }
+        
+        .nav-item-has-mega {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link:hover, .nav-link.active { color: var(--text-primary); }
+
+        .dropdown-icon {
+            width: 14px; height: 14px;
+            margin-left: 6px;
+            transition: transform var(--transition-fast);
+        }
+
+        .nav-item-has-mega:hover .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .mega-menu {
+            position: absolute;
+            top: 100%; left: 0;
+            width: 100vw;
+            background: rgba(3, 3, 3, 0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-bottom: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 999;
+        }
+
+        .nav-item-has-mega:hover .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mega-menu-inner {
+            display: flex;
+            gap: 48px;
+            padding: 24px 4vw;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .mega-link {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mega-link:hover { color: var(--text-primary); }
+
+        .btn-play-now {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+            padding: 10px 24px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all var(--transition-fast);
+            border: 1px solid var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .btn-play-now:hover { 
+            background-color: transparent; 
+            color: var(--text-primary);
+        }
+
+        /* Perfectly Crossed Hamburger Menu */
+        .mobile-menu-btn { 
+            display: none; 
+            width: 24px; 
+            height: 14px; 
+            position: relative; 
+            cursor: pointer; 
+            z-index: 1002; 
+        }
+        
+        .mobile-menu-btn span { 
+            position: absolute; 
+            left: 0; 
+            width: 100%; 
+            height: 1.5px; 
+            background: var(--text-primary); 
+            transition: all var(--transition-fast); 
+        }
+        
+        .mobile-menu-btn span:nth-child(1) { top: 0; }
+        .mobile-menu-btn span:nth-child(2) { bottom: 0; }
+        
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: translateY(6.25px) rotate(45deg);
+        }
+        
+        .mobile-menu-btn.active span:nth-child(2) {
+            transform: translateY(-6.25px) rotate(-45deg);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+        }
+
+        .hero-video-container { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100vh; 
+            z-index: 1; 
+            background: var(--bg-base);
+        }
+        
+        .hero-video { 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            opacity: 0.3;
+            transform: scale(1.05); 
+            transition: transform 10s var(--ease-out-expo);
+            filter: brightness(110%) saturate(130%) contrast(110%);
+        }
+        
+        .hero.loaded .hero-video { transform: scale(1); }
+
+        .hero-overlay { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, var(--bg-base) 100%);
+            z-index: 2; 
+        }
+        
+        .hero-content {
+            position: relative; 
+            z-index: 3; 
+            text-align: center; 
+            max-width: 1400px; 
+            padding: 0 4vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0; 
+            transform: translateY(20px);
+        }
+        
+        .hero.loaded .hero-content {
+            animation: heroFadeIn 2s var(--ease-out-expo) 0.2s forwards;
+        }
+
+        @keyframes heroFadeIn { 
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); } 
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 12vw, 13rem);
+            font-weight: 400;
+            letter-spacing: -0.06em;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            line-height: 0.85;
+            text-transform: uppercase;
+        }
+
+        .hero-desc {
+            font-family: var(--font-mono);
+            font-size: clamp(0.75rem, 1.5vw, 1rem);
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-bottom: 48px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 36px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--text-primary);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .hero-cta:hover { 
+            background: var(--text-primary);
+            color: var(--bg-base);
+        }
+
+        .hero-cta-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: color var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .hero-cta-secondary:hover { color: var(--text-primary); }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+        }
+        
+        .hero.loaded .hero-scroll-indicator {
+            animation: fadeIn 1s var(--ease-out-expo) 1.5s forwards;
+        }
+
+        .scroll-line {
+            width: 3px;
+            height: 120px;
+            background: linear-gradient(to bottom, var(--text-tertiary), transparent);
+            transform-origin: top;
+            animation: scrollLine 2.5s infinite var(--ease-in-out-expo);
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes scrollLine {
+            0% { transform: scaleY(0); }
+            50% { transform: scaleY(1); }
+            100% { transform: scaleY(0); transform-origin: bottom; }
+        }
+
+        /* --- CAROUSEL --- */
+        .carousel-section { 
+            padding: var(--section-padding) 0; 
+            background-color: transparent; 
+            position: relative; 
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+        }
+        
+        .carousel-wrapper {
+            position: relative; 
+            width: 100vw; 
+            height: 65vh;
+            min-height: 400px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+
+        .carousel-track { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex; 
+            align-items: center;
+            gap: 24px;
+            transition: transform 0.8s var(--ease-in-out-expo);
+            will-change: transform;
+        }
+        
+        .carousel-slide { 
+            flex: 0 0 auto;
+            width: 75vw;
+            max-width: 1100px;
+            height: 100%; 
+            position: relative; 
+            overflow: hidden;
+            transform: scale(0.95);
+            opacity: 0.2;
+            transition: all 0.8s var(--ease-in-out-expo);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            background: var(--bg-surface);
+        }
+
+        .carousel-slide.active { 
+            transform: scale(1);
+            opacity: 1;
+            border-color: var(--border-color);
+        }
+
+        .carousel-image { 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            transition: transform 8s var(--ease-out-expo); 
+            filter: grayscale(100%) contrast(1.1);
+        }
+        
+        .carousel-slide.active .carousel-image { 
+            transform: scale(1.02); 
+            filter: grayscale(20%) contrast(1.1);
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg-base) 0%, transparent 60%);
+        }
+
+        .carousel-content {
+            position: absolute; 
+            bottom: 32px; 
+            left: 32px; 
+            max-width: 500px; 
+            z-index: 10;
+            opacity: 0; 
+            transform: translateY(10px); 
+            transition: all 0.6s 0.3s var(--ease-out-expo);
+        }
+        
+        .carousel-slide.active .carousel-content { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+
+        .carousel-content h3 { 
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem); 
+            font-weight: 400; 
+            margin-bottom: 12px; 
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+        
+        .carousel-content p { 
+            font-size: clamp(0.85rem, 1.2vw, 0.95rem); 
+            color: var(--text-secondary); 
+            line-height: 1.6; 
+        }
+
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .carousel-btn {
+            width: 44px; height: 44px;
+            border-radius: 0; 
+            background: transparent;
+            border: 1px solid var(--border-color); 
+            color: var(--text-primary); 
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; 
+            transition: all var(--transition-fast);
+        }
+
+        .carousel-btn:hover { 
+            background: var(--text-primary); 
+            color: var(--bg-base);
+        }
+        
+        .carousel-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: square; }
+
+        .carousel-pagination { display: flex; gap: 8px; }
+
+        .dot { 
+            width: 32px; height: 1px; 
+            background: var(--text-tertiary); 
+            cursor: pointer; 
+            transition: all var(--transition-fast); 
+        }
+        .dot.active { background: var(--text-primary); height: 2px;}
+
+        /* --- MECHANICS --- */
+        .features-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card {
+            background: var(--bg-base);
+            padding: 60px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            transition: background var(--transition-fast);
+        }
+
+        .feature-card:hover { background: var(--bg-surface); }
+
+        .feature-icon {
+            width: 28px; height: 28px;
+            color: var(--text-primary);
+        }
+
+        .feature-icon svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: square; }
+
+        .feature-title { 
+            font-size: 1.15rem; 
+            font-weight: 400; 
+            text-transform: uppercase; 
+        }
+        
+        .feature-desc { 
+            color: var(--text-secondary); 
+            line-height: 1.6; 
+            font-size: 0.9rem; 
+        }
+
+        /* --- ENTITIES --- */
+        .entities-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .entities-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .entity-card {
+            background: var(--bg-base);
+            padding: 48px 24px;
+            text-align: center;
+            transition: background var(--transition-fast);
+        }
+
+        .entity-card:hover { background: var(--bg-surface); }
+
+        .entity-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+
+        .entity-avatar img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            transition: all var(--transition-fast);
+        }
+
+        .entity-card:hover .entity-avatar img { filter: grayscale(0%) contrast(1); transform: scale(1.05); }
+
+        .entity-name {
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .entity-role {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- GALLERY --- */
+        .gallery-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .gallery-item {
+            position: relative;
+            background: var(--bg-base);
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        .gallery-item img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            opacity: 0.5;
+            transition: all 0.6s var(--ease-out-expo);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            padding: 24px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .gallery-item:hover img {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.03);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .gallery-caption {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- LORE --- */
+        .lore-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .lore-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .lore-content { display: flex; flex-direction: column; gap: 32px; }
+        .lore-content p { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7; }
+        
+        .lore-visual {
+            position: relative;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--bg-surface);
+        }
+
+        .lore-visual img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            opacity: 0.6;
+            transition: all var(--transition-slow);
+        }
+
+        .lore-visual:hover img { 
+            filter: grayscale(0%) contrast(1.1); 
+            opacity: 1;
+            transform: scale(1.03);
+        }
+
+        .lore-data {
+            position: absolute;
+            top: 24px; right: 24px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-primary);
+            background: var(--bg-base);
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- RESONANCE --- */
+        .resonance-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .resonance-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            min-height: 350px;
+        }
+
+        .track-list {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .track-item {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .track-item:last-child { border-bottom: none; }
+        .track-item:hover { background: var(--bg-base); }
+        .track-item.active { background: var(--border-color); }
+
+        .track-info { display: flex; flex-direction: column; gap: 6px; }
+        .track-title { font-size: 1rem; color: var(--text-primary); text-transform: uppercase; }
+        .track-act { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        .track-status {
+            font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-primary); text-transform: uppercase;
+            opacity: 0; transition: opacity var(--transition-fast);
+        }
+        .track-item.active .track-status { opacity: 1; }
+
+        .player-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 48px 24px;
+            position: relative;
+        }
+
+        #visualizerCanvas {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 32px;
+        }
+
+        .play-btn-circle {
+            width: 64px; height: 64px;
+            border: 1px solid var(--text-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .play-btn-circle:hover {
+            background: var(--text-primary);
+            color: var(--bg-base);
+        }
+
+        .play-btn-circle svg { width: 20px; height: 20px; fill: currentColor; margin-left: 4px; transition: margin var(--transition-fast); }
+        .play-btn-circle.playing svg { margin-left: 0; }
+
+        /* --- TECH SPECS --- */
+        .specs-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .spec-col {
+            background: var(--bg-base);
+            padding: 48px;
+        }
+
+        .spec-col h3 {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-primary);
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .spec-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+        }
+
+        .spec-value {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- ROADMAP --- */
+        .roadmap-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .roadmap-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .roadmap-item {
+            position: relative;
+            padding: 0 0 48px 40px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .roadmap-item:last-child {
+            border-left-color: transparent;
+            padding-bottom: 0;
+        }
+
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 0;
+            width: 9px;
+            height: 9px;
+            background: var(--bg-base);
+            border: 1px solid var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+
+        .roadmap-item:hover::before, .roadmap-item.active::before {
+            background: var(--text-primary);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 8px rgba(255,255,255,0.5);
+        }
+
+        .roadmap-date {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .roadmap-title {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .roadmap-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* --- FAQ --- */
+        .faq-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-base);
+            transition: background var(--transition-fast);
+        }
+
+        .faq-item:hover { background: var(--bg-surface); }
+
+        .faq-item summary {
+            padding: 24px 0;
+            cursor: pointer;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-item summary::-webkit-details-marker { display: none; }
+
+        .faq-icon {
+            position: relative;
+            width: 16px; height: 16px;
+        }
+
+        .faq-icon::before, .faq-icon::after {
+            content: '';
+            position: absolute;
+            background: var(--text-primary);
+            transition: transform var(--transition-fast);
+        }
+
+        .faq-icon::before { top: 7px; left: 0; width: 16px; height: 1px; }
+        .faq-icon::after { top: 0; left: 7px; width: 1px; height: 16px; }
+
+        .faq-item[open] .faq-icon::after { transform: rotate(90deg); }
+        .faq-item[open] .faq-icon::before { transform: rotate(180deg); }
+
+        .faq-content {
+            padding-bottom: 24px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 800px;
+            animation: slideDown 0.3s ease-out forwards;
+        }
+
+        .btn-more-faq {
+            display: inline-flex;
+            margin-top: 32px;
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 14px 28px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-more-faq:hover {
+            border-color: var(--text-primary);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- WAITLIST --- */
+        .waitlist-section {
+            padding: var(--section-padding) 0;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1;
+            position: relative;
+        }
+
+        .waitlist-wrapper {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 60px 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .waitlist-form {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 32px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-base);
+        }
+
+        .waitlist-input {
+            flex: 1;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        .waitlist-input::placeholder { color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .waitlist-btn {
+            background: var(--text-primary);
+            color: var(--bg-base);
+            padding: 0 28px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast);
+        }
+
+        .waitlist-btn:hover {
+            background: transparent;
+            color: var(--text-primary);
+            box-shadow: inset 1px 0 0 0 var(--border-color);
+        }
+
+        /* --- CONTACT --- */
+        .contact-section { 
+            padding: var(--section-padding) 0; 
+            background: transparent; 
+            z-index: 1;
+            position: relative;
+        }
+        
+        .contact-wrapper {
+            display: grid; 
+            grid-template-columns: 1fr 1.5fr; 
+            gap: 80px; 
+        }
+
+        .contact-info p { 
+            color: var(--text-secondary); 
+            font-size: 1.05rem; 
+            margin-bottom: 48px; 
+            line-height: 1.6; 
+        }
+        
+        .contact-details { display: flex; flex-direction: column; gap: 24px; }
+        .contact-item { display: flex; align-items: center; gap: 16px; }
+        
+        .contact-icon { color: var(--text-primary); }
+        .contact-icon svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; }
+        
+        .contact-text a { 
+            font-family: var(--font-mono);
+            font-size: 0.8rem; 
+            color: var(--text-secondary); 
+            transition: color var(--transition-fast); 
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .contact-text a:hover { color: var(--text-primary); }
+
+        .contact-form { 
+            display: flex; flex-direction: column; gap: 32px; 
+            background: var(--bg-surface);
+            padding: 48px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-input {
+            width: 100%; 
+            background: transparent; 
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0; 
+            color: var(--text-primary);
+            font-size: 0.95rem; 
+            font-family: var(--font-mono);
+            transition: border-color var(--transition-fast);
+        }
+
+        .form-input::placeholder { color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem;}
+        .form-input:focus { border-bottom-color: var(--text-primary); }
+
+        textarea.form-input { min-height: 100px; resize: vertical; }
+
+        .btn-submit {
+            background: var(--text-primary); 
+            color: var(--bg-base); 
+            border: none;
+            padding: 14px 28px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem; 
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            cursor: pointer; 
+            transition: all var(--transition-fast); 
+            align-self: flex-start;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover { 
+            background: transparent;
+            color: var(--text-primary);
+            box-shadow: inset 0 0 0 1px var(--text-primary);
+        }
+
+        /* --- FOOTER --- */
+        .footer { 
+            background: var(--bg-surface); 
+            padding: 60px 0 40px; 
+            border-top: 1px solid var(--border-color); 
+            z-index: 1;
+            position: relative;
+        }
+        
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr 1fr 1fr; 
+            gap: 40px; 
+            margin-bottom: 80px; 
+        }
+        
+        .footer-brand { display: flex; flex-direction: column; gap: 12px; }
+        .footer-brand h3 { 
+            font-family: var(--font-mono);
+            font-size: 0.9rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: -0.02em; 
+            color: var(--text-primary);
+        }
+        .footer-brand p { color: var(--text-secondary); font-size: 0.85rem; max-width: 300px; line-height: 1.6; }
+        
+        .footer-links h4 { 
+            font-family: var(--font-mono);
+            font-size: 0.65rem; 
+            color: var(--text-tertiary); 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.15em; 
+        }
+        .footer-links ul { display: flex; flex-direction: column; gap: 12px; }
+        .footer-links a { 
+            color: var(--text-secondary); 
+            font-size: 0.85rem; 
+            transition: color var(--transition-fast); 
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+        
+        .footer-bottom { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding-top: 32px; 
+            border-top: 1px solid var(--border-color); 
+        }
+        
+        .copyright { color: var(--text-tertiary); font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .social-icons { display: flex; gap: 20px; }
+        .social-icon { color: var(--text-tertiary); transition: color var(--transition-fast); }
+        .social-icon:hover { color: var(--text-primary); }
+        .social-icon svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .contact-wrapper, .lore-wrapper, .specs-grid, .resonance-wrapper { grid-template-columns: 1fr; gap: 60px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .entities-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+            .carousel-slide { width: 85vw; }
+            :root { --section-padding: 120px; }
+            .track-list { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+
+        @media (max-width: 768px) {
+            :root { --section-padding: 80px; --nav-height: 64px; }
+            html { font-size: 14px; }
+            
+            .nav-links {
+                position: fixed; top: var(--nav-height); left: 0; width: 100%; height: calc(100vh - var(--nav-height));
+                background: var(--bg-surface); flex-direction: column; align-items: flex-start;
+                padding: 32px 4vw; gap: 8px; transform: translateY(-10px); opacity: 0; visibility: hidden; transition: all var(--transition-medium);
+                border-top: 1px solid var(--border-color);
+                overflow-y: auto;
+            }
+            .nav-links.mobile-active { transform: translateY(0); opacity: 1; visibility: visible; }
+            
+            .nav-item-has-mega { width: 100%; flex-direction: column; align-items: flex-start; height: auto; }
+            .nav-link { width: 100%; justify-content: space-between; padding: 16px 0; height: auto; }
+            
+            /* Fix rotation to only occur when dropdown is open */
+            .nav-item-has-mega:hover .dropdown-icon { transform: rotate(0deg); }
+            .nav-item-has-mega.active .dropdown-icon { transform: rotate(180deg); }
+            
+            .mega-menu {
+                position: static; opacity: 1; visibility: visible; transform: none; background: transparent; backdrop-filter: none; border: none; display: none;
+            }
+            .nav-item-has-mega.active .mega-menu { display: block; width: 100%; }
+            .mega-menu-inner { flex-direction: column; gap: 20px; padding: 16px 0 16px 16px; margin-left: 8px; border-left: 1px solid var(--border-color); width: auto; }
+            
+            .mobile-menu-btn { display: block; }
+            
+            .carousel-slide { width: 90vw; }
+            .carousel-content { left: 24px; bottom: 24px; right: 24px; }
+            .carousel-wrapper { min-height: 350px; }
+            
+            .hero-cta-group { flex-direction: column; width: 100%; max-width: 280px; gap: 16px; }
+            .hero-cta { width: 100%; }
+            
+            .entities-grid { grid-template-columns: 1fr; }
+            .gallery-item { aspect-ratio: 4/3; }
+            
+            .waitlist-form { flex-direction: column; border: none; background: transparent; gap: 16px; }
+            .waitlist-input { border: 1px solid var(--border-color); background: var(--bg-base); width: 100%; }
+            .waitlist-btn { padding: 14px; border: 1px solid var(--text-primary); width: 100%; }
+            
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column-reverse; gap: 24px; align-items: flex-start; }
+            
+            .feature-card, .entity-card, .spec-col, .artifact-tier { padding: 32px 24px; }
+            .contact-form { padding: 32px 24px; }
+            .waitlist-wrapper { padding: 40px 24px; }
+            .resonance-wrapper { padding: 0; border: none; border-bottom: 1px solid var(--border-color); background: transparent; }
+            .track-item { padding: 20px 24px; }
+            .player-container { padding: 32px 0; }
+        }
+
+        /* --- REVEAL ANIMATIONS --- */
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: all 1.2s var(--ease-out-expo); 
+            will-change: opacity, transform;
+        }
+        .reveal.active { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+    </style>
+</head>
+<body class="loading">
+
+    <div id="preloader">
+        <div class="preloader-line"></div>
+        <div class="preloader-text">Initializing Database...</div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/the_betweens/" class="nav-logo">The Betweens</a>
+
+            <div class="nav-links" id="navLinks">
+                <div class="nav-item-has-mega">
+                    <a href="/the_betweens/" class="nav-link active">
+                        Overview
+                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                    </a>
+                    <div class="mega-menu">
+                        <div class="mega-menu-inner">
+                            <a href="/the_betweens/#carousel" class="mega-link">Environments</a>
+                            <a href="/the_betweens/#mechanics" class="mega-link">Systems</a>
+                            <a href="/the_betweens/#entities" class="mega-link">Entities</a>
+                            <a href="/the_betweens/#gallery" class="mega-link">Visual Archives</a>
+                            <a href="/the_betweens/#lore" class="mega-link">Archive</a>
+                            <a href="/the_betweens/#resonance" class="mega-link">Resonance</a>
+                            <a href="/the_betweens/#contact" class="mega-link">Comms</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-item-has-mega">
+                    <a href="/the_betweens/origin/" class="nav-link">
+                        Origin
+                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                    </a>
+                    <div class="mega-menu">
+                        <div class="mega-menu-inner">
+                            <a href="/the_betweens/origin/#game" class="mega-link">The Game</a>
+                            <a href="/the_betweens/origin/#characters" class="mega-link">Characters</a>
+                            <a href="/the_betweens/origin/#chapters" class="mega-link">Chapters</a>
+                            <a href="/the_betweens/origin/#developer" class="mega-link">Developer</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="/the_betweens/knowledge-base/" class="nav-link">Knowledge Base</a>
+                <a href="/the_betweens/directives/" class="nav-link">Directives</a>
+            </div>
+
+            <div class="nav-actions" style="display: flex; gap: 24px; align-items: center;">
+                <a href="/the_betweens/game" class="btn-play-now" style="display: none;">Play Now</a>
+                <div class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" id="hero">
+        <div class="hero-video-container">
+            <video class="hero-video" id="heroVideo" autoplay loop muted playsinline>
+                <source src="./videos/hero-video4.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">The Betweens</h1>
+            <p class="hero-desc">Every choice reshapes reality. Navigate the shattered dimensions of a parallel universe.</p>
+            
+            <div class="hero-cta-group">
+                <a href="/the_betweens/game" class="hero-cta">Play Now</a>
+                <a href="/the_betweens/trailer/" class="hero-cta-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    Watch Trailer
+                </a>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <div class="scroll-line"></div>
+        </div>
+    </header>
+
+    <section id="carousel" class="carousel-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">01 // Environments</span>
+                <h2 class="section-title">Glimpse the Reality.</h2>
+                <p class="section-subtitle">Navigate through the shattered dimensions of a city you thought you knew. Observe the anomalies.</p>
+            </div>
+        </div>
+
+        <div class="carousel-wrapper reveal delay-1">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide active" data-index="0">
+                    <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=2000&auto=format&fit=crop" alt="Yangon City" class="carousel-image">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-content">
+                        <h3>The Familiar Streets</h3>
+                        <p>Yangon as you know it. Bustling, vibrant, and deceptively safe. But shadows linger where the light falls short.</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-index="1">
+                    <img src="https://images.unsplash.com/photo-1519999482648-25049ddd37b1?q=80&w=2000&auto=format&fit=crop" alt="Parallel City" class="carousel-image">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-content">
+                        <h3>The Echo City</h3>
+                        <p>A distorted reflection. Here, the skies bleed red and silence is heavier than the loudest noise.</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-index="2">
+                    <img src="https://images.unsplash.com/photo-1505506874110-6a7a4c9891fb?q=80&w=2000&auto=format&fit=crop" alt="The Ring" class="carousel-image">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-content">
+                        <h3>The Catalyst</h3>
+                        <p>An ancient artifact bound by forgotten bloodlines. It doesn't just open doors; it forces you to walk through them.</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-index="3">
+                    <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2000&auto=format&fit=crop" alt="Choices" class="carousel-image">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-content">
+                        <h3>Fractured Paths</h3>
+                        <p>Every decision is a weight on the scale. Save a friend here, lose a loved one there. Choose carefully.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="carousel-controls reveal delay-2">
+            <button class="carousel-btn prev" id="btnPrev" aria-label="Previous Slide">
+                <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+            </button>
+            <div class="carousel-pagination" id="carouselPagination"></div>
+            <button class="carousel-btn next" id="btnNext" aria-label="Next Slide">
+                <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg>
+            </button>
+        </div>
+    </section>
+
+    <section id="mechanics" class="features-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">02 // Core Systems</span>
+                <h2 class="section-title">Mechanics.</h2>
+            </div>
+            
+            <div class="features-grid reveal delay-1">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3 class="feature-title">Absolute Consequence</h3>
+                    <p class="feature-desc">There are no save states for morality. Every action permanently alters the fabric of both dimensions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+                    </div>
+                    <h3 class="feature-title">Dual Exploration</h3>
+                    <p class="feature-desc">Seamlessly phase between the Prime and Echo versions of the city to solve puzzles and bypass obstacles.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    </div>
+                    <h3 class="feature-title">Quantum State AI</h3>
+                    <p class="feature-desc">NPCs remember your timeline choices. Friendships degrade, alliances form, and enemies adapt dynamically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="entities" class="entities-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">03 // Profiles</span>
+                <h2 class="section-title">Entities.</h2>
+                <p class="section-subtitle">Observe the subjects trapped within the fracture. Hover to view their Echo state anomalies.</p>
+            </div>
+            
+            <div class="entities-grid reveal delay-1">
+                <div class="entity-card">
+                    <div class="entity-avatar">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=500&auto=format&fit=crop" alt="Subject 01">
+                    </div>
+                    <h3 class="entity-name">Kaelen</h3>
+                    <span class="entity-role">The Catalyst</span>
+                </div>
+                <div class="entity-card">
+                    <div class="entity-avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=500&auto=format&fit=crop" alt="Subject 02">
+                    </div>
+                    <h3 class="entity-name">Elara</h3>
+                    <span class="entity-role">Prime Observer</span>
+                </div>
+                <div class="entity-card">
+                    <div class="entity-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=500&auto=format&fit=crop" alt="Subject 03">
+                    </div>
+                    <h3 class="entity-name">Vane</h3>
+                    <span class="entity-role">Echo Architect</span>
+                </div>
+                <div class="entity-card">
+                    <div class="entity-avatar">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=500&auto=format&fit=crop" alt="Subject 04">
+                    </div>
+                    <h3 class="entity-name">The Silence</h3>
+                    <span class="entity-role">Unknown Variable</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="gallery-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">04 // Visual Archives</span>
+                <h2 class="section-title">Chronicles.</h2>
+                <p class="section-subtitle">Captured structural deviations within the Echo dimension map geometry.</p>
+            </div>
+
+            <div class="gallery-grid reveal delay-1">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1505506874110-6a7a4c9891fb?q=80&w=1000&auto=format&fit=crop" alt="Capture 01">
+                    <div class="gallery-overlay">
+                        <span class="gallery-caption">SECTOR Alpha - Point of Divergence</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1519999482648-25049ddd37b1?q=80&w=1000&auto=format&fit=crop" alt="Capture 02">
+                    <div class="gallery-overlay">
+                        <span class="gallery-caption">SECTOR Beta - Echo Residue</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" alt="Capture 03">
+                    <div class="gallery-overlay">
+                        <span class="gallery-caption">SECTOR Gamma - Structural Collapse</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1000&auto=format&fit=crop" alt="Capture 04">
+                    <div class="gallery-overlay">
+                        <span class="gallery-caption">SECTOR Delta - Temporal Rift</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="lore" class="lore-section">
+        <div class="container">
+            <div class="lore-wrapper">
+                <div class="lore-content reveal">
+                    <div class="section-header" style="margin-bottom: 24px;">
+                        <span class="section-label">05 // Archive</span>
+                        <h2 class="section-title">Two Worlds.</h2>
+                    </div>
+                    <p>In 2026, an unrecorded anomaly splintered Yangon into two distinct realities. The Prime dimension continued its rapid technological ascent. The Echo dimension fell into silent ruin, governed by archaic forces.</p>
+                    <p>You are the bridge. The artifact you carry binds you to both planes simultaneously. To save one is to doom the other. The calculation is yours to make.</p>
+                </div>
+                <div class="lore-visual reveal delay-1">
+                    <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop" alt="Abstract Data Anomaly">
+                    <div class="lore-data">SYS.ANOMALY.DETECTED</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resonance" class="resonance-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">06 // Audio Diagnostics</span>
+                <h2 class="section-title">Resonance.</h2>
+                <p class="section-subtitle">Real-time acoustic analysis of the Echo dimension. Play to initialize hardware visualizer analysis.</p>
+            </div>
+
+            <div class="resonance-wrapper reveal delay-1">
+                <div class="track-list" id="trackList">
+                    <div class="track-item active" data-src="./audios/main_theme.mp3">
+                        <div class="track-info">
+                            <span class="track-title">Initiation</span>
+                            <span class="track-act">Act I Theme</span>
+                        </div>
+                        <span class="track-status">Loaded</span>
+                    </div>
+                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/sci_fi_hover.ogg">
+                        <div class="track-info">
+                            <span class="track-title">Divergence</span>
+                            <span class="track-act">Act II Theme</span>
+                        </div>
+                        <span class="track-status">Standby</span>
+                    </div>
+                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/spaceshipturn1.ogg">
+                        <div class="track-info">
+                            <span class="track-title">The Crucible</span>
+                            <span class="track-act">Act III Theme</span>
+                        </div>
+                        <span class="track-status">Standby</span>
+                    </div>
+                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/spaceshipsweep3.ogg">
+                        <div class="track-info">
+                            <span class="track-title">Singularity</span>
+                            <span class="track-act">Act IV Theme</span>
+                        </div>
+                        <span class="track-status">Standby</span>
+                    </div>
+                    <div class="track-item" data-src="https://actions.google.com/sounds/v1/science_fiction/alien_beam.ogg">
+                        <div class="track-info">
+                            <span class="track-title">Echoes</span>
+                            <span class="track-act">Act V Theme</span>
+                        </div>
+                        <span class="track-status">Standby</span>
+                    </div>
+                </div>
+
+                <div class="player-container">
+                    <canvas id="visualizerCanvas"></canvas>
+                    <button class="play-btn-circle" id="playToggleBtn">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <audio id="resonanceAudio" crossorigin="anonymous"></audio>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="specs" class="specs-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">07 // System Config</span>
+                <h2 class="section-title">Tech Specs.</h2>
+                <p class="section-subtitle">Scalable architecture supporting mid-tier terminals up to high-end processing units, with seamless integration for mobile and tablet touch interfaces. Laptop or desktop recommended for maximum immersion.</p>
+            </div>
+            
+            <div class="specs-grid reveal delay-1">
+                <div class="spec-col">
+                    <h3>Minimum Requirements</h3>
+                    <div class="spec-item">
+                        <span class="spec-label">Platform Support</span>
+                        <span class="spec-value">Mobile (iOS/Android), Tablet, Low/Mid-tier PC</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Processor</span>
+                        <span class="spec-value">Intel Core i3 / AMD Ryzen 3 / A13 Bionic</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Memory</span>
+                        <span class="spec-value">4 GB RAM</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Graphics</span>
+                        <span class="spec-value">Integrated Graphics / GTX 1050 / RX 560</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Storage</span>
+                        <span class="spec-value">15 GB available space</span>
+                    </div>
+                </div>
+                <div class="spec-col">
+                    <h3>Recommended Configuration</h3>
+                    <div class="spec-item">
+                        <span class="spec-label">Platform Support</span>
+                        <span class="spec-value">Desktop, High-End Laptop, Premium Tablet</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Processor</span>
+                        <span class="spec-value">Intel Core i7 / AMD Ryzen 7 / M2 Chip</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Memory</span>
+                        <span class="spec-value">16 GB RAM</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Graphics</span>
+                        <span class="spec-value">NVIDIA RTX 3060 / AMD RX 6700 XT</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Storage</span>
+                        <span class="spec-value">15 GB available space (NVMe SSD)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="roadmap" class="roadmap-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">08 // Timeline</span>
+                <h2 class="section-title">Roadmap.</h2>
+            </div>
+
+            <div class="roadmap-container reveal delay-1">
+                <div class="roadmap-item active">
+                    <span class="roadmap-date">Act I - Initiation</span>
+                    <h3 class="roadmap-title">The Anomaly Protocol</h3>
+                    <p class="roadmap-desc">Core dual-reality mechanics implemented. The inciting incident is deployed to early access testers for physics and narrative tree evaluation.</p>
+                </div>
+                <div class="roadmap-item">
+                    <span class="roadmap-date">Act II - Divergence</span>
+                    <h3 class="roadmap-title">Echo Expansion</h3>
+                    <p class="roadmap-desc">Integrating advanced NPC Quantum State AI. Expansion of the Echo dimension map and full implementation of consequence nodes.</p>
+                </div>
+                <div class="roadmap-item">
+                    <span class="roadmap-date">Act III - The Crucible</span>
+                    <h3 class="roadmap-title">Beta Access</h3>
+                    <p class="roadmap-desc">Opening servers to Waitlist members. Server stress testing, bug isolation, and final voice acting implementation mapping the climax choices.</p>
+                </div>
+                <div class="roadmap-item">
+                    <span class="roadmap-date">Act IV - Singularity</span>
+                    <h3 class="roadmap-title">Global Deployment</h3>
+                    <p class="roadmap-desc">Full 1.0 release across all designated platforms. The timelines merge and the final consequences of user choices become permanent.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">09 // Knowledge Base</span>
+                <h2 class="section-title">FAQ.</h2>
+            </div>
+
+            <div class="faq-list reveal delay-1">
+                <details class="faq-item" open>
+                    <summary>Is an internet connection required to play? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        No, the core narrative experience is fully playable offline. An internet connection is only required for initial verification, cloud saves, and syncing your anomaly logs to the global leaderboards.
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Will choices from the Beta carry over? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        Due to the cascading nature of our choice architecture, Beta saves will not be compatible with the final 1.0 release structure. All timelines will be reset upon global deployment.
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Is there multiplayer or co-op? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        The Betweens is strictly a single-player narrative experience. However, an asynchronous global system will show you the percentage of other players who made the same timeline-altering decisions as you.
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Will there be mod support? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        Official mod tools are planned post-launch. We intend to give the community access to our node-based narrative engine to create custom Echo dimension scenarios.
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Can I replay specific chapters to alter the timeline? <span class="faq-icon"></span></summary>
+                    <div class="faq-content">
+                        Yes, a "Quantum Rewind" feature unlocks upon your first full playthrough. This allows you to revisit specific pivot points without erasing your core timeline, enabling exploration of alternate consequences.
+                    </div>
+                </details>
+            </div>
+            
+            <div class="reveal delay-2">
+                <a href="faqs.html" class="btn-more-faq">View Full Knowledge Base</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="waitlist" class="waitlist-section">
+        <div class="container">
+            <div class="waitlist-wrapper reveal">
+                <div class="section-header" style="align-items: center; text-align: center; margin-bottom: 24px;">
+                    <span class="section-label" style="justify-content: center;">10 // Access Protocol</span>
+                    <h2 class="section-title">Join the Vanguard.</h2>
+                </div>
+                <p style="color: var(--text-secondary); max-width: 500px; font-size: 1.1rem; line-height: 1.6;">
+                    Secure your position in the Act III Beta rollout. Transmission of credentials will notify our servers of your intent.
+                </p>
+                
+                <form id="waitlistForm" class="waitlist-form">
+                    <input type="email" name="email" class="waitlist-input" placeholder="Enter your email address" required>
+                    <button type="submit" class="waitlist-btn">Request Access</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info reveal">
+                    <div class="section-header" style="margin-bottom: 40px;">
+                        <span class="section-label">11 // Comms</span>
+                        <h2 class="section-title">Link.</h2>
+                    </div>
+                    <p>Report anomalies, suggest structural changes, or contact the core developer. Submissions open the native client perfectly formatted.</p>
+
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </div>
+                            <div class="contact-text">
+                                <a href="mailto:contact@htetzawpaing.site">contact@htetzawpaing.site</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            </div>
+                            <div class="contact-text">
+                                <a href="http://www.htetzawpaing.site" target="_blank">htetzawpaing.site</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal delay-1">
+                    <form id="contactForm" class="contact-form">
+                        <input type="text" name="subject" class="form-input" placeholder="Transmission Subject" required>
+                        <textarea name="body" class="form-input" placeholder="Enter log data..." required></textarea>
+                        <button type="submit" class="btn-submit">Transmit Data</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>The Betweens</h3>
+                    <p>A narrative-driven parallel universe experience. Your choices dictate the reality.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Index</h4>
+                    <ul>
+                        <li><a href="#hero">Overview</a></li>
+                        <li><a href="#carousel">Environments</a></li>
+                        <li><a href="#mechanics">Systems</a></li>
+                        <li><a href="#entities">Entities</a></li>
+                        <li><a href="#lore">Archive</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Operations</h4>
+                    <ul>
+                        <li><a href="#roadmap">Roadmap</a></li>
+                        <li><a href="faqs.html">Knowledge Base</a></li>
+                        <li><a href="#specs">Requirements</a></li>
+                        <li><a href="#contact">Comms</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Legal & Protocol</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="cookies.html">Cookie Directive</a></li>
+                        <li><a href="http://www.htetzawpaing.site" target="_blank">Developer Portfolio</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="copyright">
+                    © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH NAPIER UNIVERSITY.
+                </div>
+                <div class="social-icons">
+                    <a href="#" aria-label="Discord" class="social-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+                    </a>
+                    <a href="#" aria-label="Telegram" class="social-icon">
+                        <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    </a>
+                    <a href="http://www.htetzawpaing.site" target="_blank" aria-label="Website" class="social-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    document.body.classList.remove('loading');
+                    document.getElementById('hero').classList.add('loaded');
+                }, 800);
+            }, 500);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.getElementById('navbar');
+            const navLinksContainer = document.getElementById('navLinks');
+            const links = navLinksContainer.querySelectorAll('a.nav-link, a.mega-link');
+            const sections = document.querySelectorAll('section, header');
+            const playNavBtn = document.querySelector('.navbar .btn-play-now');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                    playNavBtn.style.display = 'block';
+                } else {
+                    navbar.classList.remove('scrolled');
+                    if (window.innerWidth > 768) {
+                        playNavBtn.style.display = 'none';
+                    }
+                }
+            });
+
+            if (window.innerWidth <= 768) {
+                playNavBtn.style.display = 'none';
+            }
+
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const overviewItem = document.querySelector('.nav-item-has-mega');
+            
+            mobileBtn.addEventListener('click', () => {
+                navLinksContainer.classList.toggle('mobile-active');
+                mobileBtn.classList.toggle('active');
+                if(!navLinksContainer.classList.contains('mobile-active')) {
+                    overviewItem.classList.remove('active');
+                }
+            });
+
+            overviewItem.addEventListener('click', (e) => {
+                if(window.innerWidth <= 768) {
+                    if(e.target.closest('.overview-toggle')) {
+                        e.preventDefault();
+                        overviewItem.classList.toggle('active');
+                    }
+                }
+            });
+
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768 && (!link.classList.contains('nav-link') || link.getAttribute('href') !== '#hero')) {
+                        navLinksContainer.classList.remove('mobile-active');
+                        overviewItem.classList.remove('active');
+                        mobileBtn.classList.remove('active');
+                    }
+                });
+            });
+
+            const contactForm = document.getElementById('contactForm');
+            if(contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const subject = contactForm.querySelector('[name="subject"]').value;
+                    const body = contactForm.querySelector('[name="body"]').value;
+                    window.location.href = `mailto:contact@htetzawpaing.site?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    
+                    const btn = contactForm.querySelector('.btn-submit');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = 'Transmitting...';
+                    setTimeout(() => { btn.innerHTML = originalText; contactForm.reset(); }, 2000);
+                });
+            }
+
+            const waitlistForm = document.getElementById('waitlistForm');
+            if(waitlistForm) {
+                waitlistForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = waitlistForm.querySelector('[name="email"]').value;
+                    const subject = "Early Access Request";
+                    const body = `Requesting Phase 3 Beta Access for: ${email}\n\nInitiating Vanguard Protocol.`;
+                    window.location.href = `mailto:contact@htetzawpaing.site?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    
+                    const btn = waitlistForm.querySelector('.waitlist-btn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = 'Credentials Sent';
+                    setTimeout(() => { btn.innerHTML = originalText; waitlistForm.reset(); }, 2000);
+                });
+            }
+
+            const heroVideo = document.getElementById('heroVideo');
+            window.addEventListener('scroll', () => {
+                const scrolled = window.scrollY;
+                if (scrolled < window.innerHeight) {
+                    heroVideo.style.transform = `scale(1) translateY(${scrolled * 0.4}px)`;
+                }
+            });
+
+            const track = document.getElementById('carouselTrack');
+            const slides = Array.from(track.children);
+            const nextBtn = document.getElementById('btnNext');
+            const prevBtn = document.getElementById('btnPrev');
+            const dotsNav = document.getElementById('carouselPagination');
+            
+            let currentSlideIndex = 0;
+            const slideCount = slides.length;
+            let slideInterval;
+
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (index === 0) dot.classList.add('active');
+                dot.dataset.index = index;
+                dotsNav.appendChild(dot);
+            });
+            const dots = Array.from(dotsNav.children);
+
+            const updateCarousel = (index) => {
+                currentSlideIndex = index;
+                
+                const trackWrapper = track.parentElement;
+                const wrapperCenter = trackWrapper.offsetWidth / 2;
+                const slide = slides[index];
+                
+                const slideCenterOffset = slide.offsetLeft + (slide.offsetWidth / 2);
+                const transformValue = wrapperCenter - slideCenterOffset;
+                
+                track.style.transform = `translateX(${transformValue}px)`;
+                
+                slides.forEach(s => s.classList.remove('active'));
+                dots.forEach(d => d.classList.remove('active'));
+                
+                slide.classList.add('active');
+                dots[index].classList.add('active');
+            };
+
+            setTimeout(() => updateCarousel(0), 150);
+            window.addEventListener('resize', () => updateCarousel(currentSlideIndex));
+
+            const nextSlide = () => {
+                let nextIndex = currentSlideIndex + 1;
+                if (nextIndex >= slideCount) nextIndex = 0;
+                updateCarousel(nextIndex);
+            };
+
+            const prevSlide = () => {
+                let prevIndex = currentSlideIndex - 1;
+                if (prevIndex < 0) prevIndex = slideCount - 1;
+                updateCarousel(prevIndex);
+            };
+
+            nextBtn.addEventListener('click', () => { nextSlide(); resetInterval(); });
+            prevBtn.addEventListener('click', () => { prevSlide(); resetInterval(); });
+            
+            dotsNav.addEventListener('click', e => {
+                const targetDot = e.target.closest('.dot');
+                if (!targetDot) return;
+                updateCarousel(parseInt(targetDot.dataset.index));
+                resetInterval();
+            });
+
+            slides.forEach((slide, index) => {
+                slide.addEventListener('click', () => {
+                    if (currentSlideIndex !== index) {
+                        updateCarousel(index);
+                        resetInterval();
+                    }
+                });
+            });
+
+            const startInterval = () => { slideInterval = setInterval(nextSlide, 8000); };
+            const resetInterval = () => { clearInterval(slideInterval); startInterval(); };
+            startInterval();
+
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                });
+            }, revealOptions);
+
+            document.querySelectorAll('.reveal').forEach(reveal => {
+                revealObserver.observe(reveal);
+            });
+            
+            const detailsElements = document.querySelectorAll('details.faq-item');
+            detailsElements.forEach(targetDetail => {
+                targetDetail.addEventListener('click', () => {
+                    detailsElements.forEach(detail => {
+                        if (detail !== targetDetail) {
+                            detail.removeAttribute('open');
+                        }
+                    });
+                });
+            });
+
+            const audioEl = document.getElementById('resonanceAudio');
+            const playBtn = document.getElementById('playToggleBtn');
+            const trackItems = document.querySelectorAll('.track-item');
+            const canvas = document.getElementById('visualizerCanvas');
+            const canvasCtx = canvas.getContext('2d');
+            
+            let audioContext;
+            let analyser;
+            let sourceNode;
+            let dataArray;
+            let bufferLength;
+            let animationId;
+            let isPlaying = false;
+            let isContextInitialized = false;
+
+            const setupWebAudio = () => {
+                if(isContextInitialized) return;
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                sourceNode = audioContext.createMediaElementSource(audioEl);
+                sourceNode.connect(analyser);
+                analyser.connect(audioContext.destination);
+                analyser.fftSize = 64;
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                isContextInitialized = true;
+            };
+
+            const drawVisualizer = () => {
+                animationId = requestAnimationFrame(drawVisualizer);
+                
+                canvas.width = canvas.parentElement.offsetWidth;
+                canvas.height = canvas.parentElement.offsetHeight;
+
+                analyser.getByteFrequencyData(dataArray);
+
+                canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const barWidth = (canvas.width / bufferLength) * 2;
+                let barHeight;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i] / 2.5; 
+
+                    canvasCtx.fillStyle = `rgba(255, 255, 255, ${0.4 + (barHeight/150)})`;
+                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+
+                    x += barWidth;
+                }
+            };
+
+            const togglePlay = () => {
+                if(!audioEl.src) {
+                    loadTrack(trackItems[0]);
+                }
+                
+                if (audioEl.paused) {
+                    setupWebAudio();
+                    if(audioContext.state === 'suspended') audioContext.resume();
+                    audioEl.play().catch(e => console.error("Playback failed:", e));
+                    playBtn.classList.add('playing');
+                    playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                    isPlaying = true;
+                    if(!animationId) drawVisualizer();
+                } else {
+                    audioEl.pause();
+                    playBtn.classList.remove('playing');
+                    playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                    isPlaying = false;
+                }
+            };
+
+            const loadTrack = (item) => {
+                trackItems.forEach(t => {
+                    t.classList.remove('active');
+                    t.querySelector('.track-status').innerText = 'Standby';
+                });
+                
+                item.classList.add('active');
+                item.querySelector('.track-status').innerText = 'Loaded';
+                
+                audioEl.src = item.dataset.src;
+                audioEl.load();
+                
+                if (isPlaying) {
+                    audioEl.play().catch(e => console.error("Playback failed:", e));
+                }
+            };
+
+            playBtn.addEventListener('click', togglePlay);
+
+            trackItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    if(!item.classList.contains('active')) {
+                        loadTrack(item);
+                        if(!isPlaying) togglePlay(); 
+                    }
+                });
+            });
+
+            audioEl.addEventListener('ended', () => {
+                playBtn.classList.remove('playing');
+                playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                isPlaying = false;
+            });
+            
+            audioEl.src = trackItems[0].dataset.src;
+        });
+    </script>
+</body>
+</html>

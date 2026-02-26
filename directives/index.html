@@ -370,8 +370,25 @@
         .hero {
             position: relative;
             padding: calc(var(--nav-height) + 120px) 0 80px;
-            border-bottom: 1px solid var(--border-color);
             z-index: 1;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: url('../images/items/footer.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* Dark at top for navbar, clear in middle, pure bg-base at bottom to blend seamlessly */
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 25%, rgba(0, 0, 0, 0.3) 70%, var(--bg-base) 100%);
         }
 
         .hero-content {
@@ -503,13 +520,30 @@
 
         /* --- FOOTER --- */
         .footer { 
-            background: var(--bg-surface); 
             padding: 80px 0 40px; 
             border-top: 1px solid var(--border-color); 
             z-index: 1;
             position: relative;
+            overflow: hidden;
         }
         
+        .footer-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: url('');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .footer-bg::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, var(--bg-surface) 100%);
+        }
+
         .footer-grid { 
             display: grid; 
             grid-template-columns: 2fr 1fr 1fr 1fr; 
@@ -630,23 +664,23 @@
 
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">The Betweens</a>
+            <a href="/the_betweens/index.html" class="nav-logo">The Betweens</a>
 
             <div class="nav-links" id="navLinks">
                 <div class="nav-item-has-mega">
-                    <a href="index.html" class="nav-link overview-toggle">
+                    <a href="/the_betweens/index.html" class="nav-link overview-toggle">
                         Overview
                         <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
                     </a>
                     <div class="mega-menu">
                         <div class="mega-menu-inner">
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#carousel" class="mega-link">Environments</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#mechanics" class="mega-link">Systems</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#entities" class="mega-link">Entities</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#gallery" class="mega-link">Visual Archives</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#lore" class="mega-link">Archive</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#resonance" class="mega-link">Resonance</a>
-                            <a href="https://htet-zaw-paing.github.io/the_betweens/#contact" class="mega-link">Comms</a>
+                            <a href="/the_betweens/#carousel" class="mega-link">Environments</a>
+                            <a href="/the_betweens/#mechanics" class="mega-link">Systems</a>
+                            <a href="/the_betweens/#entities" class="mega-link">Entities</a>
+                            <a href="/the_betweens/#gallery" class="mega-link">Visual Archives</a>
+                            <a href="/the_betweens/#lore" class="mega-link">Archive</a>
+                            <a href="/the_betweens/#resonance" class="mega-link">Resonance</a>
+                            <a href="/the_betweens/#contact" class="mega-link">Comms</a>
                         </div>
                     </div>
                 </div>
@@ -657,15 +691,15 @@
                     </a>
                     <div class="mega-menu">
                         <div class="mega-menu-inner">
-                            <a href="../origin/#game" class="mega-link">The Game</a>
-                            <a href="../origin/#characters" class="mega-link">Characters</a>
-                            <a href="../origin/#chapters" class="mega-link">Chapters</a>
-                            <a href="../origin/#developer" class="mega-link">Developer</a>
+                            <a href="/the_betweens/origin/#game" class="mega-link">The Game</a>
+                            <a href="/the_betweens/origin/#characters" class="mega-link">Characters</a>
+                            <a href="/the_betweens/origin/#chapters" class="mega-link">Chapters</a>
+                            <a href="/the_betweens/origin/#developer" class="mega-link">Developer</a>
                         </div>
                     </div>
                 </div>
-                <a href="../knowledge-base" class="nav-link">Knowledge Base</a>
-                <a href="../directives" class="nav-link active">Directives</a>
+                <a href="/the_betweens/knowledge-base" class="nav-link">Knowledge Base</a>
+                <a href="/the_betweens/directives" class="nav-link active">Directives</a>
             </div>
 
             <div class="nav-actions" style="display: flex; gap: 24px; align-items: center;">
@@ -678,6 +712,7 @@
     </nav>
 
     <header class="hero" id="hero">
+        <div class="hero-bg"></div>
         <div class="container">
             <div class="hero-content">
                 <span class="section-label" style="justify-content: center; margin-bottom: 24px;">Security & Integrity</span>
@@ -761,6 +796,7 @@
     </section>
 
     <footer class="footer">
+        <div class="footer-bg"></div>
         <div class="footer-grid">
             <div class="footer-brand">
                 <h3>The Betweens</h3>
