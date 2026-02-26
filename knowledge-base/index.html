@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Betweens | Knowledge Base</title>
-    <link rel="icon" href="../images/items/favicon.png">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>The Betweens | Knowledge Base</title>
+        <link rel="icon" href="../images/items/favicon.png">
+        <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
         :root {
@@ -842,466 +842,706 @@
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
     </style>
-</head>
-<body class="loading">
+    </head>
+    <body class="loading">
 
-    <div id="preloader">
-        <div class="preloader-line"></div>
-        <div class="preloader-text">Fetching System Directives...</div>
-    </div>
+        <div id="preloader">
+            <div class="preloader-line"></div>
+            <div class="preloader-text">Fetching System Directives...</div>
+        </div>
 
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/the_betweens/" class="nav-logo">The Betweens</a>
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <a href="/the_betweens/" class="nav-logo">The Betweens</a>
 
-            <div class="nav-links" id="navLinks">
-                <div class="nav-item-has-mega">
-                    <a href="/the_betweens/" class="nav-link overview-toggle">
-                        Overview
-                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                <div class="nav-links" id="navLinks">
+                    <div class="nav-item-has-mega">
+                        <a href="/the_betweens/"
+                            class="nav-link overview-toggle">
+                            Overview
+                            <svg class="dropdown-icon" viewBox="0 0 24 24"><path
+                                    d="M6 9l6 6 6-6" stroke="currentColor"
+                                    stroke-width="2" fill="none" /></svg>
+                        </a>
+                        <div class="mega-menu">
+                            <div class="mega-menu-inner">
+                                <a href="/the_betweens/#carousel"
+                                    class="mega-link">Environments</a>
+                                <a href="/the_betweens/#mechanics"
+                                    class="mega-link">Systems</a>
+                                <a href="/the_betweens/#entities"
+                                    class="mega-link">Entities</a>
+                                <a href="/the_betweens/#gallery"
+                                    class="mega-link">Visual Archives</a>
+                                <a href="/the_betweens/#lore"
+                                    class="mega-link">Archive</a>
+                                <a href="/the_betweens/#resonance"
+                                    class="mega-link">Resonance</a>
+                                <a href="/the_betweens/#contact"
+                                    class="mega-link">Comms</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-item-has-mega">
+                        <a href="/the_betweens/origin" class="nav-link">
+                            Origin
+                            <svg class="dropdown-icon" viewBox="0 0 24 24"><path
+                                    d="M6 9l6 6 6-6" stroke="currentColor"
+                                    stroke-width="2" fill="none" /></svg>
+                        </a>
+                        <div class="mega-menu">
+                            <div class="mega-menu-inner">
+                                <a href="/the_betweens/origin/#game"
+                                    class="mega-link">The Game</a>
+                                <a href="/the_betweens/origin/#characters"
+                                    class="mega-link">Characters</a>
+                                <a href="/the_betweens/origin/#chapters"
+                                    class="mega-link">Chapters</a>
+                                <a href="/the_betweens/origin/#developer"
+                                    class="mega-link">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/the_betweens/knowledge-base"
+                        class="nav-link active origin-toggle">Knowledge Base</a>
+                    <a href="/the_betweens/directives"
+                        class="nav-link">Directives</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; gap: 24px; align-items: center;">
+                    <a href="/the_betweens/game" class="btn-play-now"
+                        style="display: none;">Play Now</a>
+                    <div class="mobile-menu-btn" id="mobileMenuBtn">
+                        <span></span><span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <header class="hero" id="hero">
+            <div class="hero-bg"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <span class="section-label"
+                        style="justify-content: center; margin-bottom: 24px;">00
+                        // Global Data</span>
+                    <h1 class="hero-title">Knowledge Base</h1>
+                    <p class="hero-desc">System inquiries and architectural
+                        parameters. Access classified operational protocols.</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="faq-page-section">
+            <div class="container">
+
+                <!-- ADVANCED SEARCH -->
+                <div class="search-container reveal">
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="faqSearch" class="search-input"
+                            placeholder="Query the database..."
+                            autocomplete="off">
+                        <div class="search-line"></div>
+                    </div>
+                    <div class="search-dropdown" id="searchDropdown">
+                        <!-- Dynamic Search Results -->
+                    </div>
+                </div>
+
+                <div class="faq-block reveal delay-1" id="faqBlock">
+
+                    <details class="faq-details" id="faq-1" open>
+                        <summary>What constitutes the core experience of
+                            "The Betweens"? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                "The Betweens" is a cinematic narrative
+                                experience set against the backdrop of Yangon,
+                                Myanmar. You navigate the journey of Tayza, an
+                                IT student who uncovers a dimensional fracture
+                                via a mysterious artifact. Your navigational
+                                choices dictate the stability of both realities,
+                                intertwining deeply personal family dynamics
+                                with high-stakes urban fantasy.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-2">
+                        <summary>Who serves as the primary anchor in this
+                            narrative? <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                <strong>Tayza.</strong> A 21-year-old IT student
+                                at Info Myanmar University. He operates with
+                                calculated logic but remains emotionally
+                                guarded. As the central protagonist, the entire
+                                causal nexus of the simulation revolves around
+                                his systemic decisions.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-3">
+                        <summary>What other entities populate the simulation?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">The architecture includes
+                                several critical variables:</p>
+                            <div class="faq-list-items">
+                                <div class="faq-list-item">Nay Chi –
+                                    Architecture student & emotional guide in
+                                    the Echo dimension</div>
+                                <div class="faq-list-item">Daw Mya Thandar – The
+                                    caring, traditional matriarch</div>
+                                <div class="faq-list-item">U Aung Myint – The
+                                    responsible and proud patriarch</div>
+                                <div class="faq-list-item">Ko Thiha – Tayza’s
+                                    highly protective, sarcastic older
+                                    brother</div>
+                                <div class="faq-list-item">The Collector – A
+                                    severe anomalous threat seeking the
+                                    artifact</div>
+                                <div class="faq-list-item">Ko Min & Sayadaw
+                                    Htein – Peripheral entities providing
+                                    critical guidance</div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-4">
+                        <summary>What is the function of the Catalyst (The
+                            Ring)? <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                The artifact acts as a quantum bridge between
+                                the Prime reality and the parallel "Echo"
+                                dimension. It is highly reactive to Tayza’s
+                                emotional state, functioning as a conduit to
+                                manipulate both planes of existence. Improper
+                                utilization dictates fatal structural outcomes.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-5">
+                        <summary>How many divergence endpoints exist within the
+                            architecture? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">The system currently tracks
+                                three primary resolution states:</p>
+                            <div class="faq-list-items">
+                                <div class="faq-list-item">Stabilized (Happy) –
+                                    Balance restored; the core family unit is
+                                    protected.</div>
+                                <div class="faq-list-item">Collapse (Sad) –
+                                    Systemic failure driven by fear, resulting
+                                    in the dissolution of the parallel
+                                    world.</div>
+                                <div class="faq-list-item">Classified (Secret) –
+                                    Unlocked via uncovering hidden artifact
+                                    lore, leading to absolute sacrifice.</div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-6">
+                        <summary>What are the primary geographical coordinates?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                The simulation maps directly to Yangon, Myanmar.
+                                Key rendered nodes include Sule Pagoda,
+                                Shwedagon Pagoda, Kandawgyi Lake, and the
+                                downtown sectors. The parallel Echo dimension
+                                mirrors these coordinates but features severe
+                                architectural distortions, eerie atmospheric
+                                lighting, and anomalous entities.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-7">
+                        <summary>Does the system permit user intervention? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                <strong>Affirmative.</strong> The architecture
+                                is entirely choice-driven. Your decisions act as
+                                input variables that actively manipulate the
+                                environment, the survival of associated
+                                entities, and the final structural endpoint you
+                                inherit.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-23">
+                        <summary>Is this a fully single-player experience? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Yes. The experience is architected as a
+                                single-user narrative simulation. No multiplayer
+                                dependency exists within the core framework.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-24">
+                        <summary>Does the game require constant internet
+                            connectivity? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                No. Full narrative execution is available
+                                offline. Internet is only required for updates,
+                                optional cloud saves, and analytics
+                                synchronization (if enabled).
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-25">
+                        <summary>Is user data collected during gameplay? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Minimal operational data may be collected for
+                                performance optimization and crash diagnostics.
+                                No personal identity data is harvested without
+                                explicit user consent.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-26">
+                        <summary>What type of data is processed? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                System logs, device performance metrics,
+                                anonymous gameplay progression markers, and
+                                optional cloud save metadata. No biometric,
+                                financial, or private communications are
+                                accessed.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-27">
+                        <summary>Is player data shared with third parties? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                No personal gameplay data is sold. Limited
+                                third-party integrations (e.g., platform
+                                distribution services) may process anonymized
+                                technical data strictly for operational
+                                functionality.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-28">
+                        <summary>Is the narrative ethically constructed? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Yes. Cultural elements of Myanmar are
+                                represented respectfully. Sensitive themes such
+                                as family pressure, sacrifice, and emotional
+                                distress are handled with narrative
+                                responsibility and non-exploitative framing.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-29">
+                        <summary>Does the game include political messaging?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                No direct political advocacy is embedded. The
+                                setting reflects Yangon as a cultural and urban
+                                environment rather than a political commentary
+                                framework.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-30">
+                        <summary>Are microtransactions implemented? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                No pay-to-win mechanics exist. Any future
+                                downloadable content will be clearly disclosed
+                                and optional.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-31">
+                        <summary>Does the system use AI-generated components?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Certain cinematic voice synthesis and adaptive
+                                environmental behaviors may utilize AI-assisted
+                                tools. Core story writing and creative direction
+                                remain human-authored.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-32">
+                        <summary>What age rating is recommended? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Recommended for ages 13+. Themes include
+                                psychological tension, emotional conflict, and
+                                existential consequence but exclude explicit
+                                violence or graphic content.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-33">
+                        <summary>Are there accessibility options? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Subtitle scaling, language toggling (English /
+                                Myanmar), brightness adjustment, and audio level
+                                customization are supported. Future updates may
+                                expand accessibility modules.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-34">
+                        <summary>What are the system requirements? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Optimized for mid-range PC and modern mobile
+                                devices. A dedicated GPU enhances cinematic
+                                lighting fidelity but is not mandatory for
+                                baseline execution.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-35">
+                        <summary>Is cloud save functionality available? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Optional cloud synchronization is available for
+                                supported platforms. Users may opt-out and
+                                retain local save storage only.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-36">
+                        <summary>Can player decisions permanently alter
+                            outcomes? <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Yes. The architecture uses irreversible
+                                branching at critical narrative nodes. Certain
+                                decisions cannot be undone within the same
+                                simulation cycle.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-37">
+                        <summary>Is there a happy ending? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Yes. A Stabilized resolution state exists. It
+                                requires emotional maturity, balanced
+                                decision-making, and preservation of key
+                                relational bonds.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-38">
+                        <summary>Is there a tragic ending? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Yes. Collapse states are triggered by
+                                fear-dominant decision pathways, leading to
+                                irreversible dimensional destabilization.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-39">
+                        <summary>Is there a hidden or secret resolution state?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Yes. Classified narrative endpoints exist and
+                                require precise artifact lore discovery and
+                                optimal cross-dimensional stability metrics.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-40">
+                        <summary>Does the game promote harmful behavior? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                No. The narrative emphasizes responsibility,
+                                emotional growth, and consequence awareness
+                                rather than glorifying destructive actions.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-41">
+                        <summary>Is user content (UGC) supported? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                At present, custom modding or user-generated
+                                narrative branches are not supported in the base
+                                architecture.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-42">
+                        <summary>What happens if the system crashes? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Auto-save checkpoints are embedded at structured
+                                intervals. Crash recovery restores the last
+                                validated state to minimize progress loss.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-43">
+                        <summary>Is the intellectual property protected? <span
+                                class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                All story, characters, visual assets, and
+                                narrative structures are protected under
+                                applicable copyright frameworks. Unauthorized
+                                distribution or replication is prohibited.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-44">
+                        <summary>Will future expansions alter the core
+                            narrative? <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Future expansions may add prequel or sequel
+                                arcs. The foundational narrative of Tayza’s
+                                primary dimensional conflict will remain
+                                canonical.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-45">
+                        <summary>How can users request support or report issues?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                Users may contact official support channels via
+                                the website’s contact module. Verified reports
+                                are processed through structured review and
+                                update cycles.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-10">
+                        <summary>Is the architecture optimized for cinematic
+                            extraction? <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                <strong>Yes.</strong> The narrative framework is
+                                engineered for high-fidelity visual adaptation.
+                                It incorporates parameters for deep vocal
+                                sequences, dual-language (Myanmar/English)
+                                integration, epic acoustic scores, and a precise
+                                sequence built for cinematic visual
+                                storytelling.
+                            </p>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-11">
+                        <summary>What core thematic algorithms drive the
+                            narrative? <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">The engine calculates variables
+                                based on:</p>
+                            <div class="faq-list-items">
+                                <div class="faq-list-item">Internal conviction
+                                    versus systemic fear</div>
+                                <div class="faq-list-item">The resilience of
+                                    familial bonds</div>
+                                <div class="faq-list-item">Emotional maturation
+                                    and systemic responsibility</div>
+                                <div class="faq-list-item">The heavy burden of
+                                    absolute consequence</div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="faq-details" id="faq-12">
+                        <summary>Is there a textual archive of the narrative?
+                            <span class="faq-icon"></span></summary>
+                        <div class="faq-content">
+                            <p class="faq-text">
+                                <strong>Affirmative.</strong> The overarching
+                                sequence is documented utilizing a light novel
+                                format. This archive focuses on deep
+                                introspective logs, detailed topographical
+                                descriptions, and fantasy event records,
+                                perfectly structured for adaptation into a
+                                digital or cinematic medium.
+                            </p>
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>The Betweens</h3>
+                    <p>A narrative-driven parallel universe experience. Your
+                        choices dictate the reality.</p>
+                    <a href="mailto:contact@htetzawpaing.site">
+                        contact@htetzawpaing.site
                     </a>
-                    <div class="mega-menu">
-                        <div class="mega-menu-inner">
-                            <a href="/the_betweens/#carousel" class="mega-link">Environments</a>
-                            <a href="/the_betweens/#mechanics" class="mega-link">Systems</a>
-                            <a href="/the_betweens/#entities" class="mega-link">Entities</a>
-                            <a href="/the_betweens/#gallery" class="mega-link">Visual Archives</a>
-                            <a href="/the_betweens/#lore" class="mega-link">Archive</a>
-                            <a href="/the_betweens/#resonance" class="mega-link">Resonance</a>
-                            <a href="/the_betweens/#contact" class="mega-link">Comms</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="nav-item-has-mega">
-                    <a href="/the_betweens/origin" class="nav-link">
-                        Origin
-                        <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                    <a href="tel:+959456751882">
+                        +95 9 4567 51 882
                     </a>
-                    <div class="mega-menu">
-                        <div class="mega-menu-inner">
-                            <a href="/the_betweens/origin/#game" class="mega-link">The Game</a>
-                            <a href="/the_betweens/origin/#characters" class="mega-link">Characters</a>
-                            <a href="/the_betweens/origin/#chapters" class="mega-link">Chapters</a>
-                            <a href="/the_betweens/origin/#developer" class="mega-link">Developer</a>
-                        </div>
-                    </div>
+                    <a href="http://www.htetzawpaing.site" target="_blank">
+                        www.htetzawpaing.site
+                    </a>
                 </div>
-                <a href="/the_betweens/knowledge-base" class="nav-link active origin-toggle">Knowledge Base</a>
-                <a href="/the_betweens/directives" class="nav-link">Directives</a>
-            </div>
 
-            <div class="nav-actions" style="display: flex; gap: 24px; align-items: center;">
-                <a href="/the_betweens/game" class="btn-play-now" style="display: none;">Play Now</a>
-                <div class="mobile-menu-btn" id="mobileMenuBtn">
-                    <span></span><span></span>
+                <div class="footer-links">
+                    <h4>Index</h4>
+                    <ul>
+                        <li><a href="/the-betweens/"
+                                title="The Betweens Overview">Overview</a></li>
+                        <li><a href="/the-betweens/#carousel"
+                                title="The Betweens Environments">Environments</a></li>
+                        <li><a href="/the-betweens/#mechanics"
+                                title="The Betweens Systems">Systems</a></li>
+                        <li><a href="/the-betweens/#entities"
+                                title="The Betweens Entities">Entities</a></li>
+                        <li><a href="/the-betweens/#lore"
+                                title="The Betweens Game Lore">Archive</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Operations</h4>
+                    <ul>
+                        <li><a href="/the-betweens/#roadmap"
+                                title="The Betweens Development Roadmap">Roadmap</a></li>
+                        <li><a href="/the-betweens/knowledge-base/"
+                                title="The Betweens Game FAQs">Knowledge
+                                Base</a></li>
+                        <li><a href="/the-betweens/#specs"
+                                title="The Betweens System Requirements">Requirements</a></li>
+                        <li><a href="/the-betweens/#contact"
+                                title="Contact The Betweens Support">Comms</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Legal & Protocol</h4>
+                    <ul>
+                        <li><a href="/the-betweens/directives/"
+                                title="The Betweens Privacy Policy">Privacy
+                                Policy</a></li>
+                        <li><a href="/the-betweens/directives/"
+                                title="The Betweens Terms of Service">Terms
+                                of Service</a></li>
+                        <li><a href="/the-betweens/directives/"
+                                title="The Betweens Cookie Directive">Cookie
+                                Directive</a></li>
+                        <li><a href="http://www.htetzawpaing.site"
+                                target="_blank"
+                                title="Developer Portfolio Htet Zaw Paing">Developer
+                                Portfolio</a></li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </nav>
 
-    <header class="hero" id="hero">
-        <div class="hero-bg"></div>
-        <div class="container">
-            <div class="hero-content">
-                <span class="section-label" style="justify-content: center; margin-bottom: 24px;">00 // Global Data</span>
-                <h1 class="hero-title">Knowledge Base</h1>
-                <p class="hero-desc">System inquiries and architectural parameters. Access classified operational protocols.</p>
-            </div>
-        </div>
-    </header>
-
-    <section class="faq-page-section">
-        <div class="container">
-            
-            <!-- ADVANCED SEARCH -->
-            <div class="search-container reveal">
-                <div class="search-box">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" id="faqSearch" class="search-input" placeholder="Query the database..." autocomplete="off">
-                    <div class="search-line"></div>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH NAPIER
+                    UNIVERSITY.
                 </div>
-                <div class="search-dropdown" id="searchDropdown">
-                    <!-- Dynamic Search Results -->
+                <div class="social-icons">
+                    <a href="https://discord.com/users/1110430133707341894"
+                        aria-label="Discord for The Betweens"
+                        class="social-icon">
+                        <svg viewBox="0 0 24 24"><path
+                                d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z" /></svg>
+                    </a>
+                    <a href="commingsoon" aria-label="Telegram for The Betweens"
+                        class="social-icon">
+                        <svg viewBox="0 0 24 24"><path
+                                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
+                    </a>
+                    <a href="http://www.htetzawpaing.site" target="_blank"
+                        aria-label="Developer Website Htet Zaw Paing"
+                        class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#000000"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <ellipse cx="12" cy="12" rx="6" ry="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                        </svg>
+                    </a>
                 </div>
             </div>
+        </footer>
 
-            <div class="faq-block reveal delay-1" id="faqBlock">
-                
-                <details class="faq-details" id="faq-1" open>
-                    <summary>What constitutes the core experience of "The Betweens"? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            "The Betweens" is a cinematic narrative experience set against the backdrop of Yangon, Myanmar. You navigate the journey of Tayza, an IT student who uncovers a dimensional fracture via a mysterious artifact. Your navigational choices dictate the stability of both realities, intertwining deeply personal family dynamics with high-stakes urban fantasy.
-                        </p>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-2">
-                    <summary>Who serves as the primary anchor in this narrative? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            <strong>Tayza.</strong> A 21-year-old IT student at Info Myanmar University. He operates with calculated logic but remains emotionally guarded. As the central protagonist, the entire causal nexus of the simulation revolves around his systemic decisions.
-                        </p>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-3">
-                    <summary>What other entities populate the simulation? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">The architecture includes several critical variables:</p>
-                        <div class="faq-list-items">
-                            <div class="faq-list-item">Nay Chi – Architecture student & emotional guide in the Echo dimension</div>
-                            <div class="faq-list-item">Daw Mya Thandar – The caring, traditional matriarch</div>
-                            <div class="faq-list-item">U Aung Myint – The responsible and proud patriarch</div>
-                            <div class="faq-list-item">Ko Thiha – Tayza’s highly protective, sarcastic older brother</div>
-                            <div class="faq-list-item">The Collector – A severe anomalous threat seeking the artifact</div>
-                            <div class="faq-list-item">Ko Min & Sayadaw Htein – Peripheral entities providing critical guidance</div>
-                        </div>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-4">
-                    <summary>What is the function of the Catalyst (The Ring)? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            The artifact acts as a quantum bridge between the Prime reality and the parallel "Echo" dimension. It is highly reactive to Tayza’s emotional state, functioning as a conduit to manipulate both planes of existence. Improper utilization dictates fatal structural outcomes.
-                        </p>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-5">
-                    <summary>How many divergence endpoints exist within the architecture? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">The system currently tracks three primary resolution states:</p>
-                        <div class="faq-list-items">
-                            <div class="faq-list-item">Stabilized (Happy) – Balance restored; the core family unit is protected.</div>
-                            <div class="faq-list-item">Collapse (Sad) – Systemic failure driven by fear, resulting in the dissolution of the parallel world.</div>
-                            <div class="faq-list-item">Classified (Secret) – Unlocked via uncovering hidden artifact lore, leading to absolute sacrifice.</div>
-                        </div>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-6">
-                    <summary>What are the primary geographical coordinates? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            The simulation maps directly to Yangon, Myanmar. Key rendered nodes include Sule Pagoda, Shwedagon Pagoda, Kandawgyi Lake, and the downtown sectors. The parallel Echo dimension mirrors these coordinates but features severe architectural distortions, eerie atmospheric lighting, and anomalous entities.
-                        </p>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-7">
-                    <summary>Does the system permit user intervention? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            <strong>Affirmative.</strong> The architecture is entirely choice-driven. Your decisions act as input variables that actively manipulate the environment, the survival of associated entities, and the final structural endpoint you inherit.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-23">
-                    <summary>Is this a fully single-player experience? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Yes. The experience is architected as a single-user narrative simulation. No multiplayer dependency exists within the core framework.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-24">
-                    <summary>Does the game require constant internet connectivity? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            No. Full narrative execution is available offline. Internet is only required for updates, optional cloud saves, and analytics synchronization (if enabled).
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-25">
-                    <summary>Is user data collected during gameplay? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Minimal operational data may be collected for performance optimization and crash diagnostics. No personal identity data is harvested without explicit user consent.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-26">
-                    <summary>What type of data is processed? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            System logs, device performance metrics, anonymous gameplay progression markers, and optional cloud save metadata. No biometric, financial, or private communications are accessed.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-27">
-                    <summary>Is player data shared with third parties? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            No personal gameplay data is sold. Limited third-party integrations (e.g., platform distribution services) may process anonymized technical data strictly for operational functionality.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-28">
-                    <summary>Is the narrative ethically constructed? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Yes. Cultural elements of Myanmar are represented respectfully. Sensitive themes such as family pressure, sacrifice, and emotional distress are handled with narrative responsibility and non-exploitative framing.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-29">
-                    <summary>Does the game include political messaging? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            No direct political advocacy is embedded. The setting reflects Yangon as a cultural and urban environment rather than a political commentary framework.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-30">
-                    <summary>Are microtransactions implemented? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            No pay-to-win mechanics exist. Any future downloadable content will be clearly disclosed and optional.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-31">
-                    <summary>Does the system use AI-generated components? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Certain cinematic voice synthesis and adaptive environmental behaviors may utilize AI-assisted tools. Core story writing and creative direction remain human-authored.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-32">
-                    <summary>What age rating is recommended? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Recommended for ages 13+. Themes include psychological tension, emotional conflict, and existential consequence but exclude explicit violence or graphic content.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-33">
-                    <summary>Are there accessibility options? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Subtitle scaling, language toggling (English / Myanmar), brightness adjustment, and audio level customization are supported. Future updates may expand accessibility modules.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-34">
-                    <summary>What are the system requirements? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Optimized for mid-range PC and modern mobile devices. A dedicated GPU enhances cinematic lighting fidelity but is not mandatory for baseline execution.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-35">
-                    <summary>Is cloud save functionality available? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Optional cloud synchronization is available for supported platforms. Users may opt-out and retain local save storage only.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-36">
-                    <summary>Can player decisions permanently alter outcomes? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Yes. The architecture uses irreversible branching at critical narrative nodes. Certain decisions cannot be undone within the same simulation cycle.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-37">
-                    <summary>Is there a happy ending? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Yes. A Stabilized resolution state exists. It requires emotional maturity, balanced decision-making, and preservation of key relational bonds.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-38">
-                    <summary>Is there a tragic ending? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Yes. Collapse states are triggered by fear-dominant decision pathways, leading to irreversible dimensional destabilization.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-39">
-                    <summary>Is there a hidden or secret resolution state? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Yes. Classified narrative endpoints exist and require precise artifact lore discovery and optimal cross-dimensional stability metrics.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-40">
-                    <summary>Does the game promote harmful behavior? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            No. The narrative emphasizes responsibility, emotional growth, and consequence awareness rather than glorifying destructive actions.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-41">
-                    <summary>Is user content (UGC) supported? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            At present, custom modding or user-generated narrative branches are not supported in the base architecture.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-42">
-                    <summary>What happens if the system crashes? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Auto-save checkpoints are embedded at structured intervals. Crash recovery restores the last validated state to minimize progress loss.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-43">
-                    <summary>Is the intellectual property protected? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            All story, characters, visual assets, and narrative structures are protected under applicable copyright frameworks. Unauthorized distribution or replication is prohibited.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-44">
-                    <summary>Will future expansions alter the core narrative? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Future expansions may add prequel or sequel arcs. The foundational narrative of Tayza’s primary dimensional conflict will remain canonical.
-                        </p>
-                    </div>
-                </details>
-                
-                <details class="faq-details" id="faq-45">
-                    <summary>How can users request support or report issues? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            Users may contact official support channels via the website’s contact module. Verified reports are processed through structured review and update cycles.
-                        </p>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-10">
-                    <summary>Is the architecture optimized for cinematic extraction? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            <strong>Yes.</strong> The narrative framework is engineered for high-fidelity visual adaptation. It incorporates parameters for deep vocal sequences, dual-language (Myanmar/English) integration, epic acoustic scores, and a precise sequence built for cinematic visual storytelling.
-                        </p>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-11">
-                    <summary>What core thematic algorithms drive the narrative? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">The engine calculates variables based on:</p>
-                        <div class="faq-list-items">
-                            <div class="faq-list-item">Internal conviction versus systemic fear</div>
-                            <div class="faq-list-item">The resilience of familial bonds</div>
-                            <div class="faq-list-item">Emotional maturation and systemic responsibility</div>
-                            <div class="faq-list-item">The heavy burden of absolute consequence</div>
-                        </div>
-                    </div>
-                </details>
-
-                <details class="faq-details" id="faq-12">
-                    <summary>Is there a textual archive of the narrative? <span class="faq-icon"></span></summary>
-                    <div class="faq-content">
-                        <p class="faq-text">
-                            <strong>Affirmative.</strong> The overarching sequence is documented utilizing a light novel format. This archive focuses on deep introspective logs, detailed topographical descriptions, and fantasy event records, perfectly structured for adaptation into a digital or cinematic medium.
-                        </p>
-                    </div>
-                </details>
-
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <h3>The Betweens</h3>
-                <p>A narrative-driven parallel universe experience. Your choices dictate the reality.</p>
-            </div>
-
-            <div class="footer-links">
-                <h4>Index</h4>
-                <ul>
-                    <li><a href="index.html#hero">Overview</a></li>
-                    <li><a href="index.html#carousel">Environments</a></li>
-                    <li><a href="index.html#mechanics">Systems</a></li>
-                    <li><a href="index.html#entities">Entities</a></li>
-                    <li><a href="index.html#lore">Archive</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links">
-                <h4>Operations</h4>
-                <ul>
-                    <li><a href="index.html#roadmap">Roadmap</a></li>
-                    <li><a href="faqs.html">Knowledge Base</a></li>
-                    <li><a href="index.html#specs">Requirements</a></li>
-                    <li><a href="index.html#contact">Comms</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links">
-                <h4>Legal & Protocol</h4>
-                <ul>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                    <li><a href="cookies.html">Cookie Directive</a></li>
-                    <li><a href="http://www.htetzawpaing.site" target="_blank">Developer Portfolio</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="copyright">
-                © 2026 HTET ZAW PAING. ALL RIGHTS RESERVED. EDINBURGH NAPIER UNIVERSITY.
-            </div>
-            <div class="social-icons">
-                <a href="#" aria-label="Discord" class="social-icon">
-                    <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
-                </a>
-                <a href="#" aria-label="Telegram" class="social-icon">
-                    <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                </a>
-                <a href="http://www.htetzawpaing.site" target="_blank" aria-label="Website" class="social-icon">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                </a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
+        <script>
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
             setTimeout(() => {
@@ -1550,5 +1790,5 @@
 
         });
     </script>
-</body>
+    </body>
 </html>
