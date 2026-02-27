@@ -443,7 +443,7 @@
         }
         
         .speaker-box {
-            position: absolute; top: -18px; left: 36px; background: #fff; color: #000; padding: 8px 24px;
+            position: absolute; top: -18px; left: 36px; background: #fff; color: #ffffff; padding: 8px 24px;
             font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 100px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); transition: opacity 0.3s;
         }
@@ -1084,6 +1084,191 @@
             </div>
         </div>
 
+        <!-- Credits Modal -->
+        <div id="credits-modal" class="modal-overlay hidden opacity-0">
+            <div class="modal-glass settings-window">
+                <div class="modal-header">
+                    <h2 class="modal-title">Official Credits, Legal Notice & Intellectual Property Statement</h2>
+                    <button onclick="game.closeCredits()" class="btn-close">
+                        <i data-lucide="x" style="width:20px;height:20px;"></i>
+                    </button>
+                </div>
+        
+                <div class="settings-scroll custom-scroll" style="max-height: 60vh; font-size: 14px; line-height: 1.8;">
+                    <div style="margin-bottom: 24px;">
+        
+                        <!-- Executive Leadership -->
+                        <p><strong>Executive Leadership & Project Ownership</strong></p>
+                        <p>
+                            Project Director, Lead Designer, System Architect & Principal Developer<br>
+                            <a href="https://www.htetzawpaing.site" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Htet Zaw Paing
+                            </a>
+                        </p>
+                        <p>
+                            Responsible for overall strategic direction, creative governance, 
+                            system architecture, full-stack development, UI/UX execution, 
+                            and final production deployment.
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Narrative -->
+                        <p><strong>Narrative Development & Scriptwriting</strong></p>
+                        <p>
+                            Storyline Architecture, Dialogue Composition & Narrative Design<br>
+                            <a href="https://www.htetzawpaing.site" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Htet Zaw Paing
+                            </a> | 
+                            <a href="https://discord.com/users/1116995391162945557" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Cassie
+                            </a>
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Innovation -->
+                        <p><strong>Innovation & Creative Strategy</strong></p>
+                        <p>
+                            Conceptual Development, Experience Design & Creative Direction<br>
+                            <a href="https://www.htetzawpaing.site" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Htet Zaw Paing
+                            </a>
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Visual Assets -->
+                        <p><strong>Visual Asset Resources & Image Libraries</strong></p>
+                        <p>
+                            <a href="https://www.pexels.com" target="_blank" style="color: #60a5fa; text-decoration: none;">Pexels</a> |
+                            <a href="https://www.pixabay.com" target="_blank" style="color: #60a5fa; text-decoration: none;">Pixabay</a> |
+                            <a href="https://www.freepik.com" target="_blank" style="color: #60a5fa; text-decoration: none;">Freepik</a> |
+                            <a href="https://gemini.google.com" target="_blank" style="color: #60a5fa; text-decoration: none;">Gemini (Google AI)</a>
+                        </p>
+                        <p>
+                            Assets utilized under respective royalty-free or platform licensing terms.
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- AI Animation -->
+                        <p><strong>AI Image Generation & Animation Processing</strong></p>
+                        <p>
+                            Powered by 
+                            <a href="https://gemini.google.com" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Google Gemini AI
+                            </a>
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Trailer -->
+                        <p><strong>Trailer Reference & Media Attribution</strong></p>
+                        <p>
+                            <a href="https://www.youtube.com/channel/UCLOiBgDQ39ZMsafZSO8i6xQ" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Scope Myanmar – Official YouTube Channel
+                            </a>
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Technical References -->
+                        <p><strong>Technical Research & Development References</strong></p>
+                        <p>
+                            <a href="https://www.w3schools.com/" target="_blank" style="color: #60a5fa; text-decoration: none;">W3Schools</a> |
+                            <a href="https://www.freecodecamp.org/" target="_blank" style="color: #60a5fa; text-decoration: none;">freeCodeCamp</a>
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Design Inspiration -->
+                        <p><strong>UI/UX Design Inspiration</strong></p>
+                        <p>
+                            <a href="https://dribbble.com/tags/web-design-inspiration" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Dribbble – Web Design Inspiration
+                            </a>
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Audio -->
+                        <p><strong>Audio Assets & Sound Resources</strong></p>
+                        <p>
+                            <a href="https://pixabay.com/music/" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Pixabay Audio Library
+                            </a>
+                        </p>
+        
+                        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.25); margin: 18px 0;">
+        
+                        <!-- Theme -->
+                        <p><strong>Theme Music Reference</strong></p>
+                        <p>
+                            Inspired by the official soundtrack of 
+                            <a href="https://genshin.hoyoverse.com" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                                Genshin Impact (HoYoverse)
+                            </a>.
+                        </p>
+        
+                    </div>
+        
+                    <div style="border-top: 1px solid rgba(255,255,255,0.12); padding-top: 18px; font-size: 12px; color: var(--text-secondary); text-align: center; line-height:1.6;">
+                        <p>
+                            <strong>Legal Disclaimer & Intellectual Property Notice</strong>
+                        </p>
+                        <p>
+                            This project is a non-commercial, educational, and portfolio-based initiative.
+                        </p>
+                        <p>
+                            It is not affiliated with, endorsed by, or sponsored by any third-party organizations listed above.
+                        </p>
+                        <p>
+                            All trademarks, media assets, and brand names remain the property of their respective owners.
+                        </p>
+                        <p>
+                            © 2026 Htet Zaw Paing. All original architecture, design systems, codebase, 
+                            and proprietary creative elements are protected under applicable intellectual property laws.
+                        </p>
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Directives Modal -->
+        <div id="legal-modal" class="modal-overlay hidden opacity-0">
+            <div class="modal-glass settings-window">
+                <div class="modal-header">
+                    <h2 class="modal-title" style="letter-spacing: 0.15em; font-weight: 500;">Operational Directives</h2>
+                    <button onclick="game.closeLegal()" class="btn-close"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+                </div>
+                <div class="settings-scroll custom-scroll" style="max-height: 60vh; font-family: monospace; font-size: 13px; line-height: 1.7; color: var(--text-secondary);">
+                    <div style="margin-bottom: 24px;">
+                        
+                        <h3 style="color: var(--text-primary); font-size: 14px; margin-bottom: 8px; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: 0.1em; text-transform: uppercase;">I. OPERATIONAL SCOPE</h3>
+                        <p style="margin-bottom: 24px;">"The Betweens" is structured as a self-contained narrative simulation. Core runtime operations execute dynamically through offline protocol functionality. Minimal online connectivity is established solely for fetching dynamic external assets. The primary architecture ensures local, client-side rendering execution.</p>
+
+                        <h3 style="color: var(--text-primary); font-size: 14px; margin-bottom: 8px; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: 0.1em; text-transform: uppercase;">II. PRIVACY & DATA TELEMETRY</h3>
+                        <p style="margin-bottom: 24px;">The system operates strictly on a zero-knowledge framework regarding user telemetry. We do not harvest, track, transmit, or monetize personal identification data. Local hardware interactions (e.g., Camera access for rendering screenshots, Audio interface for playback) remain confined entirely within the client-side environment. At no point is optical, acoustic, or gameplay data uploaded to our remote servers.</p>
+
+                        <h3 style="color: var(--text-primary); font-size: 14px; margin-bottom: 8px; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: 0.1em; text-transform: uppercase;">III. LIABILITY & INDEMNIFICATION</h3>
+                        <p style="margin-bottom: 24px;">System interaction is at the user's sole discretion and risk. The proprietary creators, authors, and developers expressly waive all liability for psychological, emotional, or hardware-related side effects resultant from immersion into the software environment. We establish absolute immunity against any claims, losses, or damages stemming from third-party exploitation, scams, external links, or unverified modifications of the underlying code.</p>
+
+                        <h3 style="color: var(--text-primary); font-size: 14px; margin-bottom: 8px; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: 0.1em; text-transform: uppercase;">IV. GOVERNANCE MODIFICATION</h3>
+                        <p style="margin-bottom: 32px;">The administrative entity reserves the unilateral, unalienable right to amend, suspend, or terminate these protocols at any time without prior notification. Continued engagement with the software implies automatic, binding consent to the latest parameters.</p>
+                        
+                        <div style="display: flex; justify-content: center; margin-top: 40px; margin-bottom: 16px;">
+                            <a href="/the_betweens/directives/" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 40px; background: #fff; color: #000; text-decoration: none; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 100px; box-shadow: 0 0 20px rgba(255,255,255,0.1); transition: all 0.5s var(--ease-apple);">
+                                Read Full Directives <i data-lucide="external-link" style="width:14px;height:14px;"></i>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Gallery Modal -->
         <div id="gallery-modal" class="modal-overlay hidden opacity-0">
             <div class="modal-glass gallery-window">
@@ -1234,8 +1419,8 @@
                         <button onclick="game.loadGame()" id="load-btn" class="menu-item hidden"><span id="st-menu-load">Continue Journey</span></button>
                         <button onclick="game.openGallery()" class="menu-item"><span id="st-menu-gallery">Memory Records</span></button>
                         <button onclick="game.openSettings()" class="menu-item"><span id="st-menu-set">System Settings</span></button>
-                        <button onclick="alert('Feature coming in next update')" class="menu-item"><span id="st-menu-terms">User Agreement</span></button>
-                        <button onclick="alert('Feature coming in next update')" class="menu-item"><span id="st-menu-credits">Project Credits</span></button>
+                        <button onclick="game.openLegal()" class="menu-item"><span id="st-menu-terms">User Agreement</span></button>
+                        <button onclick="game.openCredits()" class="menu-item"><span id="st-menu-credits">Project Credits</span></button>
                         <button onclick="location.href='../index.html'" class="menu-item danger"><span id="st-menu-quit">Leave Session</span></button>
                     </div>
                 </div>
@@ -1403,6 +1588,8 @@
             this.mapOpen = false;
             this.phoneOpen = false;
             this.settingsOpen = false;
+            this.creditsOpen = false;
+            this.legalOpen = false;
             this.phoneApp = null;
             this.currentViewMemo = null;
             
@@ -1721,10 +1908,10 @@
                 header.className = "app-header glass";
                 html = `
                     <div class="photo-grid">
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/36134594/pexels-photo-36134594.jpeg');"></div>
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/36134593/pexels-photo-36134593.jpeg');"></div>
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/34848148/pexels-photo-34848148.jpeg');"></div>
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/34607842/pexels-photo-34607842.jpeg');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/downtown.png');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/sule.png');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/kantawg.png');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/shwedagon.png');"></div>
                     </div>
                 `;
             } else if (appName === 'facebook') {
@@ -1744,7 +1931,7 @@
                                 <div><div class="fb-post-name">Yangon News</div><div class="fb-post-time">2 hrs ago</div></div>
                             </div>
                             <div class="fb-post-text">Heavy rain expected in downtown Yangon this evening. Please drive safely.</div>
-                            <div class="fb-post-img" style="background-image:url('https://images.unsplash.com/photo-1515347619252-60a6bf4fffce?q=80&w=600&auto=format&fit=crop');"></div>
+                            <div class="fb-post-img" style="background-image:url('../images/places/drizzle.png');"></div>
                             <div class="fb-post-actions">
                                 <span class="fb-action-btn"><i data-lucide="thumbs-up" style="width:16px;height:16px;"></i> Like</span>
                                 <span class="fb-action-btn"><i data-lucide="message-circle" style="width:16px;height:16px;"></i> Comment</span>
@@ -1756,7 +1943,7 @@
                                 <div class="fb-post-av" style="background:rgba(168,85,247,0.2);color:#c084fc;">N</div>
                                 <div><div class="fb-post-name">Nay Chi updated her profile picture.</div><div class="fb-post-time">5 hrs ago</div></div>
                             </div>
-                            <div class="fb-post-img" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');"></div>
+                            <div class="fb-post-img" style="background-image:url('../images/person/naychi.png');"></div>
                              <div class="fb-post-actions">
                                 <span class="fb-action-btn"><i data-lucide="thumbs-up" style="width:16px;height:16px;"></i> 142</span>
                                 <span class="fb-action-btn"><i data-lucide="message-circle" style="width:16px;height:16px;"></i> 12</span>
@@ -2261,6 +2448,38 @@
             setTimeout(() => { modal.classList.add('hidden'); }, 500);
             this.settingsOpen = false;
             this.saveGameManual(); 
+        }
+
+        openCredits() {
+            const modal = document.getElementById('credits-modal');
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            this.creditsOpen = true;
+            lucide.createIcons();
+        }
+
+        closeCredits() {
+            const modal = document.getElementById('credits-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 500);
+            this.creditsOpen = false;
+        }
+
+        openLegal() {
+            const modal = document.getElementById('legal-modal');
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            this.legalOpen = true;
+            lucide.createIcons();
+        }
+
+        closeLegal() {
+            const modal = document.getElementById('legal-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 500);
+            this.legalOpen = false;
         }
 
         openGallery() {
@@ -3420,7 +3639,7 @@
     // Keyboard Shortcuts Listener
     document.addEventListener('keydown', (e) => {
         if (e.repeat) return;
-        if (game.mapOpen || game.phoneOpen || game.settingsOpen || (e.target && e.target.tagName === 'INPUT')) return;
+        if (game.mapOpen || game.phoneOpen || game.settingsOpen || game.creditsOpen || game.legalOpen || (e.target && e.target.tagName === 'INPUT')) return;
         
         if (e.code === 'Space') {
             e.preventDefault();

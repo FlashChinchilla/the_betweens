@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://htet-zaw-paing.github.io/the_betweens/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Primary Navigation Pages -->
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/overview</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/origin</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/knowledge-base</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/directives</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/trailer</loc></url>
+
+  <!-- Secondary Pages from Navigation -->
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#carousel</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#mechanics</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#entities</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#gallery</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#lore</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#resonance</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#specs</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#roadmap</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#faq</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#waitist</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/#contact</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/origin/#game</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/origin/#characters</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/origin/#chapters</loc></url>
+  <url><loc>https://htet-zaw-paing.github.io/the_betweens/origin/#developer</loc></url>
+
+</urlset>

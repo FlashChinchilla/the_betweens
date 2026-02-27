@@ -13,7 +13,7 @@
     
     <style>
         /* ==========================================================================
-           1. DESIGN SYSTEM & VARIABLES
+           1. DESIGN SYSTEM & VARIABLES Section
            ========================================================================== */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Noto+Sans+Myanmar:wght@200;300;400;500;600&display=swap');
 
@@ -44,7 +44,7 @@
         }
 
         /* ==========================================================================
-           2. GLOBAL RESETS & BASE
+           2. GLOBAL RESETS & BASE Section
            ========================================================================== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
@@ -80,7 +80,7 @@
         .opacity-0 { opacity: 0 !important; pointer-events: none; }
         
         /* ==========================================================================
-           3. PRELOADER
+           3. PRELOADER Section
            ========================================================================== */
         .preloader-screen {
             position: fixed; inset: 0; z-index: 200;
@@ -100,7 +100,7 @@
             border: 1px solid var(--border-subtle);
         }
         
-        /* Independent ring animation with strict translate maintenance */
+        
         @keyframes spin-ring { 
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); } 
@@ -127,7 +127,7 @@
         .emblem-circle { position: absolute; inset: 0; border-radius: 50%; }
         .emblem-outer { border: 1px solid rgba(255,255,255,0.2); }
         
-        /* Dedicated emblem animation that DOES NOT alter translation */
+        
         @keyframes spin-emblem { 
             0% { transform: rotate(0deg); } 
             100% { transform: rotate(360deg); } 
@@ -182,7 +182,7 @@
         }
 
         /* ==========================================================================
-           4. VISUAL FX & BACKGROUND SYSTEM
+           4. VISUAL FX & BACKGROUND SYSTEM Section
            ========================================================================== */
         .game-container { position: relative; width: 100%; height: 100%; overflow: hidden; }
         .background-wrapper { position: absolute; inset: 0; overflow: hidden; background: #000; transition: background-color 1s; }
@@ -218,7 +218,7 @@
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ==========================================================================
-           5. START SCREEN (MAIN MENU)
+           5. START SCREEN (MAIN MENU) Section
            ========================================================================== */
         .start-screen {
             position: absolute; inset: 0; z-index: 80; background: #000; overflow: hidden;
@@ -283,7 +283,7 @@
         }
 
         /* ==========================================================================
-           6. MAIN UI, GLASSMORPHISM & HUD
+           6. MAIN UI, GLASSMORPHISM & HUD Section
            ========================================================================== */
         .ui-layer {
             position: absolute; inset: 0; z-index: 50; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; pointer-events: none;
@@ -346,7 +346,7 @@
         .hud-btn.active-mode { background: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
         .hud-btn.w-wide { width: 56px; }
         
-        /* Dedicated Glass Danger Leave Button */
+        
         .hud-btn-danger {
             background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 59, 48, 0.02)) !important;
             border-color: rgba(255, 59, 48, 0.3) !important;
@@ -407,7 +407,7 @@
         }
 
         /* ==========================================================================
-           7. DIALOGUE & INTERACTION SYSTEM
+           7. DIALOGUE & INTERACTION SYSTEM Section
            ========================================================================== */
         .interaction-area { margin-top: auto; width: 100%; max-width: 900px; margin-inline: auto; pointer-events: auto; }
         
@@ -429,7 +429,7 @@
         .choice-arrow { opacity: 0; transition: opacity 0.3s, transform 0.3s; width: 16px; height: 16px; transform: translateX(-10px); }
         .choice-btn:hover .choice-arrow { opacity: 1; transform: translateX(0); }
 
-        /* Liquid iOS 26 High-End Dialogue Box */
+        
         .dialogue-box {
             background: linear-gradient(145deg, rgba(30, 30, 30, 0.4), rgba(5, 5, 5, 0.6));
             backdrop-filter: blur(50px) saturate(250%);
@@ -443,7 +443,7 @@
         }
         
         .speaker-box {
-            position: absolute; top: -18px; left: 36px; background: #fff; color: #000; padding: 8px 24px;
+            position: absolute; top: -18px; left: 36px; background: #fff; color: #ffffff; padding: 8px 24px;
             font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 100px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); transition: opacity 0.3s;
         }
@@ -475,7 +475,7 @@
         }
 
         /* ==========================================================================
-           8. MODALS (Premium Glass Design)
+           8. MODALS (Premium Glass Design) Section
            ========================================================================== */
         .modal-overlay {
             position: absolute; inset: 0; z-index: 100; background: rgba(0,0,0,0.6); backdrop-filter: blur(24px);
@@ -628,7 +628,7 @@
         }
 
         /* ==========================================================================
-           9. PHONE SYSTEM (Fully Scalable for Mobile)
+           9. PHONE SYSTEM (Fully Scalable for Mobile) Section
            ========================================================================== */
         .phone-container { perspective: 1200px; display: flex; align-items: center; justify-content: center; }
         .phone-hardware { 
@@ -797,7 +797,7 @@
         .kbz-empty { text-align: center; font-size: 12px; color: #9ca3af; padding: 32px 0; background: #fff; border-radius: 16px; border: 1px solid #f3f4f6; }
 
         /* ==========================================================================
-           10. SETTINGS & DYNAMIC OVERRIDES
+           10. SETTINGS & DYNAMIC OVERRIDES Section
            ========================================================================== */
         body.font-sm .dialogue-text { font-size: 15px !important; line-height: 1.6 !important; }
         body.font-sm .choice-btn { font-size: 13px !important; }
@@ -805,7 +805,7 @@
         body.font-lg .choice-btn { font-size: 18px !important; }
         
         /* Render Quality Specifics: Letting the original background shine */
-        body.gfx-low .bg-layer { filter: blur(2px) saturate(0.8) brightness(0.9) !important; }
+        body.gfx-low .bg-layer { filter: blur(1px) saturate(0.8) brightness(0.9) !important; }
         body.gfx-low .glass-panel, body.gfx-low .dialogue-box, body.gfx-low .modal-glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background-color: rgba(10,10,10,0.98) !important; box-shadow: none !important; border: none !important; }
         body.gfx-low .scanlines, body.gfx-low .vignette { display: none !important; }
         body.gfx-low .camera-move { animation: none !important; transform: scale(1.0) !important; }
@@ -814,9 +814,9 @@
         body.gfx-med .glass-panel, body.gfx-med .dialogue-box { backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important; }
         body.gfx-med .camera-move { animation-duration: 120s !important; }
 
-        body.gfx-high .bg-layer { filter: blur(0px) saturate(1.15) brightness(1.05) contrast(1.05) !important; }
+        body.gfx-high .bg-layer { filter: blur(0px) saturate(1.02) brightness(1.02) !important; }
 
-        /* Light Theme Updates for Glass */
+        
         body.theme-light { background-color: #f5f5f7; color: #1d1d1f; }
         body.theme-light .start-screen { background-color: #fff; }
         body.theme-light .start-gradient { background: linear-gradient(to right, #fff, rgba(255,255,255,0.9), transparent); }
@@ -880,7 +880,7 @@
             
             <div id="loading-text" class="loading-text">System Boot... 0%</div>
             
-            <!-- Dedicated Absolute Wrapper to prevent layout shift -->
+            
             <div class="loader-btn-container">
                 <button id="start-btn" class="hidden btn-primary" onclick="game.startFromPreloader()">BEGIN</button>
             </div>
@@ -1258,9 +1258,9 @@
         ga_off: { en: "Disabled", mm: "ပိတ်" },
         font_size: { en: "Typography Scale", mm: "စာလုံးအရွယ်အစား" },
         font_tip: { en: "Changes the size of the reading text.", mm: "စာဖတ်ရမည့် စာလုံးများ၏ အရွယ်အစားကို ပြောင်းလဲရန်။" },
-        font_sm: { en: "Compact", mm: "အသေးစား" },
-        font_md: { en: "Standard", mm: "အလတ်စား" },
-        font_lg: { en: "Expanded", mm: "အကြီးစား" },
+        font_sm: { en: "Compact", mm: "အသေး" },
+        font_md: { en: "Standard", mm: "အလတ်" },
+        font_lg: { en: "Expanded", mm: "အကြီး" },
         graphics: { en: "Render Quality", mm: "ရုပ်ထွက်အရည်အသွေး" },
         gfx_tip: { en: "Lowers visual effects for better performance.", mm: "စက်အလေးမခံရစေရန် ရုပ်ထွက်အထူးပြုလုပ်ချက်များကို လျှော့ချရန်။" },
         gfx_low: { en: "Performance", mm: "အနိမ့်" },
@@ -1721,10 +1721,10 @@
                 header.className = "app-header glass";
                 html = `
                     <div class="photo-grid">
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/36134594/pexels-photo-36134594.jpeg');"></div>
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/36134593/pexels-photo-36134593.jpeg');"></div>
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/34848148/pexels-photo-34848148.jpeg');"></div>
-                        <div class="photo-item" style="background-image:url('https://images.pexels.com/photos/34607842/pexels-photo-34607842.jpeg');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/downtown.png');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/sule.png');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/kantawg.png');"></div>
+                        <div class="photo-item" style="background-image:url('../images/places/shwedagon.png');"></div>
                     </div>
                 `;
             } else if (appName === 'facebook') {
@@ -1744,7 +1744,7 @@
                                 <div><div class="fb-post-name">Yangon News</div><div class="fb-post-time">2 hrs ago</div></div>
                             </div>
                             <div class="fb-post-text">Heavy rain expected in downtown Yangon this evening. Please drive safely.</div>
-                            <div class="fb-post-img" style="background-image:url('https://images.unsplash.com/photo-1515347619252-60a6bf4fffce?q=80&w=600&auto=format&fit=crop');"></div>
+                            <div class="fb-post-img" style="background-image:url('../images/places/drizzle.png');"></div>
                             <div class="fb-post-actions">
                                 <span class="fb-action-btn"><i data-lucide="thumbs-up" style="width:16px;height:16px;"></i> Like</span>
                                 <span class="fb-action-btn"><i data-lucide="message-circle" style="width:16px;height:16px;"></i> Comment</span>
@@ -1756,7 +1756,7 @@
                                 <div class="fb-post-av" style="background:rgba(168,85,247,0.2);color:#c084fc;">N</div>
                                 <div><div class="fb-post-name">Nay Chi updated her profile picture.</div><div class="fb-post-time">5 hrs ago</div></div>
                             </div>
-                            <div class="fb-post-img" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');"></div>
+                            <div class="fb-post-img" style="background-image:url('../images/person/naychi.png');"></div>
                              <div class="fb-post-actions">
                                 <span class="fb-action-btn"><i data-lucide="thumbs-up" style="width:16px;height:16px;"></i> 142</span>
                                 <span class="fb-action-btn"><i data-lucide="message-circle" style="width:16px;height:16px;"></i> 12</span>

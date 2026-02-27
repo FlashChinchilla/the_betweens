@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://htet-zaw-paing.github.io/the_betweens/sitemap.xml
+
+# Block specific paths if needed (example)
+# Disallow: /private/
+# Disallow: /drafts/
